@@ -12,11 +12,7 @@
     "lint": "pnpm -r lint",
     "test": "pnpm -r test",
     "typecheck": "pnpm -r typecheck",
-    "gen:types": "pnpm --filter @delysa/shared gen:types",
-    "mcp:linear:auth": "opencode mcp auth linear",
-    "mcp:linear:list": "opencode mcp list",
-    "mcp:linear:debug": "opencode mcp debug linear",
-    "mcp:linear:logout": "opencode mcp logout linear"
+    "gen:types": "pnpm --filter @delysa/shared gen:types"
   },
   "devDependencies": {
     "concurrently": "^8.2.2"

@@ -2,7 +2,6 @@
 # Auth Linear MCP via OAuth (browser) — Linux/macOS/WSL/Git-Bash
 # Cara pakai dari root repo:
 #   bash scripts/linear-auth.sh
-#   # atau: pnpm mcp:linear:auth
 #
 # Browser akan terbuka -> login Linear -> pilih workspace -> authorize.
 # Token disimpan aman di ~/.local/share/opencode/mcp-auth.json (tidak di repo).
@@ -14,11 +13,11 @@ if ! command -v opencode >/dev/null 2>&1; then
 fi
 
 echo "Auth ke Linear workspace via OAuth..."
-echo "Config dipakai: ./opencode.json (mcp.linear -> https://mcp.linear.app/mcp)"
+echo "Config dipakai: ./opencode.json (mcp.linear-delysa -> https://mcp.linear.app/mcp)"
 
-opencode mcp auth linear
+opencode mcp auth linear-delysa
 
 echo ""
 echo "Selesai. Cek status dengan:"
-echo "  opencode mcp list            # atau pnpm mcp:linear:list"
-echo "  opencode mcp debug linear    # atau pnpm mcp:linear:debug"
+echo "  opencode mcp list"
+echo "  opencode mcp debug linear-delysa"

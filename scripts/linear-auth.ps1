@@ -1,9 +1,8 @@
 # Auth Linear MCP via OAuth (browser) — Windows PowerShell
 # Cara pakai dari root repo:
 #   powershell -ExecutionPolicy Bypass -File scripts/linear-auth.ps1
-#   # atau: pnpm mcp:linear:auth
 #
-# Script ini memanggil: opencode mcp auth linear
+# Script ini memanggil: opencode mcp auth linear-delysa
 # Browser akan terbuka -> login Linear -> pilih workspace -> authorize.
 # Token disimpan aman di ~/.local/share/opencode/mcp-auth.json (tidak di repo).
 
@@ -15,12 +14,12 @@ if (-not (Get-Command opencode -ErrorAction SilentlyContinue)) {
 }
 
 Write-Host "Auth ke Linear workspace via OAuth..." -ForegroundColor Cyan
-Write-Host "Config dipakai: ./opencode.json (mcp.linear -> https://mcp.linear.app/mcp)" -ForegroundColor Gray
+Write-Host "Config dipakai: ./opencode.json (mcp.linear-delysa -> https://mcp.linear.app/mcp)" -ForegroundColor Gray
 
-& opencode mcp auth linear
+& opencode mcp auth linear-delysa
 if ($?) {
   Write-Host ""
   Write-Host "Selesai. Cek status dengan:" -ForegroundColor Green
-  Write-Host "  opencode mcp list            # atau pnpm mcp:linear:list"
-  Write-Host "  opencode mcp debug linear    # atau pnpm mcp:linear:debug"
+  Write-Host "  opencode mcp list"
+  Write-Host "  opencode mcp debug linear-delysa"
 }
