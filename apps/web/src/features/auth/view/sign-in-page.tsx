@@ -1,3 +1,3 @@
 export default function SignInPage() {
-  return <div>Hello "/sign-in"!</div>
+  return <div>Hello "/sign-in"!</div>;
 }

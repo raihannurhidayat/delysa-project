@@ -75,7 +75,6 @@ function RootComponent() {
   );
 }
 
-
 // Root render
 function RootDocument({ children }: { children: React.ReactNode }) {
   return (
