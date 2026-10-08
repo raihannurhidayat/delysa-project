@@ -1,0 +1,21 @@
+{
+  "name": "@delysa/shared",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "main": "./src/index.ts",
+  "scripts": {
+    "gen:types": "openapi-typescript ./openapi.yaml -o ./src/types.gen.ts",
+    "lint": "prettier --check \"src/**/*.ts\" \"openapi.yaml\"",
+    "test": "node --test",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "zod": "^3.23.8"
+  },
+  "devDependencies": {
+    "openapi-typescript": "^7.4.0",
+    "prettier": "^3.3.3",
+    "typescript": "^5.5.4"
+  }
+}

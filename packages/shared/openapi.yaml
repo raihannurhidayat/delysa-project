@@ -1,0 +1,66 @@
+openapi: 3.1.0
+info:
+  title: Delysa Florist API
+  version: 0.1.0
+  description: Kontrak tunggal FE↔BE (Fase 0). Sumber kebenaran — jangan edit types.gen.ts manual.
+servers:
+  - url: http://localhost:8000/api/v1
+    description: Laravel lokal (VPS/dev BE)
+  - url: https://api.delysaflorist.example/api/v1
+    description: Produksi (placeholder)
+paths:
+  /health:
+    get:
+      operationId: health
+      summary: Healthcheck API
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [status]
+                properties:
+                  status:
+                    type: string
+                    example: ok
+  /products:
+    get:
+      operationId: listProducts
+      summary: List katalog (Fase 2 hoạch định — stub Fase 0)
+      parameters:
+        - { name: search, in: query, schema: { type: string } }
+        - { name: category, in: query, schema: { type: string } }
+        - { name: page, in: query, schema: { type: integer, default: 1 } }
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [data]
+                properties:
+                  data:
+                    type: array
+                    items: { $ref: "#/components/schemas/Product" }
+components:
+  schemas:
+    Product:
+      type: object
+      required: [id, name, slug, price, stock]
+      properties:
+        id: { type: integer }
+        name: { type: string }
+        slug: { type: string }
+        price: { type: integer, minimum: 0 }
+        stock: { type: integer, minimum: 0 }
+        imageUrl: { type: string }
+        isActive: { type: boolean }
+    Error:
+      type: object
+      required: [message]
+      properties:
+        message: { type: string }
+        code: { type: string, example: STOCK_INSUFFICIENT }

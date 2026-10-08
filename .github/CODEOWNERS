@@ -1,0 +1,3 @@
+apps/web/ @frontend-dev
+apps/api/ @backend-dev
+packages/shared/ @frontend-dev @backend-dev

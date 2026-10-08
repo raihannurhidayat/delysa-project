@@ -1,0 +1,30 @@
+# Deps
+node_modules/
+.pnpm-store/
+
+# Builds
+dist/
+.output/
+.tanstack/
+routeTree.gen.ts
+
+# Env (jangan commit secret)
+.env
+.env.local
+apps/*/.env
+apps/*/.env.local
+
+# Laravel
+apps/api/vendor/
+apps/api/.env
+apps/api/storage/*.key
+
+# OS / editor
+.DS_Store
+Thumbs.db
+.vscode/*
+!.vscode/extensions.json
+
+# Logs
+*.log
+pnpm-debug.log*

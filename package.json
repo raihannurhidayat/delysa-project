@@ -1,0 +1,20 @@
+{
+  "name": "delysa-florist",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Monorepo Delysa Florist e-commerce",
+  "packageManager": "pnpm@9.0.0",
+  "scripts": {
+    "dev": "concurrently \"pnpm dev:web\" \"pnpm dev:api\"",
+    "dev:web": "pnpm --filter client-web-delysa-florist dev",
+    "dev:api": "echo \"api belum ada (apps/api kosong) — lewati; scaffold Laravel di VPS/laptop BE\" && exit 0",
+    "build": "pnpm -r --filter client-web-delysa-florist... build",
+    "lint": "pnpm -r lint",
+    "test": "pnpm -r test",
+    "typecheck": "pnpm -r typecheck",
+    "gen:types": "pnpm --filter @delysa/shared gen:types"
+  },
+  "devDependencies": {
+    "concurrently": "^8.2.2"
+  }
+}

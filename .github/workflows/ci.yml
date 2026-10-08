@@ -1,0 +1,51 @@
+name: ci (Opsi A — tanpa Turbo, 2 job independen)
+on:
+  push:
+  pull_request:
+
+jobs:
+  changes:
+    runs-on: ubuntu-latest
+    outputs:
+      web: ${{ steps.filter.outputs.web }}
+      api: ${{ steps.filter.outputs.api }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dorny/paths-filter@v3
+        id: filter
+        with:
+          filters: |
+            web:
+              - 'apps/web/**'
+              - 'packages/shared/**'
+              - 'pnpm-workspace.yaml'
+              - 'pnpm-lock.yaml'
+            api:
+              - 'apps/api/**'
+
+  web:
+    needs: changes
+    if: needs.changes.outputs.web == 'true'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+        with: { version: 9 }
+      - uses: actions/setup-node@v4
+        with: { node-version: 20, cache: pnpm }
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm --filter @delysa/shared gen:types
+      - run: pnpm --filter @delysa/web typecheck
+      - run: pnpm --filter @delysa/web build
+
+  api:
+    needs: changes
+    if: needs.changes.outputs.api == 'true'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: shivammathur/setup-php@v2
+        with: { php-version: '8.2' }
+      - run: composer validate --working-dir=apps/api
+      - run: composer install --working-dir=apps/api --no-interaction --prefer-dist
+      - run: php apps/api/vendor/bin/phpunit --version || echo "phpunit will run with tests in Fase 1+"
