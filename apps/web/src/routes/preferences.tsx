@@ -2,30 +2,30 @@ import {
   useMutation,
   useQueryClient,
   useSuspenseQuery,
-} from '@tanstack/react-query'
-import { createFileRoute, useHydrated } from '@tanstack/react-router'
-import { useServerFn } from '@tanstack/react-start'
-import { readerNameOptions, saveReaderName } from '../utils/preferences'
+} from "@tanstack/react-query";
+import { createFileRoute, useHydrated } from "@tanstack/react-router";
+import { useServerFn } from "@tanstack/react-start";
+import { readerNameOptions, saveReaderName } from "../utils/preferences";
 
-export const Route = createFileRoute('/preferences')({
+export const Route = createFileRoute("/preferences")({
   loader: async ({ context }) => {
-    await context.queryClient.query(readerNameOptions)
+    await context.queryClient.query(readerNameOptions);
   },
-  headers: () => ({ 'Cache-Control': 'private, no-store' }),
-  head: () => ({ meta: [{ title: 'Reader preferences' }] }),
+  headers: () => ({ "Cache-Control": "private, no-store" }),
+  head: () => ({ meta: [{ title: "Reader preferences" }] }),
   component: Preferences,
-})
+});
 
 function Preferences() {
-  const { data: name } = useSuspenseQuery(readerNameOptions)
-  const queryClient = useQueryClient()
-  const save = useServerFn(saveReaderName)
-  const hydrated = useHydrated()
+  const { data: name } = useSuspenseQuery(readerNameOptions);
+  const queryClient = useQueryClient();
+  const save = useServerFn(saveReaderName);
+  const hydrated = useHydrated();
   const mutation = useMutation({
     mutationFn: (name: string) => save({ data: name }),
     onSuccess: () =>
       queryClient.invalidateQueries({ queryKey: readerNameOptions.queryKey }),
-  })
+  });
 
   return (
     <main className="space-y-4 p-4">
@@ -34,10 +34,10 @@ function Preferences() {
       <form
         method="post"
         onSubmit={(event) => {
-          event.preventDefault()
-          const value = new FormData(event.currentTarget).get('name')
-          if (typeof value === 'string') {
-            mutation.mutate(value)
+          event.preventDefault();
+          const value = new FormData(event.currentTarget).get("name");
+          if (typeof value === "string") {
+            mutation.mutate(value);
           }
         }}
       >
@@ -46,7 +46,7 @@ function Preferences() {
           className="flex gap-3"
         >
           <label>
-            Display name{' '}
+            Display name{" "}
             <input
               name="name"
               defaultValue={name}
@@ -56,7 +56,7 @@ function Preferences() {
             />
           </label>
           <button type="submit" className="rounded border px-3">
-            {mutation.isPending ? 'Saving...' : 'Save name'}
+            {mutation.isPending ? "Saving..." : "Save name"}
           </button>
         </fieldset>
         {mutation.isError ? (
@@ -64,5 +64,5 @@ function Preferences() {
         ) : null}
       </form>
     </main>
-  )
+  );
 }

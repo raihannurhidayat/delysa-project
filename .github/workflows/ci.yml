@@ -1,7 +1,14 @@
 name: Continuous Development
 on:
   push:
+    branches: [development]
   pull_request:
+    branches: [development]
+    types: [opened, synchronize, reopened]
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 
 jobs:
   changes:
@@ -20,6 +27,7 @@ jobs:
               - 'packages/shared/**'
               - 'pnpm-workspace.yaml'
               - 'pnpm-lock.yaml'
+              - '.github/workflows/ci.yml'
             api:
               - 'apps/api/**'
 
@@ -36,6 +44,35 @@ jobs:
       - run: pnpm --filter @delysa/shared gen:types
       - run: pnpm --filter client-web-delysa-florist build
 
+  quality-web:
+    needs: changes
+    if: needs.changes.outputs.web == 'true'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: 20, cache: pnpm }
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm --filter @delysa/shared lint
+      - run: pnpm --filter @delysa/shared test
+      - run: pnpm --filter @delysa/shared typecheck
+      - run: pnpm --filter client-web-delysa-florist format:check
+      - run: pnpm --filter client-web-delysa-florist build
+
+  contract-drift:
+    needs: changes
+    if: needs.changes.outputs.web == 'true'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: 20, cache: pnpm }
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm --filter @delysa/shared gen:types
+      - run: git diff --exit-code -- packages/shared/src/types.gen.ts
+
   api:
     needs: changes
     if: needs.changes.outputs.api == 'true'
@@ -47,3 +84,11 @@ jobs:
       - run: composer validate --working-dir=apps/api
       - run: composer install --working-dir=apps/api --no-interaction --prefer-dist
       - run: php apps/api/vendor/bin/phpunit --version || echo "phpunit will run with tests in Fase 1+"
+
+  quality-gate:
+    if: always()
+    needs: [changes, web, quality-web, contract-drift, api]
+    runs-on: ubuntu-latest
+    steps:
+      - if: contains(needs.*.result, 'failure') || contains(needs.*.result, 'cancelled')
+        run: exit 1
