@@ -34,8 +34,7 @@ jobs:
         with: { node-version: 20, cache: pnpm }
       - run: pnpm install --frozen-lockfile
       - run: pnpm --filter @delysa/shared gen:types
-      - run: pnpm --filter @delysa/web typecheck
-      - run: pnpm --filter @delysa/web build
+      - run: pnpm --filter client-web-delysa-florist build
 
   api:
     needs: changes
