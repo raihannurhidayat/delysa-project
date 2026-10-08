@@ -75,6 +75,8 @@ function RootComponent() {
   );
 }
 
+
+// Root render
 function RootDocument({ children }: { children: React.ReactNode }) {
   return (
     <html>
@@ -82,47 +84,9 @@ function RootDocument({ children }: { children: React.ReactNode }) {
         <HeadContent />
       </head>
       <body>
-        <div className="p-2 flex gap-2 text-lg">
-          <Link to="/preferences">Preferences</Link>
-          <Link
-            to="/"
-            activeProps={{
-              className: "font-bold",
-            }}
-            activeOptions={{ exact: true }}
-          >
-            Home
-          </Link>{" "}
-          <Link
-            to="/route-a"
-            activeProps={{
-              className: "font-bold",
-            }}
-          >
-            Pathless Layout
-          </Link>{" "}
-          <Link
-            to="/deferred"
-            activeProps={{
-              className: "font-bold",
-            }}
-          >
-            Deferred
-          </Link>{" "}
-          <Link
-            // @ts-expect-error
-            to="/this-route-does-not-exist"
-            activeProps={{
-              className: "font-bold",
-            }}
-          >
-            This Route Does Not Exist
-          </Link>
-        </div>
-        <hr />
         {children}
-        <TanStackRouterDevtools position="bottom-right" />
-        <ReactQueryDevtools buttonPosition="bottom-left" />
+        {/*<TanStackRouterDevtools position="bottom-right" />*/}
+        {/*<ReactQueryDevtools buttonPosition="bottom-left" />*/}
         <Scripts />
       </body>
     </html>
