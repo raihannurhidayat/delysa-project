@@ -95,7 +95,21 @@ OAuth otomatis via DCR bila server mendukung; CLI: `opencode mcp auth figma`,
 > Catatan skema: docs v2 OpenCode memakai `mcp.servers` + `disabled` — **tidak berlaku**
 > untuk repo ini (v1.18.x). Rencana mem-pin skema v1.
 
-## Sumber
+## 6. Hasil verifikasi hands-on (2026-10-09 — R1 TERKONFIRMASI)
+
+- `opencode mcp debug figma` (2x, diselingi `logout`): selalu 401 + metadata valid,
+  DCR selalu "sukses" tetapi tiap kali menerbitkan Client ID berbeda —
+  ID tersebut tidak dikenali `figma.com/oauth` saat `mcp auth`.
+- Error user: `OAuth app with client id … doesn't exist` — identik dengan laporan
+  Antigravity CLI [S9], Kilo Code [S10], VS Code generik [S12].
+- Akar masalah: Figma me-allowlist `client_name` pada DCR; "right now, opencode
+  isn't on that list" (dukungan Figma, via [S11]); staf Figma: akses MCP dibatasi
+  untuk klien yang didukung, penambahan klien baru dijeda, tersedia waitlist [S10].
+- Konsekuensi: pendekatan A (remote) **gagal untuk OpenCode**; fallback/B-C
+  naik menjadi opsi utama. Remote tetap valid untuk klien dalam katalog
+  (Cursor/VS Code/Claude Code) bila tim ingin memakai editor itu berdampingan.
+
+## Sumber (lanjutan)
 
 - [S1] Figma Developer Docs — Remote server installation:
   <https://developers.figma.com/docs/figma-mcp-server/remote-server-installation/>
@@ -112,3 +126,11 @@ OAuth otomatis via DCR bila server mendukung; CLI: `opencode mcp auth figma`,
 - [S7] Panduan komunitas — troubleshooting `type: remote`, timeout, `mcp debug`:
   <https://tempreon.com/guides/add-mcp-server-to-opencode>
 - [S8] Bukti repo: `opencode.json`, `docs/linear-mcp.md`, `scripts/linear-auth.ps1`
+- [S9] Antigravity CLI issue — error identik + analisis fallback client ID:
+  <https://github.com/google-antigravity/antigravity-cli/issues/496>
+- [S10] Figma Forum — Kilo Code 403 di `/v1/oauth/mcp/register`, staf konfirmasi allowlist + jeda:
+  <https://forum.figma.com/report-a-problem-6/cannot-connect-mcp-to-kilo-code-52379>
+- [S11] Analisis allowlist DCR Figma ("opencode isn't on that list"):
+  <https://www.linkedin.com/posts/cjellick_sep-991-enable-url-based-client-registration-activity-7500592418162081792-g3Tp>
+- [S12] Figma Forum — VS Code generik error client ID identik, Cursor berhasil:
+  <http://code.python88.com/l/VEjDhE2oFL>

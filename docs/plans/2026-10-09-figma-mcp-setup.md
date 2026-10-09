@@ -176,7 +176,21 @@ Urutan: Task 1 → Task 2 → Task 3 (sekuensial; Task 3 butuh manusia untuk kli
 - R3 URL file belum ada (MED): placeholder eksplisit; docs final setelah URL diterima.
 - R4 drift skema v2 (LOW): pin skema v1 + floor CLI 1.18 di Global Constraints.
 
-## Adendum verifikasi (2026-10-09, saat eksekusi)
+## Adendum verifikasi 2 (2026-10-09 — R1 TERKONFIRMASI, remote GAGAL)
+
+- Gejala user: `opencode mcp auth figma` → browser menampilkan
+  `OAuth app with client id 8zZ43kFOCqqPFLjZc8GMCV doesn't exist`.
+- Uji ulang pasca `opencode mcp logout figma`: `mcp debug` menerbitkan
+  Client ID **baru yang berbeda** (`XJbpyd8piqrzEjhWW55Scm` vs `SE4Tr9axeBDOKxEP8jYxHn`) —
+  DCR tampak "sukses" tetapi ID tidak dikenali endpoint authorize Figma.
+- Kesimpulan: Figma me-allowlist `client_name` saat DCR; OpenCode tidak ada di daftar
+  (konfirmasi publik: forum Figma "MCP access is limited to supported clients";
+  laporan identik untuk Antigravity CLI, Kilo Code, VS Code generik).
+  Remote MCP via OpenCode **tidak dapat OAuth** sampai Figma menyetujui OpenCode
+  (waitlist dibuka, penambahan klien baru sedang dijeda).
+- Status AC2/AC3: GAGAL untuk varian remote. Keputusan fallback menunggu user
+  (opsi: desktop server lokal tanpa OAuth / wrapper komunitas + PAT /
+  waitlist + kerja manual). Tanpa persetujuan, `opencode.json` tidak diubah lagi.
 
 - `opencode mcp list` → `figma` terdaftar, `needs authentication` (AC1 ✓).
 - `opencode mcp debug figma` → HTTP 401 + `WWW-Authenticate` metadata valid;
