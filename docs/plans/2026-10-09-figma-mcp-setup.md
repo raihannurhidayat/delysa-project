@@ -176,6 +176,18 @@ Urutan: Task 1 → Task 2 → Task 3 (sekuensial; Task 3 butuh manusia untuk kli
 - R3 URL file belum ada (MED): placeholder eksplisit; docs final setelah URL diterima.
 - R4 drift skema v2 (LOW): pin skema v1 + floor CLI 1.18 di Global Constraints.
 
+## Adendum verifikasi (2026-10-09, saat eksekusi)
+
+- `opencode mcp list` → `figma` terdaftar, `needs authentication` (AC1 ✓).
+- `opencode mcp debug figma` → HTTP 401 + `WWW-Authenticate` metadata valid;
+  **Dynamic Client Registration BERHASIL** (Figma menerbitkan Client ID
+  `SE4Tr9axeBDOKxEP8jYxHn` untuk OpenCode). Risiko R1 (catalog allowlist)
+  **TIDAK terbukti** — turun ke MEDIUM, tersisa langkah auth browser oleh user.
+- `git status --short` bersih — tanpa secret di repo (AC5 ✓ parsial).
+- Tersisa (user-side): `opencode mcp auth figma` → Allow access →
+  `opencode mcp list` harus menunjukkan authenticated (AC2/AC3), lalu
+  ganti `FIGMA_FILE_URL_PLACEHOLDER` di `docs/figma-mcp.md` dengan URL asli.
+
 ## Referensi
 
 - Riset: `docs/research/figma-mcp-setup.md` (8 sumber primer: Figma Developer Docs, Figma Learn, figma/mcp-server-guide, OpenCode docs via context7).
