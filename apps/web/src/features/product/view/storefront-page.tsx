@@ -1,10 +1,7 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { Link } from "@tanstack/react-router";
 import { Button } from "~/components/ui/button";
-export const Route = createFileRoute("/")({
-  component: Home,
-});
 
-function Home() {
+export default function StorefrontPage() {
   return (
     <main className="mx-auto flex min-h-[60vh] w-full max-w-2xl flex-col items-start justify-center gap-4 p-6">
       <h1 className="text-3xl font-semibold tracking-tight">Delysa Florist</h1>
