@@ -1,5 +1,6 @@
 import { Button } from "~/components/ui/button";
 import { cn } from "~/lib/utils";
+import { FcGoogle } from "react-icons/fc";
 
 function GoogleIcon() {
   return (
@@ -45,13 +46,13 @@ export function GoogleButton({ onClick, className }: GoogleButtonProps) {
       variant="outline"
       size="lg"
       onClick={handleClick}
-      aria-label="Masuk dengan Google (segera hadir)"
+      aria-label="Lanjut dengan Google (segera hadir)"
       className={cn(
-        "h-10 w-full rounded-xl border-[#d9e0d5] bg-white text-sm font-medium text-[#1c2420] hover:border-[#1e3a2a]/40 hover:bg-[#eef2ea]",
+        "h-11 cursor-pointer w-full rounded-xl border-[#E5E7EB] bg-[#FFFFFF] text-sm font-medium text-[#1A1A1A] hover:border-[#111111]/30 hover:bg-[#F8F9FA]",
         className,
       )}
     >
-      <GoogleIcon />
+      <FcGoogle size={32} />
       Lanjut dengan Google
     </Button>
   );

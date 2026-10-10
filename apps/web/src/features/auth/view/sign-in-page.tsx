@@ -1,64 +1,58 @@
 import { Link } from "@tanstack/react-router";
-import { Leaf } from "lucide-react";
 import { FieldSeparator } from "~/components/ui/field";
 import { GoogleButton } from "~/features/auth/components/google-button";
 import { LoginForm } from "~/features/auth/components/login-form";
-import { LoginIllustration } from "~/features/auth/components/login-illustration";
+import { SigninShowcase } from "~/features/auth/components/signin-showcase";
 
 export default function SignInPage() {
   return (
-    <div className="grid h-dvh overflow-hidden bg-[#f6f3eb] text-[#1c2420] lg:grid-cols-[1fr_1fr]">
-      <section className="flex items-center justify-center overflow-y-auto px-6 py-3 sm:px-12 lg:overflow-hidden">
-        <div className="w-full max-w-[420px]">
-          <div className="flex items-center gap-2">
-            <span className="flex h-7 w-7 items-center justify-center rounded-lg bg-[#1e3a2a] text-[#f6f3eb]">
-              <Leaf size={14} aria-hidden="true" />
-            </span>
-            <div className="leading-tight">
-              <p className="font-serif text-base tracking-tight">Delysa</p>
-              <p className="text-[10px] tracking-[0.18em] text-[#5c6b5e] uppercase">
-                Florist Store
-              </p>
-            </div>
-          </div>
-
-          <p className="mt-3 text-[11px] font-medium tracking-[0.2em] text-[#7a8a7c] uppercase">
-            Masuk ke studio bunga
+    <div className="grid min-h-dvh bg-[#FFFFFF] text-[#1A1A1A] lg:grid-cols-[1fr_1fr]">
+      <section className="flex items-center justify-center px-6 py-10 sm:px-12 lg:py-6">
+        <div className="w-full max-w-[440px]">
+          <p className="inline-flex items-center gap-2 rounded-full border border-[#E5E7EB] bg-[#FFFFFF] px-3.5 py-1.5 text-[11px] font-semibold tracking-[0.14em] text-[#1A1A1A]">
+            <span
+              aria-hidden="true"
+              className="h-1.5 w-1.5 rounded-full bg-[#111111]"
+            />
+            PORTAL PELANGGAN &amp; ATELIER
           </p>
-          <h1 className="mt-1 font-serif text-[clamp(1.35rem,1rem+1vw,1.65rem)] leading-[1.12] tracking-tight text-balance">
-            Selamat datang kembali ke kebun kami.
+          <h1 className="mt-4 text-[clamp(1.9rem,1.4rem+1.5vw,2.5rem)] leading-[1.1] font-semibold tracking-tight text-balance">
+            Selamat Datang Kembali
           </h1>
-          <p className="mt-1 max-w-[40ch] text-xs leading-snug text-[#4a5750]">
-            Masuk untuk merangkai pesanan, melacak buket, dan menyimpan
-            favoritmu.
+          <p className="mt-2 max-w-[44ch] text-sm leading-relaxed text-[#6B7280]">
+            Masuk untuk melanjutkan pesanan buket eksklusif Anda atau kelola
+            status pengiriman.
           </p>
 
-          <div className="mt-2.5">
+          <div className="mt-6">
             <GoogleButton />
           </div>
 
-          <div className="my-2">
-            <FieldSeparator className="text-xs text-[#8a978c]">
-              atau lanjut dengan email
+          <div className="my-5">
+            <FieldSeparator className="text-[11px] font-medium tracking-[0.12em] text-[#9CA3AF]">
+              ATAU LANJUT DENGAN EMAIL
             </FieldSeparator>
           </div>
 
           <LoginForm />
 
-          <p className="mt-2 text-center text-xs text-[#5c6b5e]">
-            Baru di Delysa?{" "}
+          <p className="mt-6 text-center text-sm text-[#6B7280]">
+            Baru pertama kali di Delysa Florist?{" "}
             <Link
               to="/sign-up"
-              className="font-semibold text-[#1e3a2a] underline decoration-[#c2704e] decoration-2 underline-offset-4 hover:text-[#2a4d38]"
+              className="font-semibold text-[#FF6B35] hover:text-[#E55A24]"
             >
-              Buat akun
+              Buat Akun Baru
             </Link>
           </p>
         </div>
       </section>
 
-      <aside className="relative hidden overflow-hidden lg:block">
-        <LoginIllustration />
+      <aside className="relative hidden p-4 lg:block">
+        <SigninShowcase
+          imageSrc="https://images.unsplash.com/photo-1490750967868-88aa4486c946?q=80&w=1200&auto=format&fit=crop"
+          imageAlt="Buket mawar putih dan peach di vas hitam"
+        />
       </aside>
     </div>
   );
