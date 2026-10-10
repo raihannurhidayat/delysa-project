@@ -176,6 +176,20 @@ Urutan: Task 1 → Task 2 → Task 3 (sekuensial; Task 3 butuh manusia untuk kli
 - R3 URL file belum ada (MED): placeholder eksplisit; docs final setelah URL diterima.
 - R4 drift skema v2 (LOW): pin skema v1 + floor CLI 1.18 di Global Constraints.
 
+## Adendum verifikasi 3 (2026-10-10 — DESKTOP PATH DEAD END)
+
+- Figma Desktop v126.10.7: menu Preferences lengkap TIDAK memuat
+  `Enable Dev Mode MCP Server`; panel Dev Mode hanya menampilkan daftar
+  Clients (Warp) + dialog integrasi yang semuanya menunjuk ke endpoint
+  remote `https://mcp.figma.com/mcp` (tetap butuh OAuth katalog).
+- Probe lokal (`netstat` + `curl POST :3845/mcp`): tidak ada listener —
+  server localhost tidak berjalan dan tidak ada cara menyalakannya
+  di versi ini. Kemungkinan: dihapus di versi baru dan/atau gate seat.
+- File desain "Desain Delysa E-Commerce" terkonfirmasi ada
+  (sign-in, sign-up, Home, Katalog, Detail, Keranjang, Checkout, Pembayaran).
+- Status: remote GAGAL (allowlist), desktop TIDAK TERSEDIA → keputusan
+  jalur alternatif menunggu user (lihat bawah).
+
 ## Adendum verifikasi 2 (2026-10-09 — R1 TERKONFIRMASI, remote GAGAL)
 
 - Gejala user: `opencode mcp auth figma` → browser menampilkan
