@@ -16,13 +16,14 @@ import {
   type RegisterFormValues,
 } from "~/features/auth/schemas/register-form-schema";
 import { useRegister } from "~/features/auth/hooks/use-register";
+import { Link } from "@tanstack/react-router";
 
 type RegisterFormProps = {
   onSuccess?: () => void;
 };
 
 const inputClassName =
-  "h-10 rounded-xl border-[#E5E7EB] bg-[#FFFFFF] px-3.5 text-sm placeholder:text-[#9CA3AF] focus-visible:border-[#111111] focus-visible:ring-[#111111]/15 aria-invalid:border-[#DC2626] aria-invalid:ring-1 aria-invalid:ring-[#DC2626]/15";
+  "h-9 rounded-xl border-[#E5E7EB] bg-[#FFFFFF] px-3.5 text-sm placeholder:text-[#9CA3AF] focus-visible:border-[#111111] focus-visible:ring-[#111111]/15 aria-invalid:border-[#DC2626] aria-invalid:ring-1 aria-invalid:ring-[#DC2626]/15";
 
 function RequiredMark() {
   return (
@@ -64,9 +65,9 @@ export function RegisterForm({ onSuccess }: RegisterFormProps) {
     <form
       onSubmit={form.handleSubmit(onSubmit)}
       noValidate
-      className="flex w-full flex-col gap-1.5"
+      className="flex w-full flex-col gap-1"
     >
-      <FieldGroup className="gap-1.5">
+      <FieldGroup className="gap-0.5">
         <Controller
           name="name"
           control={form.control}
@@ -184,31 +185,31 @@ export function RegisterForm({ onSuccess }: RegisterFormProps) {
         type="submit"
         size="lg"
         disabled={isSubmitting}
-        className="h-11 w-full cursor-pointer rounded-xl bg-[#111111] text-sm font-semibold text-[#FFFFFF] hover:bg-[#2A2A2A] active:translate-y-px"
+        className="h-10 w-full cursor-pointer rounded-xl bg-[#111111] text-sm font-semibold text-[#FFFFFF] hover:bg-[#2A2A2A] active:translate-y-px"
       >
         {isSubmitting ? "Mendaftarkan..." : "Buat Akun Sekarang"}
         {!isSubmitting ? <ArrowRight size={16} aria-hidden="true" /> : null}
       </Button>
 
-      <p className="text-center text-xs leading-relaxed text-[#6B7280]">
+      <p className="text-center text-[9px] leading-relaxed text-[#6B7280]">
         Dengan mendaftar, Anda menyetujui{" "}
-        <a
-          href="#"
+        <Link
+          to="/"
           onClick={(e) => e.preventDefault()}
           aria-label="Syarat dan Ketentuan (segera hadir)"
           className="font-medium text-[#1A1A1A] underline underline-offset-2 hover:text-[#111111]"
         >
           Syarat &amp; Ketentuan
-        </a>{" "}
+        </Link>{" "}
         serta{" "}
-        <a
-          href="#"
+        <Link
+          to="/"
           onClick={(e) => e.preventDefault()}
           aria-label="Kebijakan Privasi (segera hadir)"
           className="font-medium text-[#1A1A1A] underline underline-offset-2 hover:text-[#111111]"
         >
           Kebijakan Privasi
-        </a>{" "}
+        </Link>{" "}
         Delysa Florist.
       </p>
     </form>

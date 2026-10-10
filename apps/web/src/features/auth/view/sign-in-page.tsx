@@ -6,9 +6,9 @@ import { SigninShowcase } from "~/features/auth/components/signin-showcase";
 export default function SignInPage() {
   return (
     <div className="grid min-h-dvh bg-[#FFFFFF] text-[#1A1A1A] lg:h-dvh lg:grid-cols-[1fr_1fr] lg:overflow-hidden">
-      <section className="flex items-center justify-center px-6 py-6 sm:px-12 lg:overflow-hidden lg:py-4">
+      <section className="flex items-center justify-center px-6 py-6 sm:px-12 lg:overflow-y-auto lg:py-4">
         <div className="w-full max-w-[440px]">
-          <p className="inline-flex items-center gap-2 rounded-full border border-[#E5E7EB] bg-[#FFFFFF] px-3 py-1 text-[10px] font-semibold tracking-[0.14em] text-[#1A1A1A]">
+          <p className="inline-flex items-center gap-2 rounded-full border border-[#E5E7EB] bg-[#FFFFFF] px-3 py-1 text-[8px] font-semibold tracking-[0.14em] text-[#1A1A1A]">
             <span
               aria-hidden="true"
               className="h-1.5 w-1.5 rounded-full bg-[#FF6B35] animate-pulse"
@@ -23,7 +23,7 @@ export default function SignInPage() {
           </p>
 
           <div className="mt-4">
-            <GoogleButton />
+            <GoogleButton>Masuk Dengan Google</GoogleButton>
           </div>
 
           <div className="my-3 flex items-center gap-3">

@@ -1,5 +1,5 @@
 import { cn } from "~/lib/utils";
-import { getPasswordStrength } from "~/features/auth/components/password-strength";
+import { getPasswordStrength } from "~/lib/password-strength";
 
 type PasswordStrengthMeterProps = {
   password: string;
@@ -26,7 +26,7 @@ export function PasswordStrengthMeter({
           />
         ))}
       </div>
-      <div className="mt-1 flex items-center justify-between">
+      <div className="mt-0.5 flex items-center justify-between">
         <span className="text-[11px] text-[#6B7280]">Keamanan Sandi</span>
         <span
           aria-live="polite"
