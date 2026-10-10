@@ -1,0 +1,2 @@
+# Generated — jangan format manual. Sumber: openapi.yaml via `pnpm gen:types`.
+src/types.gen.ts

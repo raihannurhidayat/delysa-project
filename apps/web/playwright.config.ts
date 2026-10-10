@@ -8,7 +8,7 @@ export default defineConfig({
       process.env.QUERY_EXAMPLE_PRODUCTION === '1'
         ? 'PORT=3110 pnpm start'
         : 'pnpm dev --port 3110',
-    url: 'http://localhost:3110/preferences',
+    url: 'http://localhost:3110/',
     timeout: 120_000,
   },
 })

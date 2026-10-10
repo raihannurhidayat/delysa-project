@@ -1,6 +1,6 @@
-# TanStack Start - Basic React Query Example
+# Delysa Florist — Web (TanStack Start)
 
-A TanStack Start example demonstrating integration with TanStack Query (React Query).
+Aplikasi web Delysa Florist berbasis TanStack Start + Router + Query + Tailwind + shadcn/ui. Route demo bawaan starter pack (deferred, preferences, pathless/nested) sudah dibersihkan; rute aktif: `/`, `/sign-in`, `/sign-up`.
 
 - [TanStack Router Docs](https://tanstack.com/router)
 - [TanStack Query Docs](https://tanstack.com/query)
@@ -43,7 +43,7 @@ This example demonstrates how to use TanStack Query with TanStack Start for:
 
 ## SSR and mutation checks
 
-Read the [Start + TanStack Query guide](https://tanstack.com/start/latest/docs/framework/react/guide/tanstack-query). The `/preferences` page stores a harmless display name in a cookie, so its tests need no account or external API. This cookie is not authentication. The other post/user examples use JSONPlaceholder.
+Read the [Start + TanStack Query guide](https://tanstack.com/start/latest/docs/framework/react/guide/tanstack-query). Route demo `/preferences` (cookie display-name) dan `/deferred` sudah dihapus beserta `tests/preferences.spec.ts`; pola SSR + serverFn yang sama akan dipakai ulang saat membangun fitur Delysa (katalog/keranjang/checkout).
 
 ```sh
 pnpm exec playwright install chromium
