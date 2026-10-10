@@ -48,11 +48,11 @@ export function GoogleButton({ onClick, className }: GoogleButtonProps) {
       onClick={handleClick}
       aria-label="Lanjut dengan Google (segera hadir)"
       className={cn(
-        "h-11 cursor-pointer w-full rounded-xl border-[#E5E7EB] bg-[#FFFFFF] text-sm font-medium text-[#1A1A1A] hover:border-[#111111]/30 hover:bg-[#F8F9FA]",
+        "h-10 cursor-pointer w-full rounded-xl border-[#E5E7EB] bg-[#FFFFFF] text-sm font-medium text-[#1A1A1A] hover:border-[#111111]/30 hover:bg-[#F8F9FA]",
         className,
       )}
     >
-      <FcGoogle size={32} />
+      <FcGoogle size={20} />
       Lanjut dengan Google
     </Button>
   );

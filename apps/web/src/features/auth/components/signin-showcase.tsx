@@ -19,7 +19,7 @@ export function SigninShowcase({ imageSrc, imageAlt }: SigninShowcaseProps) {
         className="absolute inset-0 bg-gradient-to-b from-black/55 via-black/25 to-black/75"
       />
 
-      <div className="absolute top-6 left-1/2 w-[min(420px,82%)] -translate-x-1/2 rounded-xl bg-[#FFFFFF]/95 p-4 text-[#1A1A1A] shadow-lg">
+      <div className="absolute top-4 left-1/2 w-[min(420px,82%)] -translate-x-1/2 rounded-xl bg-[#FFFFFF]/95 p-3 text-[#1A1A1A] shadow-lg">
         <div className="flex items-center justify-between gap-3">
           <p className="text-[11px] font-semibold tracking-[0.12em]">
             CURATED ARTISAN BOUQUET
@@ -40,7 +40,7 @@ export function SigninShowcase({ imageSrc, imageAlt }: SigninShowcaseProps) {
         </p>
       </div>
 
-      <div className="absolute bottom-44 left-6 w-[min(380px,72%)] rounded-xl bg-[#FFFFFF]/95 p-4 text-[#1A1A1A] shadow-lg">
+      <div className="absolute bottom-36 left-5 w-[min(380px,72%)] rounded-xl bg-[#FFFFFF]/95 p-3 text-[#1A1A1A] shadow-lg">
         <div className="flex items-center justify-between gap-3">
           <p className="text-[11px] font-semibold tracking-[0.12em]">
             INSTANT EXPRESS DELIVERY
@@ -59,8 +59,8 @@ export function SigninShowcase({ imageSrc, imageAlt }: SigninShowcaseProps) {
         </p>
       </div>
 
-      <blockquote className="absolute right-6 bottom-6 left-6 border-l-2 border-white/40 pl-4">
-        <p className="text-sm leading-relaxed text-white italic">
+      <blockquote className="absolute right-5 bottom-5 left-5 border-l-2 border-white/40 pl-4">
+        <p className="text-[13px] leading-snug text-white italic">
           “Mewujudkan setiap ungkapan kasih, kelulusan, dan momen bermakna
           dengan rangkaian flora berkualitas istimewa.”
         </p>

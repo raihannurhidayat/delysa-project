@@ -6,10 +6,11 @@
       "url": "https://mcp.linear.app/mcp",
       "enabled": true
     },
-    "figma": {
+    "figma-deskrop": {
       "type": "remote",
-      "url": "https://mcp.figma.com/mcp",
-      "enabled": true
+      "url": "http://127.0.0.1:3845/mcp",
+      "enabled": true,
+      "oauth": false
     }
   }
 }

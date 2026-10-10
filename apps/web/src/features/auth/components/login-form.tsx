@@ -22,8 +22,6 @@ type LoginFormProps = {
 
 export function LoginForm({ onSuccess }: LoginFormProps) {
   const [showPassword, setShowPassword] = useState(false);
-  // Visual-only: tidak masuk schema, tidak dipersist ke backend.
-  const [remember, setRemember] = useState(false);
   const { loginAsync, isPending, error: mutationError } = useLogin();
 
   const form = useForm<LoginFormValues>({
@@ -51,17 +49,17 @@ export function LoginForm({ onSuccess }: LoginFormProps) {
     <form
       onSubmit={form.handleSubmit(onSubmit)}
       noValidate
-      className="flex w-full flex-col gap-2"
+      className="flex w-full flex-col gap-1.5"
     >
       <FieldGroup className="gap-2">
         <Controller
           name="email"
           control={form.control}
           render={({ field, fieldState }) => (
-            <Field data-invalid={fieldState.invalid} className="gap-1">
+            <Field data-invalid={fieldState.invalid} className="gap-0.5">
               <FieldLabel
                 htmlFor="login-email"
-                className="text-sm font-medium text-[#1A1A1A]"
+                className="text-[13px] font-medium text-[#1A1A1A]"
               >
                 Email{" "}
                 <span aria-hidden="true" className="text-[#FF6B35]">
@@ -75,17 +73,16 @@ export function LoginForm({ onSuccess }: LoginFormProps) {
                 autoComplete="email"
                 placeholder="contoh: nama@domain.com"
                 aria-invalid={fieldState.invalid}
-                className="h-11 rounded-xl border-[#E5E7EB] bg-[#FFFFFF] px-3.5 text-sm placeholder:text-[#9CA3AF] focus-visible:border-[#111111] focus-visible:ring-[#111111]/15 aria-invalid:border-[#DC2626] aria-invalid:ring-1 aria-invalid:ring-[#DC2626]/15"
+                className="h-10 rounded-xl border-[#E5E7EB] bg-[#FFFFFF] px-3.5 text-sm placeholder:text-[#9CA3AF] focus-visible:border-[#111111] focus-visible:ring-[#111111]/15 aria-invalid:border-[#DC2626] aria-invalid:ring-1 aria-invalid:ring-[#DC2626]/15"
               />
-              <p className="text-xs leading-relaxed text-[#9CA3AF]">
-                Wajib diisi dengan format email valid (maks. 255 karakter).
-              </p>
-              {fieldState.invalid && (
-                <FieldError
-                  errors={[fieldState.error]}
-                  className="text-[11px] leading-tight"
-                />
-              )}
+              <div className="min-h-[14px]">
+                {fieldState.invalid && (
+                  <FieldError
+                    errors={[fieldState.error]}
+                    className="text-[11px] leading-tight"
+                  />
+                )}
+              </div>
             </Field>
           )}
         />
@@ -94,11 +91,11 @@ export function LoginForm({ onSuccess }: LoginFormProps) {
           name="password"
           control={form.control}
           render={({ field, fieldState }) => (
-            <Field data-invalid={fieldState.invalid} className="gap-1">
+            <Field data-invalid={fieldState.invalid} className="gap-0.5">
               <div className="flex items-baseline justify-between">
                 <FieldLabel
                   htmlFor="login-password"
-                  className="text-sm font-medium text-[#1A1A1A]"
+                  className="text-[13px] font-medium text-[#1A1A1A]"
                 >
                   Kata Sandi{" "}
                   <span aria-hidden="true" className="text-[#FF6B35]">
@@ -122,7 +119,7 @@ export function LoginForm({ onSuccess }: LoginFormProps) {
                   autoComplete="current-password"
                   placeholder="Masukkan kata sandi akun"
                   aria-invalid={fieldState.invalid}
-                  className="h-11 rounded-xl border-[#E5E7EB] bg-[#FFFFFF] pr-10 pl-3.5 text-sm placeholder:text-[#9CA3AF] focus-visible:border-[#111111] focus-visible:ring-[#111111]/15 aria-invalid:border-[#DC2626] aria-invalid:ring-1 aria-invalid:ring-[#DC2626]/15"
+                  className="h-10 rounded-xl border-[#E5E7EB] bg-[#FFFFFF] pr-10 pl-3.5 text-sm placeholder:text-[#9CA3AF] focus-visible:border-[#111111] focus-visible:ring-[#111111]/15 aria-invalid:border-[#DC2626] aria-invalid:ring-1 aria-invalid:ring-[#DC2626]/15"
                 />
                 <button
                   type="button"
@@ -135,61 +132,24 @@ export function LoginForm({ onSuccess }: LoginFormProps) {
                   {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
                 </button>
               </div>
-              <p className="text-xs leading-relaxed text-[#9CA3AF]">
-                Minimal 8 karakter. Mendukung autofill &amp; password manager.
-              </p>
-              {fieldState.invalid && (
-                <FieldError
-                  errors={[fieldState.error]}
-                  className="text-[11px] leading-tight"
-                />
-              )}
+              <div className="min-h-[14px]">
+                {fieldState.invalid && (
+                  <FieldError
+                    errors={[fieldState.error]}
+                    className="text-[11px] leading-tight"
+                  />
+                )}
+              </div>
             </Field>
           )}
         />
       </FieldGroup>
 
-      <div className="mt-1 flex items-center gap-2.5">
-        <input
-          id="login-remember"
-          type="checkbox"
-          checked={remember}
-          onChange={(e) => setRemember(e.target.checked)}
-          className="h-4 w-4 shrink-0 cursor-pointer rounded border-[#D1D5DB] accent-[#111111]"
-        />
-        <label
-          htmlFor="login-remember"
-          className="cursor-pointer text-sm text-[#1A1A1A]"
-        >
-          Ingat saya di perangkat ini
-        </label>
-      </div>
-
-      <div aria-live="polite">
-        {rootError ? (
-          <div
-            role="alert"
-            className="rounded-xl border border-[#DC2626]/30 bg-[#DC2626]/10 px-3.5 py-1.5 text-xs leading-snug text-[#991B1B]"
-          >
-            {rootError}. Periksa kembali dan coba lagi.
-          </div>
-        ) : null}
-
-        {form.formState.isSubmitSuccessful && !rootError ? (
-          <div
-            role="status"
-            className="rounded-xl border border-[#22C55E]/30 bg-[#22C55E]/10 px-3.5 py-1.5 text-xs text-[#15803D]"
-          >
-            Berhasil masuk (mock). Menyiapkan pesananmu...
-          </div>
-        ) : null}
-      </div>
-
       <Button
         type="submit"
         size="lg"
         disabled={isSubmitting}
-        className="h-12 w-full rounded-xl bg-[#111111] text-sm font-semibold text-[#FFFFFF] hover:bg-[#2A2A2A] active:translate-y-px"
+        className="h-11 cursor-pointer w-full rounded-xl bg-[#111111] text-sm font-semibold text-[#FFFFFF] hover:bg-[#2A2A2A] active:translate-y-px"
       >
         {isSubmitting ? "Merangkai..." : "Masuk ke Akun"}
         {!isSubmitting ? <ArrowRight size={16} aria-hidden="true" /> : null}
