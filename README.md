@@ -1,168 +1,56 @@
-# Delysa Florist — E-Commerce Buket & Rangkaian Bunga
+# Delysa Florist — Monorepo Opsi A
 
-## Tentang Proyek Ini
+E-commerce terintegrasi (katalog, keranjang, checkout, stok real-time, laporan) untuk Delysa Florist.
+Spec penuh: `PRD-Delysa-Florist.md`. Proposal akademik: `Capstone Project Delysa Florist.docx`.
 
-**Delysa Florist** adalah aplikasi e-commerce untuk toko bunga **Delysa Florist (Kota Tasikmalaya)**.
-Pelanggan bisa memesan buket eksklusif dan melacak pengiriman, sedangkan atelier mengelola
-katalog, stok, dan laporan — semuanya dalam satu kontrak API tunggal.
-
-Proyek Capstone Semester 7 Informatika. Spec penuh: `docs/prd/PRD-Delysa-Florist.md`.
-
-> **Demo frontend:** <https://delysaflorist-kota-tasikmalaya.vercel.app/>
-> Rute aktif: `/` (landing), `/sign-in`, `/sign-up`.
-
-## Teknologi
-
-| Bagian | Isi |
-|---|---|
-| **Frontend** (`apps/web`) | TanStack Start + React + Tailwind CSS + shadcn/ui |
-| **Backend** (`apps/api`) | Laravel 11 REST API + MySQL — *planned, belum di-scaffold* |
-| **Kontrak bersama** (`packages/shared`) | `openapi.yaml` + Zod schemas (satu sumber kebenaran FE ↔ BE) |
-| **Tooling** | pnpm workspaces, TypeScript, Playwright (e2e), Prettier, GitHub Actions + Vercel |
-
-<details>
-<summary>Detail versi (klik untuk buka)</summary>
-
-| Lapisan | Teknologi | Versi |
-|---|---|---|
-| Runtime / package manager | Node.js (`./.nvmrc`), pnpm workspaces | Node 20, pnpm 9 |
-| Web (`apps/web`) | TanStack Start + Router + Query (SSR) | Start 1.168, Router 1.170, Query 5.102 |
-| Bahasa | TypeScript + React | React 19 |
-| UI | Tailwind CSS, shadcn/ui di atas Base UI, lucide-react + react-icons, Inter Variable | Tailwind 4.2.2, Base UI 1.8 |
-| Form & validasi | React Hook Form + Zod (`@hookform/resolvers`) | RHF 7.62, Zod 3.23.8 |
-| HTTP client | redaxios | 0.5.1 |
-| Kontrak (`packages/shared`) | `openapi.yaml` + `openapi-typescript` + Zod | openapi-typescript 7.4 |
-| Kualitas | Prettier, Playwright (e2e), `node --test` (shared) | Playwright 1.61, Prettier 3.3.3 |
-| CI/CD | GitHub Actions (`web`, `api` paralel) + Vercel (frontend) | — |
-
-Aturan dependency: `web → shared ← api`. Dilarang cyclic.
-
-</details>
-
-## Struktur Proyek
+## Struktur (pnpm workspaces, TANPA Turborepo)
 
 ```text
-apps/web/         Frontend TanStack Start (rute: /, /sign-in, /sign-up)
-apps/api/         (planned) Laravel 11 REST API + MySQL — BELUM di-scaffold,
-                  disiapkan di VPS / laptop BE
-packages/shared/  Kontrak tunggal: openapi.yaml + types.gen.ts + Zod schemas
-.github/          CI 2 job paralel (web, api) + CODEOWNERS
-docs/prd/         PRD + proposal akademik
+apps/web/         TanStack Start + Router + Query + Tailwind + shadcn/ui + Better Auth (:3000)
+apps/api/         Laravel 13 headless REST API + sqlite dev (Composer-only, :8000, deploy di VPS)
+packages/shared/  Kontrak tunggal: openapi.yaml + generated types + Zod schemas
+.github/          CI job paralel (web, api) + CODEOWNERS
 docs/specs/       Spec per fase
 ```
 
-## Cara Menjalankan
+Aturan deps: `web → shared ← api`. Dilarang cyclic. Kontrak API = `packages/shared/openapi.yaml`.
 
-### 1. Prasyarat
-
-- **Node.js 20** (lihat `.nvmrc`, disarankan pakai nvm/fnm)
-- **pnpm 9** (`packageManager: pnpm@9.0.0` di `package.json` root — jika `pnpm` tidak dikenal, jalankan `corepack enable`)
-- Backend Laravel butuh mesin terpisah (PHP 8.2+ + Composer) — **frontend bisa jalan tanpanya** (auth masih mock).
-
-### 2. Install dependency di mana? Cukup di root saja ✅
-
-Proyek ini memakai **pnpm workspaces** (`pnpm-workspace.yaml`: `apps/*` + `packages/*`) dengan
-**satu lockfile di root** (`shared-workspace-lockfile=true` di `.npmrc`).
-
-- ✅ Cukup jalankan `pnpm install` **sekali di folder root** — otomatis menginstall `apps/web` + `packages/shared` sekaligus.
-- ❌ **Tidak perlu** `npm install` / `pnpm install` manual di dalam `apps/web`.
-- Script sekali jalan tersedia di `package.json` root (`dev:web`, `build`, `gen:types`, `typecheck`), jadi semua perintah dijalankan dari root.
-
-### 3. Langkah setup (dari nol sampai jalan)
+## Cara jalan (laptop dev, Node 20 + pnpm 9)
 
 ```bash
-git clone <repo-url> delysa-project
-cd delysa-project
-
-pnpm install          # 1x di root, menginstall web + shared sekaligus
-pnpm gen:types        # generate types dari packages/shared/openapi.yaml
-
-cp apps/web/.env.example apps/web/.env   # Windows PowerShell: Copy-Item apps/web/.env.example apps/web/.env
-# lalu isi bila perlu (lihat bagian Environment di bawah)
-
-pnpm dev:web          # jalankan frontend dev (lihat URL di output terminal)
+pnpm install          # 1 lockfile di root (apps/api Composer-only, di luar graph pnpm)
+pnpm gen:types         # generate types dari openapi.yaml
+pnpm dev:web           # TanStack Start di apps/web → http://localhost:3000
+pnpm dev:api           # Laravel headless di apps/api → http://127.0.0.1:8000 (butuh PHP 8.3+composer)
+pnpm dev               # web + api paralel via concurrently (opsional; perintah terpisah cukup)
 ```
 
-> `pnpm dev` menjalankan web + api paralel, tapi saat ini `dev:api` hanya placeholder
-> (`apps/api` masih kosong) — untuk harian cukup pakai `pnpm dev:web`.
+| Layanan | Perintah | URL |
+|---|---|---|
+| Web (TanStack Start) | `pnpm dev:web` | http://localhost:3000 |
+| API (Laravel headless) | `pnpm dev:api` | http://127.0.0.1:8000 (`/api/v1/health`, `/api/v1/products`) |
 
-### 4. Environment
+Catatan: API memakai Laravel 13 (spec Fase 0 menyebut 11 — API `install:api`/routing stabil, tanpa downgrade) dan sqlite untuk dev lokal; MySQL hanya di VPS/prod.
+
+`pnpm dev:api` butuh `php` di PATH. Bila error `PHP binary not found`, tambahkan PHP 8.3 ke PATH
+(mis. Laragon: `C:\laragon\bin\php\php-8.3.33-Win32-vs16-x64`) atau set `PHP_BIN` menunjuk ke `php.exe`
+(PowerShell: `$env:PHP_BIN="...php.exe"`; cmd: `set PHP_BIN=... && pnpm dev:api`).
+Kegagalan API tidak mematikan web pada `pnpm dev` (proses independen; exit code tetap non-nol).
+
+## Env
 
 ```bash
 cp apps/web/.env.example apps/web/.env
+cp apps/api/.env.example apps/api/.env   # di mesin yang ada PHP
 ```
 
-Isi `.env.example`:
-
-- `VITE_API_URL` — base URL API (default `http://localhost:8000/api`; nilai publik/mock, dibundel via `import.meta.env`)
-- `BETTER_AUTH_SECRET` — server-only, min 32 char random, **jangan commit nilai nyata**; di Vercel diset via Dashboard → Project → Settings → Environment Variables
-
-### 5. Perintah harian
-
-Jalankan dari **root**:
-
-| Perintah | Fungsi |
-|---|---|
-| `pnpm dev:web` | Dev server frontend |
-| `pnpm build` | Build production (`vite build && tsc --noEmit`) |
-| `pnpm typecheck` | Type-check semua workspace |
-| `pnpm lint` | Lint semua workspace |
-| `pnpm test` | Test semua workspace |
-| `pnpm gen:types` | Regenerate types dari `openapi.yaml` → `packages/shared/src/types.gen.ts` |
-
-Perintah langsung ke aplikasi web (setara, via `--filter`):
-
-```bash
-pnpm --filter client-web-delysa-florist dev           # dev server
-pnpm --filter client-web-delysa-florist build         # vite build && tsc --noEmit
-pnpm --filter client-web-delysa-florist exec tsc --noEmit   # typecheck
-pnpm --filter client-web-delysa-florist format:check  # prettier check (ts/tsx)
-pnpm --filter client-web-delysa-florist exec playwright install chromium  # sekali saja
-pnpm --filter client-web-delysa-florist test:e2e      # e2e (butuh dev server, lihat playwright.config.ts)
-```
-
-### 6. Troubleshooting
-
-| Gejala | Solusi |
-|---|---|
-| `pnpm: command not found` | Jalankan `corepack enable`, lalu `pnpm --version` (harus v9) |
-| Versi Node salah | Samakan ke Node 20 (`nvm use 20` / `fnm use 20`) sesuai `.nvmrc` |
-| Error saat `pnpm install` | Hapus `node_modules` + `pnpm-lock.yaml` **jangan dihapus** — cukup `pnpm install --force` dari root |
-| `.env` tidak terbaca | Pastikan file `apps/web/.env` ada (bukan hanya `.env.example`), lalu restart dev server |
-| Frontend jalan tapi data mock | Wajar — backend `apps/api` belum di-scaffold, auth masih mock di FE |
-| Playwright gagal (`browser not found`) | Jalankan `pnpm --filter client-web-delysa-florist exec playwright install chromium` sekali saja |
-
-## Fitur
-
-| Status | Fitur | Keterangan |
-|---|---|---|
-| Selesai | Landing `/` | Halaman utama + tautan auth |
-| Selesai | Sign-in `/sign-in` | Split-screen + showcase atelier, validasi Zod, mock login |
-| Selesai | Sign-up `/sign-up` | Mirror sign-in (ilustrasi kiri), meter kekuatan sandi real-time, mock register |
-| Rencana | Katalog | Daftar produk + pencarian + kategori (`productQuerySchema` tersedia) |
-| Rencana | Keranjang | State keranjang + sinkronisasi server |
-| Rencana | Checkout | Data penerima + alamat + catatan (`checkoutSchema` tersedia) |
-| Rencana | Auth backend | Login/register riil via `apps/api` (saat ini mock di FE) |
-| Rencana | Stok real-time | Sinkron stok atelier |
-| Rencana | Laporan | Ringkasan penjualan atelier |
-
-Skema `register`/`login`/`productQuery`/`checkout` sudah dimirror di
-`packages/shared/src/schemas.ts` sebagai kontrak tunggal FE ↔ BE.
-Ubah `openapi.yaml` → jalankan `pnpm gen:types` → sesuaikan Zod schema + FE/BE.
-
-## Konvensi Kontribusi
-
-- Branch: `feat/web-*`, `feat/api-*`, `chore/shared-*`.
-- Jangan ubah kontrak tanpa sinkronisasi (lihat paragraf di atas).
-- Jalankan `format:check` + `tsc --noEmit` + `build` sebelum push.
-- Jangan commit `.env` / secret / kredensial apa pun.
+Jangan commit `.env` berisi secret. `BETTER_AUTH_SECRET` min 32 char random.
 
 ## CI
 
-Push → GitHub Actions `.github/workflows/ci.yml` menjalankan job `web`
-(install + typecheck + build) dan job `api` (composer validate + test) secara
-independen. Job `api` di-skip bila hanya `apps/web/**` berubah via `paths-filter`.
+Push → GitHub Actions `ci.yml` menjalankan job `web` (install + typecheck + build) dan job `api`
+(composer validate + test) secara independen. Job `api` di-skip bila hanya `apps/web/**` berubah via `paths-filter`.
 
 ## Tim (Bab 4.3 proposal)
 
-- PM/Analyst, BE/DB, FE/UI, QA/Docs.
+- PM/Analyst, BE/DB, FE/UI, QA/Docs. Branch: `feat/web-*`, `feat/api-*`, `chore/shared-*`.
