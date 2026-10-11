@@ -27,7 +27,7 @@ export function HeroSection() {
             <Badge className="w-fit rounded-full bg-rose-600 text-white">
               {STOREFRONT_HERO.eyebrow}
             </Badge>
-            <h1 className="max-w-[16ch] text-3xl leading-tight font-extrabold tracking-tight text-balance sm:text-4xl">
+            <h1 className="max-w-[16ch] text-3xl leading-[1.12] font-extrabold tracking-tight text-balance sm:text-4xl">
               {STOREFRONT_HERO.title}
             </h1>
             <p className="max-w-[44ch] text-sm text-white/80">
