@@ -144,8 +144,13 @@ export function ShopHeader() {
           <span
             aria-hidden="true"
             style={indicator.style}
-            className={`absolute bottom-1 left-0 h-[2px] rounded-full bg-rose-600 transition-[transform,width,opacity] duration-300 ease-out motion-reduce:transition-none ${
-              indicator.ready ? "opacity-100" : "opacity-0"
+            // Transisi hanya dipasang setelah pengukuran pertama agar mount
+            // awal snap ke posisi (tidak slide dari kiri); navigasi berikut
+            // beranimasi dua arah dari posisi aktif terakhir.
+            className={`absolute bottom-1 left-0 h-[2px] rounded-full bg-rose-600 motion-reduce:transition-none ${
+              indicator.ready
+                ? "opacity-100 transition-[transform,width,opacity] duration-300 ease-out"
+                : "opacity-0"
             }`}
           />
           <span className="ml-auto hidden items-center gap-4 text-xs text-[#6B7280] lg:flex">

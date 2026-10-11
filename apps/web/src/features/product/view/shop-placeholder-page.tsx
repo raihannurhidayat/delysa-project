@@ -1,6 +1,4 @@
 import { Link } from "@tanstack/react-router";
-import { ShopFooter } from "~/features/product/components/shop-footer";
-import { ShopHeader } from "~/features/product/components/shop-header";
 
 export function ShopPlaceholderPage({
   title,
@@ -10,8 +8,6 @@ export function ShopPlaceholderPage({
   description: string;
 }) {
   return (
-    <>
-      <ShopHeader />
       <main className="mx-auto max-w-7xl px-4 py-16 sm:px-6">
         <div className="mx-auto max-w-md rounded-2xl border border-[#E5E7EB] bg-white p-8 text-center">
           <p className="text-xs font-semibold tracking-wide text-rose-600">
@@ -29,7 +25,5 @@ export function ShopPlaceholderPage({
           </Link>
         </div>
       </main>
-      <ShopFooter />
-    </>
   );
 }

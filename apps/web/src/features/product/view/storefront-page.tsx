@@ -8,8 +8,6 @@ import { InstagramStrip } from "~/features/product/components/instagram-strip";
 import { ProductCardSkeleton } from "~/features/product/components/product-card";
 import { ProductRail } from "~/features/product/components/product-rail";
 import { PromoBanner } from "~/features/product/components/promo-banner";
-import { ShopFooter } from "~/features/product/components/shop-footer";
-import { ShopHeader } from "~/features/product/components/shop-header";
 import { Testimonials } from "~/features/product/components/testimonials";
 import { TrustStrip } from "~/features/product/components/trust-strip";
 import { useStorefrontData } from "~/features/product/hooks/use-storefront-data";
@@ -18,28 +16,22 @@ export type StorefrontDemoState = "loading" | "empty" | "error";
 
 function StorefrontLoading() {
   return (
-    <>
-      <ShopHeader />
-      <main
-        className="mx-auto max-w-7xl px-4 pt-4 sm:px-6"
-        aria-label="Memuat storefront"
-      >
-        <div className="h-[320px] animate-pulse rounded-2xl bg-[#E5E7EB]" />
-        <div className="mt-8 grid grid-cols-2 gap-3 md:grid-cols-4">
-          {Array.from({ length: 8 }).map((_, i) => (
-            <ProductCardSkeleton key={i} />
-          ))}
-        </div>
-      </main>
-      <ShopFooter />
-    </>
+    <main
+      className="mx-auto max-w-7xl px-4 pt-4 sm:px-6"
+      aria-label="Memuat storefront"
+    >
+      <div className="h-[320px] animate-pulse rounded-2xl bg-[#E5E7EB]" />
+      <div className="mt-8 grid grid-cols-2 gap-3 md:grid-cols-4">
+        {Array.from({ length: 8 }).map((_, i) => (
+          <ProductCardSkeleton key={i} />
+        ))}
+      </div>
+    </main>
   );
 }
 
 function StorefrontError() {
   return (
-    <>
-      <ShopHeader />
       <main className="mx-auto max-w-7xl px-4 py-16 sm:px-6">
         <div
           role="alert"
@@ -61,8 +53,6 @@ function StorefrontError() {
           </Button>
         </div>
       </main>
-      <ShopFooter />
-    </>
   );
 }
 
@@ -81,8 +71,6 @@ export default function StorefrontPage({
     list.filter((p) => p.category === category);
 
   return (
-    <>
-      <ShopHeader />
       <main className="pb-4">
         <HeroSection />
         <CategoryGrid />
@@ -129,7 +117,5 @@ export default function StorefrontPage({
         <InstagramStrip />
         <FaqSection />
       </main>
-      <ShopFooter />
-    </>
   );
 }
