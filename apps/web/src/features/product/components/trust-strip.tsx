@@ -1,0 +1,37 @@
+import { Clock, Headset, ShieldCheck, Truck } from "lucide-react";
+import { STOREFRONT_TRUST } from "~/features/product/data/storefront";
+
+const ICONS = [Clock, Truck, ShieldCheck, Headset];
+
+export function TrustStrip() {
+  return (
+    <section
+      aria-label="Keunggulan toko"
+      className="mx-auto max-w-7xl px-4 pt-6 sm:px-6"
+    >
+      <ul className="grid grid-cols-2 gap-3 lg:grid-cols-4">
+        {STOREFRONT_TRUST.map((item, i) => {
+          const Icon = ICONS[i % ICONS.length];
+          return (
+            <li
+              key={item.title}
+              className="flex items-center gap-2.5 rounded-xl border border-[#E5E7EB] bg-white px-3 py-2.5"
+            >
+              <span className="flex size-9 shrink-0 items-center justify-center rounded-full bg-[#FFF3ED] text-[#FF6B35]">
+                <Icon size={18} aria-hidden="true" />
+              </span>
+              <span>
+                <span className="block text-xs font-bold text-[#1A1A1A]">
+                  {item.title}
+                </span>
+                <span className="block text-[11px] text-[#6B7280]">
+                  {item.subtitle}
+                </span>
+              </span>
+            </li>
+          );
+        })}
+      </ul>
+    </section>
+  );
+}
