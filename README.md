@@ -32,6 +32,11 @@ pnpm dev               # web + api paralel via concurrently (opsional; perintah 
 
 Catatan: API memakai Laravel 13 (spec Fase 0 menyebut 11 — API `install:api`/routing stabil, tanpa downgrade) dan sqlite untuk dev lokal; MySQL hanya di VPS/prod.
 
+`pnpm dev:api` butuh `php` di PATH. Bila error `PHP binary not found`, tambahkan PHP 8.3 ke PATH
+(mis. Laragon: `C:\laragon\bin\php\php-8.3.33-Win32-vs16-x64`) atau set `PHP_BIN` menunjuk ke `php.exe`
+(PowerShell: `$env:PHP_BIN="...php.exe"`; cmd: `set PHP_BIN=... && pnpm dev:api`).
+Kegagalan API tidak mematikan web pada `pnpm dev` (proses independen; exit code tetap non-nol).
+
 ## Env
 
 ```bash
