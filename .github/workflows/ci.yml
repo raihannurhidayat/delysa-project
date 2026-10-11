@@ -77,13 +77,16 @@ jobs:
     needs: changes
     if: needs.changes.outputs.api == 'true'
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: apps/api
     steps:
       - uses: actions/checkout@v4
       - uses: shivammathur/setup-php@v2
-        with: { php-version: '8.2' }
-      - run: composer validate --working-dir=apps/api
-      - run: composer install --working-dir=apps/api --no-interaction --prefer-dist
-      - run: php apps/api/vendor/bin/phpunit --version || echo "phpunit will run with tests in Fase 1+"
+        with: { php-version: '8.3' }
+      - run: composer validate
+      - run: composer install --no-interaction --prefer-dist
+      - run: php artisan test --compact
 
   quality-gate:
     if: always()

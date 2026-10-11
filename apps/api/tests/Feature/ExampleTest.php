@@ -1,7 +1,7 @@
 <?php
 
-test('returns a successful response', function () {
-    $response = $this->get(route('home'));
-
-    $response->assertOk();
+test('returns api identifier from web root', function () {
+    $this->get('/')
+        ->assertOk()
+        ->assertExactJson(['service' => 'delysa-api']);
 });

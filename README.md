@@ -6,10 +6,10 @@ Spec penuh: `PRD-Delysa-Florist.md`. Proposal akademik: `Capstone Project Delysa
 ## Struktur (pnpm workspaces, TANPA Turborepo)
 
 ```text
-apps/web/         TanStack Start + Router + Query + Tailwind + shadcn/ui + Better Auth
-apps/api/         Laravel 11 REST API + MySQL (placeholder siap-composer, deploy di VPS)
+apps/web/         TanStack Start + Router + Query + Tailwind + shadcn/ui + Better Auth (:3000)
+apps/api/         Laravel 13 headless REST API + sqlite dev (Composer-only, :8000, deploy di VPS)
 packages/shared/  Kontrak tunggal: openapi.yaml + generated types + Zod schemas
-.github/          CI 2 job paralel (web, api) + CODEOWNERS
+.github/          CI job paralel (web, api) + CODEOWNERS
 docs/specs/       Spec per fase
 ```
 
@@ -18,12 +18,19 @@ Aturan deps: `web → shared ← api`. Dilarang cyclic. Kontrak API = `packages/
 ## Cara jalan (laptop dev, Node 20 + pnpm 9)
 
 ```bash
-pnpm install          # 1 lockfile di root
+pnpm install          # 1 lockfile di root (apps/api Composer-only, di luar graph pnpm)
 pnpm gen:types         # generate types dari openapi.yaml
-pnpm dev:web           # TanStack Start (Vite) di apps/web
-# API Laravel jalan di VPS / laptop BE yang ada PHP 8.2+composer (lihat apps/api/README.md)
-pnpm dev               # web + api paralel (butuh concurrently + PHP di mesin yang sama)
+pnpm dev:web           # TanStack Start di apps/web → http://localhost:3000
+pnpm dev:api           # Laravel headless di apps/api → http://127.0.0.1:8000 (butuh PHP 8.3+composer)
+pnpm dev               # web + api paralel via concurrently (opsional; perintah terpisah cukup)
 ```
+
+| Layanan | Perintah | URL |
+|---|---|---|
+| Web (TanStack Start) | `pnpm dev:web` | http://localhost:3000 |
+| API (Laravel headless) | `pnpm dev:api` | http://127.0.0.1:8000 (`/api/v1/health`, `/api/v1/products`) |
+
+Catatan: API memakai Laravel 13 (spec Fase 0 menyebut 11 — API `install:api`/routing stabil, tanpa downgrade) dan sqlite untuk dev lokal; MySQL hanya di VPS/prod.
 
 ## Env
 
