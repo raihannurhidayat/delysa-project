@@ -2,9 +2,9 @@ import { useState } from "react";
 import { ChevronDown } from "lucide-react";
 import { Button } from "~/components/ui/button";
 import {
-  ProductCard,
+  CardProduct,
   ProductCardSkeleton,
-} from "~/features/shop/components/storefront/product-card";
+} from "~/features/shop/components/card-product";
 import { SectionHeader } from "~/features/shop/components/storefront/section-header";
 import type { Product } from "~/features/shop/types";
 import { cn } from "~/lib/utils";
@@ -84,7 +84,7 @@ export function ProductRail({
       ) : (
         <div className="grid grid-cols-2 gap-3 md:grid-cols-4">
           {visible.map((product) => (
-            <ProductCard key={product.id} product={product} />
+            <CardProduct key={product.id} item={product} variant="default" />
           ))}
         </div>
       )}

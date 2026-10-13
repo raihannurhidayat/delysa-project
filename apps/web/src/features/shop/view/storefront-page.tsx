@@ -5,7 +5,7 @@ import { FaqSection } from "~/features/shop/components/storefront/faq-section";
 import { FlashSaleSection } from "~/features/shop/components/storefront/flash-sale-section";
 import { HeroSection } from "~/features/shop/components/storefront/hero-section";
 import { InstagramStrip } from "~/features/shop/components/storefront/instagram-strip";
-import { ProductCardSkeleton } from "~/features/shop/components/storefront/product-card";
+import { ProductCardSkeleton } from "~/features/shop/components/card-product";
 import { ProductRail } from "~/features/shop/components/storefront/product-rail";
 import { PromoBanner } from "~/features/shop/components/storefront/promo-banner";
 import { Testimonials } from "~/features/shop/components/storefront/testimonials";

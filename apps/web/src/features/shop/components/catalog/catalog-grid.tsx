@@ -1,7 +1,9 @@
 import { SearchX } from "lucide-react";
 import { Button } from "~/components/ui/button";
-import { ProductCardSkeleton } from "~/features/shop/components/storefront/product-card";
-import { CatalogCard } from "~/features/shop/components/catalog/catalog-card";
+import {
+  CardProduct,
+  ProductCardSkeleton,
+} from "~/features/shop/components/card-product";
 import type { CatalogItem } from "~/features/shop/types";
 
 /**
@@ -62,7 +64,7 @@ export function CatalogGrid({
   return (
     <div className="grid grid-cols-2 gap-3 md:grid-cols-3 xl:grid-cols-4">
       {items.map((item) => (
-        <CatalogCard key={item.id} item={item} />
+        <CardProduct key={item.id} item={item} variant="catalog" />
       ))}
     </div>
   );

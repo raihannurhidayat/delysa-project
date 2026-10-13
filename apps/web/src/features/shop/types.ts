@@ -46,6 +46,30 @@ export type CatalogItem = Product & {
   badge?: string;
 };
 
+/**
+ * Bentuk produk seragam untuk `CardProduct` (sumber: `src/mock/products.json`).
+ * Semua field varian opsional sehingga `Product` maupun `CatalogItem`
+ * assignable tanpa mapping.
+ */
+export type UnifiedProduct = {
+  id: string;
+  slug: string;
+  name: string;
+  price: number;
+  image: string;
+  rating: number;
+  sold: number;
+  category: string;
+  isNew?: boolean;
+  originalPrice?: number;
+  discountPercent?: number;
+  stockLeft?: number;
+  stockTotal?: number;
+  stock?: number;
+  reviewCount?: number;
+  badge?: string;
+};
+
 export type CatalogSortKey = "termurah" | "termahal" | "terbaru";
 
 export type CatalogQuery = {

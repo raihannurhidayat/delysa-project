@@ -1,6 +1,8 @@
 import { Zap } from "lucide-react";
-import { FlashSaleCard } from "~/features/shop/components/storefront/flash-sale-card";
-import { ProductCardSkeleton } from "~/features/shop/components/storefront/product-card";
+import {
+  CardProduct,
+  ProductCardSkeleton,
+} from "~/features/shop/components/card-product";
 import { endOfDay, useCountdown } from "~/features/shop/hooks/use-countdown";
 import type { Product } from "~/features/shop/types";
 import { cn } from "~/lib/utils";
@@ -134,7 +136,11 @@ export function FlashSaleSection({
           ) : (
             <div className="grid grid-cols-2 gap-3 md:grid-cols-4">
               {products.map((product) => (
-                <FlashSaleCard key={product.id} product={product} />
+                <CardProduct
+                  key={product.id}
+                  item={product}
+                  variant="flash-sale"
+                />
               ))}
             </div>
           )}
