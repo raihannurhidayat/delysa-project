@@ -77,11 +77,11 @@ function RootComponent() {
 // Root render
 function RootDocument({ children }: { children: React.ReactNode }) {
   return (
-    <html>
+    <html lang="id">
       <head>
         <HeadContent />
       </head>
-      <body>
+      <body className="font-sans antialiased">
         {children}
         {/*<TanStackRouterDevtools position="bottom-right" />*/}
         {/*<ReactQueryDevtools buttonPosition="bottom-left" />*/}
