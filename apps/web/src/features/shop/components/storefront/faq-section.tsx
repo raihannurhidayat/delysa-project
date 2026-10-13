@@ -7,7 +7,7 @@ import {
   AccordionPanelContent,
   AccordionTrigger,
 } from "~/components/ui/accordion";
-import { SectionHeader } from "~/features/shop/components/section-header";
+import { SectionHeader } from "~/features/shop/components/storefront/section-header";
 import { useStorefrontData } from "~/features/shop/hooks/use-storefront-data";
 
 export function FaqSection() {

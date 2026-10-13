@@ -4,8 +4,8 @@ import { Button } from "~/components/ui/button";
 import {
   ProductCard,
   ProductCardSkeleton,
-} from "~/features/shop/components/product-card";
-import { SectionHeader } from "~/features/shop/components/section-header";
+} from "~/features/shop/components/storefront/product-card";
+import { SectionHeader } from "~/features/shop/components/storefront/section-header";
 import type { Product } from "~/features/shop/types";
 import { cn } from "~/lib/utils";
 

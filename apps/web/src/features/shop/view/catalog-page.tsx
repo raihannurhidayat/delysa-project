@@ -1,11 +1,6 @@
-import { createFileRoute } from "@tanstack/react-router";
 import { ShopPlaceholderPage } from "~/features/shop/view/shop-placeholder-page";
 
-export const Route = createFileRoute("/_shop/shop")({
-  component: ShopRouteComponent,
-});
-
-function ShopRouteComponent() {
+export default function CatalogPage() {
   return (
     <ShopPlaceholderPage
       title="Shop Semua Produk"

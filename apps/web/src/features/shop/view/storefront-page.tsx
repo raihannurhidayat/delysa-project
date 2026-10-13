@@ -1,15 +1,15 @@
 import { RotateCcw } from "lucide-react";
 import { Button } from "~/components/ui/button";
-import { CategoryGrid } from "~/features/shop/components/category-grid";
-import { FaqSection } from "~/features/shop/components/faq-section";
-import { FlashSaleSection } from "~/features/shop/components/flash-sale-section";
-import { HeroSection } from "~/features/shop/components/hero-section";
-import { InstagramStrip } from "~/features/shop/components/instagram-strip";
-import { ProductCardSkeleton } from "~/features/shop/components/product-card";
-import { ProductRail } from "~/features/shop/components/product-rail";
-import { PromoBanner } from "~/features/shop/components/promo-banner";
-import { Testimonials } from "~/features/shop/components/testimonials";
-import { TrustStrip } from "~/features/shop/components/trust-strip";
+import { CategoryGrid } from "~/features/shop/components/storefront/category-grid";
+import { FaqSection } from "~/features/shop/components/storefront/faq-section";
+import { FlashSaleSection } from "~/features/shop/components/storefront/flash-sale-section";
+import { HeroSection } from "~/features/shop/components/storefront/hero-section";
+import { InstagramStrip } from "~/features/shop/components/storefront/instagram-strip";
+import { ProductCardSkeleton } from "~/features/shop/components/storefront/product-card";
+import { ProductRail } from "~/features/shop/components/storefront/product-rail";
+import { PromoBanner } from "~/features/shop/components/storefront/promo-banner";
+import { Testimonials } from "~/features/shop/components/storefront/testimonials";
+import { TrustStrip } from "~/features/shop/components/storefront/trust-strip";
 import { useStorefrontData } from "~/features/shop/hooks/use-storefront-data";
 
 export type StorefrontDemoState = "loading" | "empty" | "error";
