@@ -6,7 +6,6 @@
     "price": 45000,
     "originalPrice": 60000,
     "discountPercent": 25,
-    "isFlashSale": true,
     "image": "https://images.unsplash.com/photo-1463320726281-696a485928c7?w=800&q=80&auto=format&fit=crop",
     "rating": 4.9,
     "sold": 1120,
@@ -14,7 +13,8 @@
     "category": "Wisuda",
     "stock": 3,
     "stockTotal": 20,
-    "badge": "DISKON 25%"
+    "badge": "DISKON 25%",
+    "isFlashSale": true
   },
   {
     "id": "c02",
@@ -38,7 +38,6 @@
     "price": 195000,
     "originalPrice": 300000,
     "discountPercent": 35,
-    "isFlashSale": true,
     "image": "https://images.unsplash.com/photo-1490750967868-88aa4486c946?w=800&q=80&auto=format&fit=crop",
     "rating": 4.9,
     "sold": 980,
@@ -46,7 +45,8 @@
     "category": "Wisuda",
     "stock": 6,
     "stockTotal": 20,
-    "badge": "PALING DICARI"
+    "badge": "PALING DICARI",
+    "isFlashSale": true
   },
   {
     "id": "c04",
@@ -55,7 +55,6 @@
     "price": 240000,
     "originalPrice": 295000,
     "discountPercent": 19,
-    "isFlashSale": true,
     "image": "https://images.unsplash.com/photo-1526047932273-341f2a7631f9?w=800&q=80&auto=format&fit=crop",
     "rating": 5.0,
     "sold": 420,
@@ -63,7 +62,8 @@
     "category": "Wisuda",
     "stock": 2,
     "stockTotal": 15,
-    "badge": "EDISI TERBATAS"
+    "badge": "EDISI TERBATAS",
+    "isFlashSale": true
   },
   {
     "id": "c05",
@@ -86,14 +86,14 @@
     "price": 320000,
     "originalPrice": 380000,
     "discountPercent": 16,
-    "isFlashSale": true,
     "image": "https://images.unsplash.com/photo-1520763185298-1b434c919102?w=800&q=80&auto=format&fit=crop",
     "rating": 4.9,
     "sold": 510,
     "reviewCount": 142,
     "category": "Mawar",
     "stock": 4,
-    "stockTotal": 20
+    "stockTotal": 20,
+    "isFlashSale": true
   },
   {
     "id": "c07",
@@ -170,6 +170,7 @@
     "sold": 210,
     "reviewCount": 51,
     "category": "Anggrek",
+    "isNew": true,
     "stock": 2,
     "stockTotal": 10,
     "badge": "SISA 2 ITEM"
@@ -302,6 +303,7 @@
     "sold": 810,
     "reviewCount": 132,
     "category": "Meja",
+    "isNew": true,
     "stock": 10,
     "stockTotal": 20
   },
