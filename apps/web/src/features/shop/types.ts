@@ -40,7 +40,7 @@ export type Review = {
 export type CatalogItem = Product & {
   /** Stok tersedia. 0 = disembunyikan dari grid katalog. */
   stock: number;
-  /** Jumlah ulasan untuk label "(N ulasan)". */
+  /** Jumlah ulasan. Disimpan di data, tidak ditampilkan di kartu. */
   reviewCount: number;
   /** Label pita di foto, mis. "TERLARIS WISUDA". Opsional. */
   badge?: string;

@@ -43,7 +43,7 @@ export function CardProduct({
   return (
     <article
       aria-label={item.name}
-      className="group flex flex-col overflow-hidden rounded-md border border-[#E5E7EB] bg-white shadow-[0_1px_2px_rgba(16,24,40,0.05)]"
+      className="group flex flex-col overflow-hidden rounded-xs border border-[#E5E7EB] bg-white shadow-[0_1px_2px_rgba(16,24,40,0.05)]"
     >
       <div className="relative overflow-hidden bg-[#F8F9FA]">
         <img
@@ -107,20 +107,12 @@ export function CardProduct({
             <span className="font-semibold text-[#1A1A1A]">
               {item.rating.toFixed(1)}
             </span>
-            {variant === "catalog" ? (
-              <span>
-                (
-                {item.reviewCount !== undefined
-                  ? `${item.reviewCount} ulasan`
-                  : `${formatSold(item.sold)} Terjual`}
-                )
-              </span>
-            ) : (
+            {variant === "default" ? (
               <>
                 <span aria-hidden="true">•</span>
                 <span>{formatSold(item.sold)} Terjual</span>
               </>
-            )}
+            ) : null}
           </p>
         ) : null}
         <p className="flex flex-wrap items-baseline gap-x-1.5">
