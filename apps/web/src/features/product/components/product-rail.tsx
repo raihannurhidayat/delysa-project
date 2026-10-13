@@ -57,7 +57,7 @@ export function ProductRail({
             }}
             aria-pressed={tab === activeTab}
             className={cn(
-              "rounded-full",
+              "rounded-xs",
               tab === activeTab && "bg-[#111111] text-white hover:bg-[#2A2A2A]",
             )}
           >
