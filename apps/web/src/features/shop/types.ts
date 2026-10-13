@@ -36,3 +36,32 @@ export type Review = {
   rating: number;
   text: string;
 };
+
+export type CatalogItem = Product & {
+  /** Stok tersedia. 0 = disembunyikan dari grid katalog. */
+  stock: number;
+  /** Jumlah ulasan untuk label "(N ulasan)". */
+  reviewCount: number;
+  /** Label pita di foto, mis. "TERLARIS WISUDA". Opsional. */
+  badge?: string;
+};
+
+export type CatalogSortKey = "termurah" | "termahal" | "terbaru";
+
+export type CatalogQuery = {
+  search?: string;
+  category?: string;
+  minPrice?: number;
+  maxPrice?: number;
+  sort?: CatalogSortKey;
+  page: number;
+};
+
+export type CatalogResult = {
+  items: CatalogItem[];
+  total: number;
+  pageCount: number;
+};
+
+/** Ukuran halaman katalog prototype (PRD 20/page berlaku saat BE paginasi). */
+export const CATALOG_PAGE_SIZE = 12;

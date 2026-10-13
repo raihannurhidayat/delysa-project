@@ -14,7 +14,7 @@ import { useSlidingIndicator } from "~/features/shop/hooks/use-sliding-indicator
 
 type ShopNavTo =
   | "/"
-  | "/shop"
+  | "/katalog"
   | "/new-arrivals"
   | "/best-sellers"
   | "/categories"
@@ -28,7 +28,7 @@ type ShopNavItem = {
 
 const NAV_LINKS: ShopNavItem[] = [
   { label: "Home", to: "/" },
-  { label: "Shop Semua Produk", to: "/shop" },
+  { label: "Shop Semua Produk", to: "/katalog" },
   { label: "New Arrivals", to: "/new-arrivals" },
   { label: "Best Sellers", to: "/best-sellers" },
   { label: "Kategori Bunga", to: "/categories" },
