@@ -4,7 +4,7 @@ import {
   CardProduct,
   ProductCardSkeleton,
 } from "~/features/shop/components/card-product";
-import type { CatalogItem } from "~/features/shop/types";
+import type { UnifiedProduct } from "~/features/shop/types";
 
 /**
  * Grid hasil katalog: skeleton saat memuat, empty state + reset
@@ -15,7 +15,7 @@ export function CatalogGrid({
   isPending,
   onReset,
 }: {
-  items: CatalogItem[];
+  items: UnifiedProduct[];
   isPending: boolean;
   onReset: () => void;
 }) {

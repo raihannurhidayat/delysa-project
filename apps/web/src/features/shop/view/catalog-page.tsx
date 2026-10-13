@@ -14,8 +14,9 @@ import { CatalogGrid } from "~/features/shop/components/catalog/catalog-grid";
 import { CatalogPagination } from "~/features/shop/components/catalog/catalog-pagination";
 import { CatalogToolbar } from "~/features/shop/components/catalog/catalog-toolbar";
 import { CATALOG_CATEGORIES } from "~/features/shop/data/catalog";
-import { useCatalogData } from "~/features/shop/hooks/use-catalog-data";
+import { useProducts } from "~/features/shop/hooks/use-shop-queries";
 import type { CatalogSearch } from "~/features/shop/schemas/catalog-query-schema";
+import { CATALOG_PAGE_SIZE } from "~/features/shop/types";
 
 const TRUST_ITEMS = [
   {
@@ -46,8 +47,8 @@ const TRUST_ITEMS = [
  */
 export default function CatalogPage({ query }: { query: CatalogSearch }) {
   const navigate = useNavigate({ from: "/katalog" });
-  const { items, total, pageCount, counts, isPending, isError } =
-    useCatalogData(query);
+  const { items, total, counts, isPending, isError } = useProducts(query);
+  const pageCount = Math.max(1, Math.ceil(total / CATALOG_PAGE_SIZE));
 
   const update = (patch: Record<string, string | number | undefined>) => {
     void navigate({
