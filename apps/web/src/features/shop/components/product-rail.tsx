@@ -4,9 +4,9 @@ import { Button } from "~/components/ui/button";
 import {
   ProductCard,
   ProductCardSkeleton,
-} from "~/features/product/components/product-card";
-import { SectionHeader } from "~/features/product/components/section-header";
-import type { Product } from "~/features/product/types";
+} from "~/features/shop/components/product-card";
+import { SectionHeader } from "~/features/shop/components/section-header";
+import type { Product } from "~/features/shop/types";
 import { cn } from "~/lib/utils";
 
 type ProductRailProps = {
@@ -57,7 +57,7 @@ export function ProductRail({
             }}
             aria-pressed={tab === activeTab}
             className={cn(
-              "rounded-full",
+              "rounded-xs",
               tab === activeTab && "bg-[#111111] text-white hover:bg-[#2A2A2A]",
             )}
           >

@@ -6,19 +6,42 @@ import {
   ShoppingCart,
   User,
 } from "lucide-react";
+import { Link, useLocation } from "@tanstack/react-router";
 import { Badge } from "~/components/ui/badge";
 import { Button } from "~/components/ui/button";
 import { Input } from "~/components/ui/input";
+import { useSlidingIndicator } from "~/features/shop/hooks/use-sliding-indicator";
 
-const NAV_LINKS = [
-  "Home",
-  "Shop Semua Produk",
-  "New Arrivals",
-  "Best Sellers",
-  "Kategori Bunga",
-  "Promo Spesial",
-  "About",
+type ShopNavTo =
+  | "/"
+  | "/shop"
+  | "/new-arrivals"
+  | "/best-sellers"
+  | "/categories"
+  | "/promo"
+  | "/about";
+
+type ShopNavItem = {
+  label: string;
+  to: ShopNavTo;
+};
+
+const NAV_LINKS: ShopNavItem[] = [
+  { label: "Home", to: "/" },
+  { label: "Shop Semua Produk", to: "/shop" },
+  { label: "New Arrivals", to: "/new-arrivals" },
+  { label: "Best Sellers", to: "/best-sellers" },
+  { label: "Kategori Bunga", to: "/categories" },
+  { label: "Promo Spesial", to: "/promo" },
+  { label: "About", to: "/about" },
 ];
+
+// Link menggabung className dasar + active/inactive (concat), jadi kelas
+// varian hanya boleh ada di active/inactiveProps agar tidak konflik.
+const NAV_BASE_CLASS =
+  "shrink-0 transition-colors focus-visible:rounded-sm focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-rose-600";
+const NAV_ACTIVE_CLASS = "font-bold text-[#111111]";
+const NAV_IDLE_CLASS = "font-medium text-[#4B5563] hover:text-[#111111]";
 
 function DeadLink({
   children,
@@ -42,6 +65,12 @@ function DeadLink({
 }
 
 export function ShopHeader() {
+  const pathname = useLocation({ select: (location) => location.pathname });
+  const activeTo = NAV_LINKS.some((item) => item.to === pathname)
+    ? pathname
+    : null;
+  const indicator = useSlidingIndicator({ value: activeTo });
+
   return (
     <header className="sticky top-0 z-40 border-b border-[#E5E7EB] bg-white/95 backdrop-blur">
       <div className="mx-auto flex max-w-7xl items-center gap-3 px-4 py-3 sm:gap-6 sm:px-6">
@@ -86,20 +115,44 @@ export function ShopHeader() {
         </div>
       </div>
       <nav aria-label="Navigasi toko" className="border-t border-[#F1F2F4]">
-        <div className="mx-auto flex max-w-7xl items-center gap-5 overflow-x-auto px-4 py-2 text-[13px] font-medium whitespace-nowrap sm:px-6">
-          {NAV_LINKS.map((label, i) => (
-            <DeadLink
-              key={label}
-              label={label}
-              className={
-                i === 0
-                  ? "font-bold text-[#111111]"
-                  : "text-[#4B5563] hover:text-[#111111]"
-              }
+        <div
+          ref={indicator.listRef}
+          className="relative mx-auto flex max-w-7xl items-center gap-5 overflow-x-auto px-4 py-2 text-[13px] font-medium whitespace-nowrap sm:px-6"
+        >
+          {NAV_LINKS.map((item) => (
+            <span
+              key={item.label}
+              ref={indicator.itemRef(item.to === activeTo)}
+              className="shrink-0"
             >
-              {label}
-            </DeadLink>
+              <Link
+                to={item.to}
+                activeOptions={{ exact: true, includeSearch: false }}
+                // aria-current="page" + data-status="active" otomatis dari Link.
+                activeProps={{
+                  className: NAV_ACTIVE_CLASS,
+                }}
+                inactiveProps={{
+                  className: NAV_IDLE_CLASS,
+                }}
+                className={NAV_BASE_CLASS}
+              >
+                {item.label}
+              </Link>
+            </span>
           ))}
+          <span
+            aria-hidden="true"
+            style={indicator.style}
+            // Transisi hanya dipasang setelah pengukuran pertama agar mount
+            // awal snap ke posisi (tidak slide dari kiri); navigasi berikut
+            // beranimasi dua arah dari posisi aktif terakhir.
+            className={`absolute bottom-1 left-0 h-[2px] rounded-full bg-rose-600 motion-reduce:transition-none ${
+              indicator.ready
+                ? "opacity-100 transition-[transform,width,opacity] duration-300 ease-out"
+                : "opacity-0"
+            }`}
+          />
           <span className="ml-auto hidden items-center gap-4 text-xs text-[#6B7280] lg:flex">
             <span className="inline-flex items-center gap-1">
               <MapPin size={12} aria-hidden="true" /> Tasikmalaya

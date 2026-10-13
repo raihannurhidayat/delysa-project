@@ -1,4 +1,4 @@
-import type { Category, Faq, Product, Review } from "~/features/product/types";
+import type { Category, Faq, Product, Review } from "~/features/shop/types";
 
 const img = (id: string, w = 800) =>
   `https://images.unsplash.com/${id}?w=${w}&q=80&auto=format&fit=crop`;
@@ -9,6 +9,10 @@ export const STOREFRONT_PRODUCTS: Product[] = [
     slug: "buket-mawar-peach-aura-grace",
     name: "Buket Mawar Peach 'Aura Grace'",
     price: 195000,
+    originalPrice: 300000,
+    discountPercent: 35,
+    stockLeft: 3,
+    stockTotal: 20,
     image: img("photo-1490750967868-88aa4486c946"),
     rating: 4.9,
     sold: 1200,
@@ -19,7 +23,11 @@ export const STOREFRONT_PRODUCTS: Product[] = [
     id: "p02",
     slug: "12-mawar-merah-midnight-noir",
     name: "12 Mawar Merah 'Midnight Noir'",
-    price: 165000,
+    price: 245000,
+    originalPrice: 350000,
+    discountPercent: 30,
+    stockLeft: 4,
+    stockTotal: 20,
     image: img("photo-1533616688419-b7a585564566"),
     rating: 4.8,
     sold: 860,
@@ -30,6 +38,10 @@ export const STOREFRONT_PRODUCTS: Product[] = [
     slug: "balloon-bloom-bouquet-congrats",
     name: "Balloon Bloom Bouquet 'Congrats'",
     price: 165000,
+    originalPrice: 220000,
+    discountPercent: 25,
+    stockLeft: 2,
+    stockTotal: 15,
     image: img("photo-1520763185298-1b434c919102"),
     rating: 4.9,
     sold: 640,
@@ -41,6 +53,10 @@ export const STOREFRONT_PRODUCTS: Product[] = [
     slug: "anggrek-bulan-putih-premium-pot",
     name: "Anggrek Bulan Putih Premium Pot",
     price: 285000,
+    originalPrice: 475000,
+    discountPercent: 40,
+    stockLeft: 5,
+    stockTotal: 20,
     image: img("photo-1457089328109-e5d9bd499191"),
     rating: 5.0,
     sold: 320,
@@ -225,6 +241,14 @@ export const STOREFRONT_REVIEWS: Review[] = [
   },
 ];
 
+export type HeroSlide = {
+  eyebrow: string;
+  title: string;
+  description: string;
+  image: string;
+  imageAlt: string;
+};
+
 export const STOREFRONT_HERO = {
   eyebrow: "Promo Spesial Musim Ini",
   title: "Spesial Musim Wisuda & Kasih Sayang — Diskon Hingga 35%",
@@ -244,6 +268,32 @@ export const STOREFRONT_HERO = {
     },
   ],
 };
+
+export const STOREFRONT_HERO_SLIDES: HeroSlide[] = [
+  {
+    eyebrow: STOREFRONT_HERO.eyebrow,
+    title: STOREFRONT_HERO.title,
+    description: STOREFRONT_HERO.description,
+    image: STOREFRONT_HERO.image,
+    imageAlt: "Rangkaian buket Delysa Florist",
+  },
+  {
+    eyebrow: "Koleksi Wisuda",
+    title: "Buket Wisuda Silver & Gold — Mulai Rp95rb",
+    description:
+      "Buket kelulusan elegan dengan aksen silver dan gold, siap antar di hari bahagiamu.",
+    image: STOREFRONT_HERO.sideCards[0].image,
+    imageAlt: "Buket wisuda silver dan gold",
+  },
+  {
+    eyebrow: "Atelier",
+    title: "Wedding Atelier Collection",
+    description:
+      "Rangkaian bunga pernikahan premium hasil kurasi atelier Tasikmalaya.",
+    image: STOREFRONT_HERO.sideCards[1].image,
+    imageAlt: "Koleksi bunga pernikahan atelier",
+  },
+];
 
 export const STOREFRONT_TRUST = [
   {

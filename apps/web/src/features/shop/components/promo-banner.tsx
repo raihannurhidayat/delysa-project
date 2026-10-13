@@ -1,6 +1,6 @@
 import { ArrowRight } from "lucide-react";
 import { Button } from "~/components/ui/button";
-import { STOREFRONT_PRODUCTS } from "~/features/product/data/storefront";
+import { STOREFRONT_PRODUCTS } from "~/features/shop/data/storefront";
 
 export function PromoBanner() {
   return (
@@ -30,7 +30,7 @@ export function PromoBanner() {
           <Button
             type="button"
             onClick={() => window.alert("Pesan custom segera hadir (UI-only)")}
-            className="shrink-0 rounded-full bg-white font-bold text-[#111111] hover:bg-[#F1F2F4]"
+            className="shrink-0 rounded-md bg-white font-bold text-[#111111] hover:bg-[#F1F2F4]"
           >
             Pesan Custom
             <ArrowRight size={16} aria-hidden="true" />

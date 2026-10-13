@@ -1,4 +1,4 @@
-import { useStorefrontData } from "~/features/product/hooks/use-storefront-data";
+import { useStorefrontData } from "~/features/shop/hooks/use-storefront-data";
 
 export function CategoryGrid() {
   const { categories } = useStorefrontData();

@@ -3,7 +3,7 @@ import {
   STOREFRONT_FAQS,
   STOREFRONT_PRODUCTS,
   STOREFRONT_REVIEWS,
-} from "~/features/product/data/storefront";
+} from "~/features/shop/data/storefront";
 
 /**
  * Seam data storefront. Kini: mock sync (SSR penuh, LCP cepat).

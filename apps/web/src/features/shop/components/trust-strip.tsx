@@ -1,5 +1,5 @@
 import { Clock, Headset, ShieldCheck, Truck } from "lucide-react";
-import { STOREFRONT_TRUST } from "~/features/product/data/storefront";
+import { STOREFRONT_TRUST } from "~/features/shop/data/storefront";
 
 const ICONS = [Clock, Truck, ShieldCheck, Headset];
 

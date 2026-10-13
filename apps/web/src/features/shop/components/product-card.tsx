@@ -1,7 +1,7 @@
 import { ShoppingBag, Star } from "lucide-react";
 import { Button } from "~/components/ui/button";
-import { formatIDR } from "~/features/product/lib/format";
-import type { Product } from "~/features/product/types";
+import { formatIDR } from "~/features/shop/lib/format";
+import type { Product } from "~/features/shop/types";
 
 function formatSold(sold: number): string {
   return sold >= 1000

@@ -8,6 +8,14 @@ export type Product = {
   sold: number;
   category: string;
   isNew?: boolean;
+  /** Harga asli sebelum diskon (untuk harga coret). Opsional, hanya untuk promo. */
+  originalPrice?: number;
+  /** Persen diskon 1-90, mis. 35 untuk "-35%". Opsional. */
+  discountPercent?: number;
+  /** Sisa stok promo untuk label "Tersisa X item". Opsional. */
+  stockLeft?: number;
+  /** Total stok promo untuk progress bar. Opsional. */
+  stockTotal?: number;
 };
 
 export type Category = {

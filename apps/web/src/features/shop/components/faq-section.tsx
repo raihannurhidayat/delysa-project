@@ -7,8 +7,8 @@ import {
   AccordionPanelContent,
   AccordionTrigger,
 } from "~/components/ui/accordion";
-import { SectionHeader } from "~/features/product/components/section-header";
-import { useStorefrontData } from "~/features/product/hooks/use-storefront-data";
+import { SectionHeader } from "~/features/shop/components/section-header";
+import { useStorefrontData } from "~/features/shop/hooks/use-storefront-data";
 
 export function FaqSection() {
   const { faqs } = useStorefrontData();
@@ -21,7 +21,7 @@ export function FaqSection() {
       <SectionHeader eyebrow="Bantuan" title="Pertanyaan Umum (FAQ)" />
       <div className="grid gap-6 lg:grid-cols-2">
         {[faqs.slice(0, 2), faqs.slice(2)].map((group, gi) => (
-          <Accordion key={gi} defaultValue={gi === 0 ? ["faq-0"] : undefined}>
+          <Accordion key={gi}>
             {group.map((faq, i) => (
               <AccordionItem key={faq.question} value={`faq-${gi * 2 + i}`}>
                 <AccordionHeader>
