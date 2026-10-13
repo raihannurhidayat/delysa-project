@@ -72,7 +72,7 @@ export function HeroSection() {
                             "Belanja sekarang segera hadir (UI-only)",
                           )
                         }
-                        className="rounded-full bg-white text-sm font-bold text-[#111111] hover:bg-[#F1F2F4]"
+                        className="rounded-md bg-white text-sm font-bold text-[#111111] hover:bg-[#F1F2F4]"
                       >
                         Belanja Sekarang
                         <ArrowRight size={16} aria-hidden="true" />
