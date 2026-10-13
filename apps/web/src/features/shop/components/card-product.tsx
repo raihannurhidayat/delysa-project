@@ -1,5 +1,4 @@
-import { useState } from "react";
-import { Heart, ShoppingCart, Star } from "lucide-react";
+import { ShoppingCart, Star } from "lucide-react";
 import { Button } from "~/components/ui/button";
 import { formatIDR, formatSold } from "~/features/shop/lib/format";
 import type { UnifiedProduct } from "~/features/shop/types";
@@ -22,7 +21,7 @@ function stockStatus(left: number | undefined): {
 
 /**
  * Satu kartu produk untuk semua jenis (fondasi gaya flash sale).
- * Diversifikasi via `variant`: badge, wishlist, rating, harga, info stok.
+ * Diversifikasi via `variant`: badge, rating, harga, info stok.
  * Tombol beli disamakan untuk semua varian (UI-only tahap ini).
  */
 export function CardProduct({
@@ -32,7 +31,6 @@ export function CardProduct({
   item: UnifiedProduct;
   variant: CardProductVariant;
 }) {
-  const [wished, setWished] = useState(false);
   const left = item.stockLeft ?? item.stock;
   const { label: stockLabel, urgent } = stockStatus(left);
   const soldOut = left !== undefined && left <= 0;
@@ -41,8 +39,6 @@ export function CardProduct({
     left !== undefined && item.stockTotal
       ? Math.min(Math.max(left / item.stockTotal, 0), 1) * 100
       : null;
-
-  const showWishlist = variant !== "default";
 
   return (
     <article
@@ -73,31 +69,6 @@ export function CardProduct({
           <span className="absolute top-2 left-2 rounded-md bg-[#111111] px-2 py-0.5 text-[10px] font-bold tracking-wide text-white uppercase">
             Baru
           </span>
-        ) : null}
-        {showWishlist ? (
-          <button
-            type="button"
-            onClick={() => setWished((v) => !v)}
-            aria-pressed={wished}
-            aria-label={
-              wished
-                ? `${item.name}: hapus dari wishlist`
-                : `${item.name}: tambah ke wishlist`
-            }
-            className="absolute top-2 right-2 flex size-8 items-center justify-center rounded-full bg-white/95 shadow-sm transition hover:scale-105 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-rose-600"
-          >
-            <Heart
-              size={16}
-              aria-hidden="true"
-              className={cn(
-                wished
-                  ? variant === "flash-sale"
-                    ? "fill-[#BE123C] text-[#BE123C]"
-                    : "fill-rose-600 text-rose-600"
-                  : "text-[#6B7280]",
-              )}
-            />
-          </button>
         ) : null}
       </div>
 
@@ -220,7 +191,7 @@ export function CardProduct({
           disabled={soldOut}
           onClick={() => window.alert("Beli segera hadir (UI-only)")}
           aria-label={`${item.name}: ${soldOut ? "stok habis" : "beli (segera hadir)"}`}
-          className="mt-1 h-9 w-full rounded-lg bg-[#111111] text-xs font-semibold text-white hover:bg-[#2A2A2A] disabled:opacity-50"
+          className="mt-1 h-9 w-full rounded-xs cursor-pointer bg-[#111111] text-xs font-semibold text-white hover:bg-[#2A2A2A] disabled:opacity-50"
         >
           <ShoppingCart size={14} aria-hidden="true" />
           {soldOut ? "Stok Habis" : BUY_LABEL}
