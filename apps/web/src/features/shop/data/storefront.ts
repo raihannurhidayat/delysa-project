@@ -1,4 +1,4 @@
-import type { Category, Faq, Product, Review } from "~/features/product/types";
+import type { Category, Faq, Product, Review } from "~/features/shop/types";
 
 const img = (id: string, w = 800) =>
   `https://images.unsplash.com/${id}?w=${w}&q=80&auto=format&fit=crop`;

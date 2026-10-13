@@ -10,7 +10,7 @@ import { Link, useLocation } from "@tanstack/react-router";
 import { Badge } from "~/components/ui/badge";
 import { Button } from "~/components/ui/button";
 import { Input } from "~/components/ui/input";
-import { useSlidingIndicator } from "~/features/product/hooks/use-sliding-indicator";
+import { useSlidingIndicator } from "~/features/shop/hooks/use-sliding-indicator";
 
 type ShopNavTo =
   | "/"

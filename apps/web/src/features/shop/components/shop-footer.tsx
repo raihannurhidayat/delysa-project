@@ -1,4 +1,4 @@
-import { STOREFRONT_FOOTER } from "~/features/product/data/storefront";
+import { STOREFRONT_FOOTER } from "~/features/shop/data/storefront";
 
 const SHOP_LINKS = [
   "Buket Wisuda & Graduation",

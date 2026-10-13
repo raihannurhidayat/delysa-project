@@ -1,7 +1,7 @@
 import { Star } from "lucide-react";
 import { Card, CardContent } from "~/components/ui/card";
-import { SectionHeader } from "~/features/product/components/section-header";
-import { useStorefrontData } from "~/features/product/hooks/use-storefront-data";
+import { SectionHeader } from "~/features/shop/components/section-header";
+import { useStorefrontData } from "~/features/shop/hooks/use-storefront-data";
 
 export function Testimonials() {
   const { reviews } = useStorefrontData();

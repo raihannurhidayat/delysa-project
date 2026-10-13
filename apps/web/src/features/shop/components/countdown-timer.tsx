@@ -1,4 +1,4 @@
-import { endOfDay, useCountdown } from "~/features/product/hooks/use-countdown";
+import { endOfDay, useCountdown } from "~/features/shop/hooks/use-countdown";
 
 function Digit({ value, label }: { value: string; label: string }) {
   return (

@@ -1,8 +1,8 @@
 import { useState } from "react";
 import { Heart, ShoppingCart } from "lucide-react";
 import { Button } from "~/components/ui/button";
-import { formatIDR } from "~/features/product/lib/format";
-import type { Product } from "~/features/product/types";
+import { formatIDR } from "~/features/shop/lib/format";
+import type { Product } from "~/features/shop/types";
 import { cn } from "~/lib/utils";
 
 function stockStatus(stockLeft?: number): {

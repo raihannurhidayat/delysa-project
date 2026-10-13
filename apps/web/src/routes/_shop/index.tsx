@@ -1,5 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
-import StorefrontPage from "~/features/product/view/storefront-page";
+import StorefrontPage from "~/features/shop/view/storefront-page";
 
 export const Route = createFileRoute("/_shop/")({
   // Harness demo 5-state untuk QA/e2e: ?demo=loading|empty|error.

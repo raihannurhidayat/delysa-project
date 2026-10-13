@@ -1,6 +1,6 @@
 import { ArrowRight } from "lucide-react";
 import { Button } from "~/components/ui/button";
-import { STOREFRONT_PRODUCTS } from "~/features/product/data/storefront";
+import { STOREFRONT_PRODUCTS } from "~/features/shop/data/storefront";
 
 export function PromoBanner() {
   return (

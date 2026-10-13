@@ -9,8 +9,8 @@ import {
 import {
   STOREFRONT_HERO,
   STOREFRONT_HERO_SLIDES,
-} from "~/features/product/data/storefront";
-import { useHeroSlider } from "~/features/product/hooks/use-hero-slider";
+} from "~/features/shop/data/storefront";
+import { useHeroSlider } from "~/features/shop/hooks/use-hero-slider";
 
 export function HeroSection() {
   const slider = useHeroSlider(STOREFRONT_HERO_SLIDES.length);

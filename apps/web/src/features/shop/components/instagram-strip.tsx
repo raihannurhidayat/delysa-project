@@ -1,6 +1,6 @@
 import { AtSign } from "lucide-react";
-import { SectionHeader } from "~/features/product/components/section-header";
-import { STOREFRONT_PRODUCTS } from "~/features/product/data/storefront";
+import { SectionHeader } from "~/features/shop/components/section-header";
+import { STOREFRONT_PRODUCTS } from "~/features/shop/data/storefront";
 
 export function InstagramStrip() {
   const photos = STOREFRONT_PRODUCTS.slice(0, 5);
