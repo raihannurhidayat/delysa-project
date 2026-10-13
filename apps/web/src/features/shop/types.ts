@@ -16,6 +16,8 @@ export type Product = {
   stockLeft?: number;
   /** Total stok promo untuk progress bar. Opsional. */
   stockTotal?: number;
+  /** True bila produk sedang flash sale (ditampilkan di section flash sale). Opsional. */
+  isFlashSale?: boolean;
 };
 
 export type Category = {
@@ -68,6 +70,7 @@ export type UnifiedProduct = {
   stock?: number;
   reviewCount?: number;
   badge?: string;
+  isFlashSale?: boolean;
 };
 
 export type CatalogSortKey = "termurah" | "termahal" | "terbaru";

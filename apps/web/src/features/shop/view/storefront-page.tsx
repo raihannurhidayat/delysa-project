@@ -75,7 +75,7 @@ export default function StorefrontPage({
       <HeroSection />
       <CategoryGrid />
       <TrustStrip />
-      <FlashSaleSection products={list.slice(0, 4)} />
+      <FlashSaleSection products={list.filter((p) => p.isFlashSale)} />
       <ProductRail
         eyebrow="Paling Laris"
         title="Produk Terlaris Minggu Ini"

@@ -57,16 +57,14 @@ export function CardProduct({
       </div>
 
       <div className="flex flex-1 flex-col gap-1 p-3">
-        {variant !== "default" ? (
-          <p
-            className={cn(
-              "text-[10px] font-semibold tracking-[0.08em] uppercase",
-              variant === "flash-sale" ? "text-[#6B7280]" : "text-emerald-700",
-            )}
-          >
-            {item.category}
-          </p>
-        ) : null}
+        <p
+          className={cn(
+            "text-[10px] font-semibold tracking-[0.08em] uppercase",
+            variant === "catalog" ? "text-emerald-700" : "text-[#6B7280]",
+          )}
+        >
+          {item.category}
+        </p>
         <h3 className="line-clamp-2 min-h-[2.5rem] text-[13px] leading-snug font-semibold text-[#1A1A1A]">
           {variant === "default" ? (
             <a
