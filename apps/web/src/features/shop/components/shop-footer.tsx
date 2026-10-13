@@ -81,7 +81,10 @@ export function ShopFooter() {
       </div>
       <div className="border-t border-white/10">
         <div className="mx-auto flex max-w-7xl flex-col items-center justify-between gap-2 px-4 py-4 text-xs text-[#9CA3AF] sm:flex-row sm:px-6">
-          <p>© 2026 Capstone Project Dosen Pengampu Dr. Ir. Eka Wahyu Hidayat, S.T., M.T., MCE.</p>
+          <p>
+            © 2026 Capstone Project Dosen Pengampu Dr. Ir. Eka Wahyu Hidayat,
+            S.T., M.T., MCE.
+          </p>
           <p className="flex gap-4">
             <FooterLink label="Kebijakan Privasi" />
             <FooterLink label="Syarat & Ketentuan" />

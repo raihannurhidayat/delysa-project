@@ -7,7 +7,7 @@ export function NotFound({ children }: { children?: ReactNode }) {
   const router = useRouter();
 
   const goBack = () => {
-      router.history.back();
+    router.history.back();
   };
 
   return (
