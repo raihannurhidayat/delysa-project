@@ -225,6 +225,14 @@ export const STOREFRONT_REVIEWS: Review[] = [
   },
 ];
 
+export type HeroSlide = {
+  eyebrow: string;
+  title: string;
+  description: string;
+  image: string;
+  imageAlt: string;
+};
+
 export const STOREFRONT_HERO = {
   eyebrow: "Promo Spesial Musim Ini",
   title: "Spesial Musim Wisuda & Kasih Sayang — Diskon Hingga 35%",
@@ -244,6 +252,32 @@ export const STOREFRONT_HERO = {
     },
   ],
 };
+
+export const STOREFRONT_HERO_SLIDES: HeroSlide[] = [
+  {
+    eyebrow: STOREFRONT_HERO.eyebrow,
+    title: STOREFRONT_HERO.title,
+    description: STOREFRONT_HERO.description,
+    image: STOREFRONT_HERO.image,
+    imageAlt: "Rangkaian buket Delysa Florist",
+  },
+  {
+    eyebrow: "Koleksi Wisuda",
+    title: "Buket Wisuda Silver & Gold — Mulai Rp95rb",
+    description:
+      "Buket kelulusan elegan dengan aksen silver dan gold, siap antar di hari bahagiamu.",
+    image: STOREFRONT_HERO.sideCards[0].image,
+    imageAlt: "Buket wisuda silver dan gold",
+  },
+  {
+    eyebrow: "Atelier",
+    title: "Wedding Atelier Collection",
+    description:
+      "Rangkaian bunga pernikahan premium hasil kurasi atelier Tasikmalaya.",
+    image: STOREFRONT_HERO.sideCards[1].image,
+    imageAlt: "Koleksi bunga pernikahan atelier",
+  },
+];
 
 export const STOREFRONT_TRUST = [
   {
