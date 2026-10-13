@@ -9,19 +9,9 @@ export type CardProductVariant = "flash-sale" | "catalog" | "default";
 /** Label tombol disamakan untuk semua varian (satu konstanta). */
 const BUY_LABEL = "Beli Sekarang";
 
-function stockStatus(left: number | undefined): {
-  label: string;
-  urgent: boolean;
-} {
-  if (left === undefined) return { label: "Tersedia", urgent: false };
-  if (left <= 0) return { label: "Habis", urgent: true };
-  if (left <= 3) return { label: "Segera Habis", urgent: true };
-  return { label: "Tersedia", urgent: false };
-}
-
 /**
  * Satu kartu produk untuk semua jenis (fondasi gaya flash sale).
- * Diversifikasi via `variant`: badge, rating, harga, info stok.
+ * Diversifikasi via `variant`: badge, rating, harga.
  * Tombol beli disamakan untuk semua varian (UI-only tahap ini).
  */
 export function CardProduct({
@@ -32,13 +22,7 @@ export function CardProduct({
   variant: CardProductVariant;
 }) {
   const left = item.stockLeft ?? item.stock;
-  const { label: stockLabel, urgent } = stockStatus(left);
   const soldOut = left !== undefined && left <= 0;
-
-  const progress =
-    left !== undefined && item.stockTotal
-      ? Math.min(Math.max(left / item.stockTotal, 0), 1) * 100
-      : null;
 
   return (
     <article
@@ -132,50 +116,6 @@ export function CardProduct({
             {formatIDR(item.price)}
           </span>
         </p>
-
-        {variant === "flash-sale" && left !== undefined ? (
-          <div className="mt-1">
-            <div className="flex items-center justify-between text-[11px]">
-              <span className="text-[#6B7280]">Tersisa {left} item</span>
-              <span
-                className={cn(
-                  "font-semibold",
-                  urgent ? "text-[#DC2626]" : "text-[#059669]",
-                )}
-              >
-                {stockLabel}
-              </span>
-            </div>
-            {progress !== null ? (
-              <div
-                role="progressbar"
-                aria-valuenow={left}
-                aria-valuemin={0}
-                aria-valuemax={item.stockTotal}
-                aria-label={`Sisa stok ${item.name}: ${left} dari ${item.stockTotal}`}
-                className="mt-1 h-1.5 overflow-hidden rounded-full bg-[#F1F2F4]"
-              >
-                <div
-                  aria-hidden="true"
-                  style={{ width: `${progress}%` }}
-                  className={cn(
-                    "h-full rounded-full",
-                    urgent
-                      ? "bg-linear-to-r from-[#DC2626] to-[#F97316]"
-                      : "bg-[#059669]",
-                  )}
-                />
-              </div>
-            ) : null}
-          </div>
-        ) : null}
-        {variant === "catalog" &&
-        item.stock !== undefined &&
-        item.stock <= 5 ? (
-          <p className="text-[11px] font-semibold text-[#DC2626]">
-            Sisa {item.stock} item
-          </p>
-        ) : null}
 
         <Button
           type="button"

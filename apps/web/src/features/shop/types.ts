@@ -12,7 +12,7 @@ export type Product = {
   originalPrice?: number;
   /** Persen diskon 1-90, mis. 35 untuk "-35%". Opsional. */
   discountPercent?: number;
-  /** Sisa stok promo untuk label "Tersisa X item". Opsional. */
+  /** Sisa stok promo. Disimpan di data, tidak ditampilkan di kartu. Opsional. */
   stockLeft?: number;
   /** Total stok promo untuk progress bar. Opsional. */
   stockTotal?: number;
