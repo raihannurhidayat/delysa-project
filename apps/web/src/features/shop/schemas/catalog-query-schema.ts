@@ -12,7 +12,7 @@ export const catalogSortKeys = ["termurah", "termahal", "terbaru"] as const;
 export const catalogSearchSchema = z.object({
   search: z.string().max(100).optional(),
   category: z.string().max(100).optional(),
-  page: z.coerce.number().int().min(1).default(1),
+  page: z.coerce.number().int().min(1).catch(1),
   sort: z.enum(catalogSortKeys).optional().catch(undefined),
   minPrice: z.coerce.number().int().min(0).optional().catch(undefined),
   maxPrice: z.coerce.number().int().min(0).optional().catch(undefined),

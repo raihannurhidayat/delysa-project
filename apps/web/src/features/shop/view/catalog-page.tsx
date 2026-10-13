@@ -1,12 +1,230 @@
+import { Link, useNavigate } from "@tanstack/react-router";
+import {
+  Camera,
+  Clock,
+  Flower2,
+  RotateCcw,
+  ShieldCheck,
+  Truck,
+} from "lucide-react";
+import { Button } from "~/components/ui/button";
+import { ActiveFilterChips } from "~/features/shop/components/catalog/active-filter-chips";
+import { CatalogFilters } from "~/features/shop/components/catalog/catalog-filters";
+import { CatalogGrid } from "~/features/shop/components/catalog/catalog-grid";
+import { CatalogPagination } from "~/features/shop/components/catalog/catalog-pagination";
+import { CatalogToolbar } from "~/features/shop/components/catalog/catalog-toolbar";
+import { CATALOG_CATEGORIES } from "~/features/shop/data/catalog";
+import { useCatalogData } from "~/features/shop/hooks/use-catalog-data";
 import type { CatalogSearch } from "~/features/shop/schemas/catalog-query-schema";
-import { ShopPlaceholderPage } from "~/features/shop/view/shop-placeholder-page";
 
-export default function CatalogPage({ query }: { query?: CatalogSearch }) {
-  void query;
+const TRUST_ITEMS = [
+  {
+    icon: Clock,
+    title: "BUKA 07.00–21.00 WIB",
+    subtitle: "Respons chat cepat & siap terima pesanan dadakan.",
+  },
+  {
+    icon: Truck,
+    title: "BEBAS ONGKIR TASIKMALAYA",
+    subtitle: "Gratis pengiriman area kota, min. belanja Rp200.000.",
+  },
+  {
+    icon: ShieldCheck,
+    title: "TRANSFER RESMI BCA",
+    subtitle: "Pembayaran aman a.n. Kartinah.",
+  },
+  {
+    icon: Camera,
+    title: "FOTO SEBELUM KIRIM",
+    subtitle: "Pratinjau via WhatsApp sebelum kurir jalan.",
+  },
+];
+
+/**
+ * Halaman katalog /katalog. Query param adalah state (baca via prop dari
+ * route, tulis via navigate functional updater + reset page ke 1).
+ */
+export default function CatalogPage({ query }: { query: CatalogSearch }) {
+  const navigate = useNavigate({ from: "/katalog" });
+  const { items, total, pageCount, counts, isPending, isError } =
+    useCatalogData(query);
+
+  const update = (patch: Record<string, string | number | undefined>) => {
+    void navigate({
+      search: (prev) => ({ ...prev, ...patch, page: 1 }),
+    });
+  };
+  const resetAll = () => {
+    void navigate({ search: {} });
+  };
+
+  if (query.demo === "error" || isError) {
+    return (
+      <main className="mx-auto max-w-7xl px-4 py-16 sm:px-6">
+        <div
+          role="alert"
+          className="mx-auto max-w-md rounded-2xl border border-[#E5E7EB] bg-white p-8 text-center"
+        >
+          <p className="text-base font-bold text-[#1A1A1A]">
+            Gagal memuat katalog
+          </p>
+          <p className="mt-1 text-sm text-[#6B7280]">
+            Periksa koneksi lalu coba lagi.
+          </p>
+          <Button
+            type="button"
+            onClick={resetAll}
+            className="mt-4 rounded-full bg-[#111111] text-white hover:bg-[#2A2A2A]"
+          >
+            <RotateCcw size={16} aria-hidden="true" />
+            Coba lagi
+          </Button>
+        </div>
+      </main>
+    );
+  }
+
+  const visibleItems = query.demo === "empty" ? [] : items;
+  const loading = query.demo === "loading" || isPending;
+
   return (
-    <ShopPlaceholderPage
-      title="Shop Semua Produk"
-      description="Katalog lengkap Delysa Florist segera hadir di halaman ini."
-    />
+    <main className="mx-auto max-w-7xl px-4 pb-4 sm:px-6" aria-label="Katalog">
+      <nav aria-label="Breadcrumb" className="pt-4 text-xs text-[#6B7280]">
+        <ol className="flex items-center gap-1">
+          <li>
+            <Link to="/" className="hover:text-[#111111] hover:underline">
+              Home
+            </Link>
+          </li>
+          <li aria-hidden="true">›</li>
+          <li>
+            <Link
+              to="/katalog"
+              className="hover:text-[#111111] hover:underline"
+            >
+              Shop
+            </Link>
+          </li>
+          <li aria-hidden="true">›</li>
+          <li aria-current="page" className="font-medium text-[#1A1A1A]">
+            Katalog
+          </li>
+        </ol>
+      </nav>
+
+      <div className="mt-2 flex flex-wrap items-end justify-between gap-3">
+        <div>
+          <h1 className="text-xl font-extrabold tracking-tight text-[#1A1A1A] sm:text-2xl">
+            Katalog Rangkaian Bunga &amp; Buket Atelier
+          </h1>
+          <p className="mt-0.5 text-xs text-[#6B7280] sm:text-[13px]">
+            Menampilkan {total} hasil kurasi buket &amp; rangkaian segar siap
+            kirim di Tasikmalaya
+          </p>
+        </div>
+        <div className="flex flex-wrap gap-1.5">
+          {[
+            { icon: Truck, label: "Pengiriman Cepat Tasikmalaya" },
+            { icon: Flower2, label: "Bunga Segar Terawat" },
+          ].map((chip) => (
+            <span
+              key={chip.label}
+              className="inline-flex items-center gap-1.5 rounded-full border border-[#E5E7EB] bg-white px-2.5 py-1 text-[11px] font-medium text-[#1A1A1A]"
+            >
+              <chip.icon
+                size={12}
+                aria-hidden="true"
+                className="text-emerald-700"
+              />
+              {chip.label}
+            </span>
+          ))}
+        </div>
+      </div>
+
+      <div className="mt-3">
+        <ActiveFilterChips
+          query={query}
+          onRemove={(key) => {
+            if (key === "search") update({ search: undefined });
+            else if (key === "category") update({ category: undefined });
+            else update({ minPrice: undefined, maxPrice: undefined });
+          }}
+          onResetAll={resetAll}
+        />
+      </div>
+
+      <div className="mt-3">
+        <CatalogToolbar
+          query={query}
+          categories={CATALOG_CATEGORIES}
+          counts={counts}
+          onSearch={(value) => update({ search: value || undefined })}
+          onCategory={(value) => update({ category: value })}
+          onSort={(value) => update({ sort: value })}
+          resultCount={total}
+        />
+      </div>
+
+      <div className="mt-3 flex flex-col gap-4 lg:flex-row lg:items-start">
+        <div className="w-full shrink-0 lg:w-60">
+          <CatalogFilters
+            query={query}
+            categories={CATALOG_CATEGORIES}
+            counts={counts}
+            onCategory={(value) => update({ category: value })}
+            onApplyPrice={(min, max) =>
+              update({ minPrice: min, maxPrice: max })
+            }
+            onReset={resetAll}
+          />
+        </div>
+        <div className="min-w-0 flex-1">
+          <CatalogGrid
+            items={visibleItems}
+            isPending={loading}
+            onReset={resetAll}
+          />
+          <div className="mt-4 text-center text-xs text-[#6B7280]">
+            Menampilkan 1–{visibleItems.length} dari {total} produk buket &amp;
+            rangkaian
+          </div>
+          <div className="mt-2">
+            <CatalogPagination
+              page={query.page}
+              pageCount={pageCount}
+              onPage={(p) => {
+                void navigate({
+                  search: (prev) => ({ ...prev, page: p }),
+                });
+              }}
+            />
+          </div>
+        </div>
+      </div>
+
+      <section aria-label="Jaminan belanja" className="mt-6">
+        <ul className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-4">
+          {TRUST_ITEMS.map((item) => (
+            <li
+              key={item.title}
+              className="flex items-start gap-2.5 rounded-xl border border-[#E5E7EB] bg-white p-3"
+            >
+              <span className="flex size-9 shrink-0 items-center justify-center rounded-full bg-[#FFF3ED] text-[#FF6B35]">
+                <item.icon size={18} aria-hidden="true" />
+              </span>
+              <span>
+                <span className="block text-xs font-bold text-[#1A1A1A]">
+                  {item.title}
+                </span>
+                <span className="block text-[11px] text-[#6B7280]">
+                  {item.subtitle}
+                </span>
+              </span>
+            </li>
+          ))}
+        </ul>
+      </section>
+    </main>
   );
 }
