@@ -67,10 +67,7 @@ export async function getProducts(
 ): Promise<ProductsListResult> {
   if (isMockMode()) {
     const pool = await mockGet<UnifiedProduct[]>("/products", signal);
-    const { items, total } = applyCatalogFilters(
-      toCatalogItems(pool),
-      query,
-    );
+    const { items, total } = applyCatalogFilters(toCatalogItems(pool), query);
     return { items, total };
   }
   const params = new URLSearchParams();

@@ -19,4 +19,3 @@ export const CATALOG_PRICE_PRESETS: PricePreset[] = [
   { label: "Rp250rb - Rp500rb", min: 250000, max: 500000 },
   { label: "> Rp500rb", min: 500000 },
 ];
-
