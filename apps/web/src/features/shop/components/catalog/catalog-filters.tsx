@@ -1,14 +1,11 @@
-import { useState } from "react";
 import { SlidersHorizontal } from "lucide-react";
-import { Button } from "~/components/ui/button";
-import { Input } from "~/components/ui/input";
 import { CATALOG_PRICE_PRESETS } from "~/features/shop/data/catalog";
 import type { CatalogQuery } from "~/features/shop/types";
 import { cn } from "~/lib/utils";
 
 /**
  * Sidebar faset katalog: kategori (checkbox, single-select),
- * rentang harga (preset radio + min–max + terapkan). Faset adalah form:
+ * rentang harga (preset radio). Faset adalah form:
  * fieldset + legend, count di dalam label, opsi zero-count memakai
  * aria-disabled (tetap fokusable).
  */
@@ -27,22 +24,10 @@ export function CatalogFilters({
   onApplyPrice: (min?: number, max?: number) => void;
   onReset: () => void;
 }) {
-  const [minDraft, setMinDraft] = useState(query.minPrice?.toString() ?? "");
-  const [maxDraft, setMaxDraft] = useState(query.maxPrice?.toString() ?? "");
-
-  const applyCustom = () => {
-    const min = minDraft.trim() === "" ? undefined : Number(minDraft);
-    const max = maxDraft.trim() === "" ? undefined : Number(maxDraft);
-    onApplyPrice(
-      min !== undefined && Number.isFinite(min) && min >= 0 ? min : undefined,
-      max !== undefined && Number.isFinite(max) && max >= 0 ? max : undefined,
-    );
-  };
-
   return (
     <aside
       aria-label="Filter produk"
-      className="rounded-xl border border-[#E5E7EB] bg-white p-4"
+      className="rounded-xs border border-[#E5E7EB] bg-white p-4"
     >
       <div className="flex items-center justify-between">
         <p className="flex items-center gap-1.5 text-sm font-bold text-[#1A1A1A]">
@@ -104,7 +89,7 @@ export function CatalogFilters({
               <label
                 key={preset.label}
                 className={cn(
-                  "flex cursor-pointer items-center justify-center rounded-lg border px-2 py-1.5 text-center text-[11px] font-medium",
+                  "flex min-h-12 cursor-pointer items-center justify-center rounded-lg border px-2 py-1.5 text-center text-[11px] leading-tight font-medium text-balance",
                   active
                     ? "border-[#111111] bg-[#111111] text-white"
                     : "border-[#E5E7EB] bg-white text-[#1A1A1A] hover:border-[#9CA3AF]",
@@ -123,40 +108,6 @@ export function CatalogFilters({
             );
           })}
         </div>
-        <div className="mt-2 flex items-center gap-1.5">
-          <Input
-            type="number"
-            min={0}
-            inputMode="numeric"
-            aria-label="Harga minimum"
-            placeholder="Rp 0"
-            value={minDraft}
-            onChange={(e) => setMinDraft(e.target.value)}
-            className="h-9 text-xs"
-          />
-          <span aria-hidden="true" className="text-[#9CA3AF]">
-            –
-          </span>
-          <Input
-            type="number"
-            min={0}
-            inputMode="numeric"
-            aria-label="Harga maksimum"
-            placeholder="Rp 100.000"
-            value={maxDraft}
-            onChange={(e) => setMaxDraft(e.target.value)}
-            className="h-9 text-xs"
-          />
-        </div>
-        <Button
-          type="button"
-          variant="outline"
-          size="sm"
-          onClick={applyCustom}
-          className="mt-2 w-full rounded-lg"
-        >
-          Terapkan Filter Harga
-        </Button>
       </fieldset>
 
       <div className="mt-4 rounded-xl bg-[#F8F9FA] p-3 text-[11px] leading-relaxed text-[#6B7280]">

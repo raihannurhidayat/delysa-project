@@ -120,12 +120,6 @@ export function CatalogToolbar({
             </SelectContent>
           </Select>
         </Label>
-        <span
-          aria-hidden="true"
-          className="ml-auto hidden items-center gap-1 text-[#9CA3AF] sm:flex"
-        >
-          <LayoutGrid size={16} />
-        </span>
       </div>
       <p aria-live="polite" className="text-xs text-[#6B7280]">
         Menampilkan{" "}
