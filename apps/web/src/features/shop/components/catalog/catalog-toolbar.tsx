@@ -1,6 +1,14 @@
 import { useEffect, useState } from "react";
 import { LayoutGrid, Search } from "lucide-react";
 import { Input } from "~/components/ui/input";
+import { Label } from "~/components/ui/label";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "~/components/ui/select";
 import type { CatalogQuery, CatalogSortKey } from "~/features/shop/types";
 
 const SORT_OPTIONS: { value: CatalogSortKey; label: string }[] = [
@@ -47,7 +55,7 @@ export function CatalogToolbar({
   return (
     <div className="flex flex-col gap-2">
       <div className="flex flex-wrap items-center gap-2">
-        <div className="relative min-w-44 flex-1">
+        <div className="relative min-w-32 flex-1">
           <Search
             size={16}
             aria-hidden="true"
@@ -59,45 +67,53 @@ export function CatalogToolbar({
             placeholder="Filter nama buket…"
             value={draft}
             onChange={(e) => setDraft(e.target.value)}
-            className="h-10 rounded-full border-[#E5E7EB] bg-white pr-4 pl-9 text-sm"
+            className="h-10 rounded-xs border-[#E5E7EB] bg-white pr-4 pl-9 text-sm"
           />
         </div>
-        <label className="flex items-center gap-1.5 text-[11px] font-semibold tracking-wide text-[#6B7280] uppercase">
+        <Label className="gap-1.5 text-[11px] font-semibold tracking-wide text-[#6B7280] uppercase">
           Kategori:
-          <select
-            aria-label="Filter kategori cepat"
-            value={query.category ?? ""}
-            onChange={(e) => onCategory(e.target.value || undefined)}
-            className="h-10 rounded-full border border-[#E5E7EB] bg-white px-3 text-xs font-medium text-[#1A1A1A] normal-case focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-rose-600"
+          <Select
+            value={query.category ?? null}
+            onValueChange={(value) => onCategory(value ?? undefined)}
           >
-            <option value="">Semua</option>
-            {categories.map((c) => (
-              <option key={c} value={c}>
-                {c} ({counts[c] ?? 0})
-              </option>
-            ))}
-          </select>
-        </label>
-        <label className="flex items-center gap-1.5 text-[11px] font-semibold tracking-wide text-[#6B7280] uppercase">
+            <SelectTrigger
+              aria-label="Filter kategori cepat"
+              className="h-10 rounded-xs border-[#E5E7EB] bg-white px-3 text-xs font-medium normal-case text-[#1A1A1A]"
+            >
+              <SelectValue placeholder="Semua" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem>Semua</SelectItem>
+              {categories.map((c) => (
+                <SelectItem key={c} value={c}>
+                  {c} ({counts[c] ?? 0})
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </Label>
+        <Label className="gap-1.5 text-[11px] font-semibold tracking-wide text-[#6B7280] uppercase">
           Urutkan:
-          <select
-            aria-label="Urutkan produk"
-            value={query.sort ?? ""}
-            onChange={(e) =>
-              onSort(
-                (e.target.value || undefined) as CatalogSortKey | undefined,
-              )
-            }
-            className="h-10 rounded-full border border-[#E5E7EB] bg-white px-3 text-xs font-medium text-[#1A1A1A] normal-case focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-rose-600"
+          <Select
+            value={query.sort ?? null}
+            onValueChange={(value) => onSort(value ?? undefined)}
           >
-            <option value="">Paling Relevan</option>
-            {SORT_OPTIONS.map((o) => (
-              <option key={o.value} value={o.value}>
-                {o.label}
-              </option>
-            ))}
-          </select>
-        </label>
+            <SelectTrigger
+              aria-label="Urutkan produk"
+              className="h-10 rounded-xs border-[#E5E7EB] bg-white px-3 text-xs font-medium normal-case text-[#1A1A1A]"
+            >
+              <SelectValue placeholder="Paling Relevan" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem>Paling Relevan</SelectItem>
+              {SORT_OPTIONS.map((o) => (
+                <SelectItem key={o.value} value={o.value}>
+                  {o.label}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </Label>
         <span
           aria-hidden="true"
           className="ml-auto hidden items-center gap-1 text-[#9CA3AF] sm:flex"

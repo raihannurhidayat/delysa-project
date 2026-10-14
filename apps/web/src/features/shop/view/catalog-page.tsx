@@ -7,6 +7,14 @@ import {
   ShieldCheck,
   Truck,
 } from "lucide-react";
+import {
+  Breadcrumb,
+  BreadcrumbItem,
+  BreadcrumbLink,
+  BreadcrumbList,
+  BreadcrumbPage,
+  BreadcrumbSeparator,
+} from "~/components/ui/breadcrumb";
 import { Button } from "~/components/ui/button";
 import { ActiveFilterChips } from "~/features/shop/components/catalog/active-filter-chips";
 import { CatalogFilters } from "~/features/shop/components/catalog/catalog-filters";
@@ -90,33 +98,28 @@ export default function CatalogPage({ query }: { query: CatalogSearch }) {
 
   return (
     <main className="mx-auto max-w-7xl px-4 pb-4 sm:px-6" aria-label="Katalog">
-      <nav aria-label="Breadcrumb" className="pt-4 text-xs text-[#6B7280]">
-        <ol className="flex items-center gap-1">
-          <li>
-            <Link to="/" className="hover:text-[#111111] hover:underline">
-              Home
-            </Link>
-          </li>
-          <li aria-hidden="true">›</li>
-          <li>
-            <Link
-              to="/katalog"
-              className="hover:text-[#111111] hover:underline"
-            >
+      <Breadcrumb className="pt-4">
+        <BreadcrumbList>
+          <BreadcrumbItem>
+            <BreadcrumbLink render={<Link to="/" />}>Home</BreadcrumbLink>
+          </BreadcrumbItem>
+          <BreadcrumbSeparator />
+          <BreadcrumbItem>
+            <BreadcrumbLink render={<Link to="/katalog" />}>
               Shop
-            </Link>
-          </li>
-          <li aria-hidden="true">›</li>
-          <li aria-current="page" className="font-medium text-[#1A1A1A]">
-            Katalog
-          </li>
-        </ol>
-      </nav>
+            </BreadcrumbLink>
+          </BreadcrumbItem>
+          <BreadcrumbSeparator />
+          <BreadcrumbItem>
+            <BreadcrumbPage>Katalog</BreadcrumbPage>
+          </BreadcrumbItem>
+        </BreadcrumbList>
+      </Breadcrumb>
 
       <div className="mt-2 flex flex-wrap items-end justify-between gap-3">
         <div>
           <h1 className="text-xl font-extrabold tracking-tight text-[#1A1A1A] sm:text-2xl">
-            Katalog Rangkaian Bunga &amp; Buket Atelier
+            Katalog Rangkaian Bunga &amp; Buket Delysa
           </h1>
           <p className="mt-0.5 text-xs text-[#6B7280] sm:text-[13px]">
             Menampilkan {total} hasil kurasi buket &amp; rangkaian segar siap

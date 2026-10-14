@@ -35,7 +35,7 @@ export function ActiveFilterChips({
     });
 
   return (
-    <div className="flex flex-wrap items-center gap-2 rounded-xl border border-[#E5E7EB] bg-white px-3 py-2">
+    <div className="flex flex-wrap items-center gap-2 rounded-xs border border-[#E5E7EB] bg-white px-3 py-2">
       <span className="text-[11px] font-bold tracking-wide text-[#6B7280] uppercase">
         Filter aktif:
       </span>
