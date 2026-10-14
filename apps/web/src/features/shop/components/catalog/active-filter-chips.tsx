@@ -45,7 +45,7 @@ export function ActiveFilterChips({
         chips.map((chip) => (
           <span
             key={chip.key}
-            className="inline-flex min-h-6 items-center gap-1 rounded-full bg-[#F1F2F4] py-0.5 pr-1 pl-2.5 text-xs font-medium text-[#1A1A1A]"
+            className="inline-flex min-h-6 items-center gap-1 rounded-xs bg-[#F1F2F4] py-0.5 pr-1 pl-2.5 text-xs font-medium text-[#1A1A1A]"
           >
             {chip.label}
             <button
@@ -53,7 +53,7 @@ export function ActiveFilterChips({
               onClick={() => onRemove(chip.key)}
               aria-label={`Hapus filter ${chip.label}`}
               className={cn(
-                "flex size-6 items-center justify-center rounded-full",
+                "flex size-6 items-center justify-center rounded-full cursor-pointer",
                 "hover:bg-[#E5E7EB] focus-visible:outline-2 focus-visible:outline-offset-1 focus-visible:outline-rose-600",
               )}
             >

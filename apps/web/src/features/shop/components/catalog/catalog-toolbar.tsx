@@ -78,14 +78,14 @@ export function CatalogToolbar({
           >
             <SelectTrigger
               aria-label="Filter kategori cepat"
-              className="h-10 rounded-xs border-[#E5E7EB] bg-white px-3 text-xs font-medium normal-case text-[#1A1A1A]"
+              className="h-10 min-w-52 rounded-xs border-[#E5E7EB] bg-white px-3 text-xs font-medium normal-case text-[#1A1A1A]"
             >
               <SelectValue placeholder="Semua" />
             </SelectTrigger>
-            <SelectContent>
-              <SelectItem>Semua</SelectItem>
+            <SelectContent alignItemWithTrigger={false} className="rounded-xs">
+              <SelectItem className="rounded-xs text-xs">Semua</SelectItem>
               {categories.map((c) => (
-                <SelectItem key={c} value={c}>
+                <SelectItem key={c} value={c} className="rounded-xs text-xs">
                   {c} ({counts[c] ?? 0})
                 </SelectItem>
               ))}
@@ -100,14 +100,20 @@ export function CatalogToolbar({
           >
             <SelectTrigger
               aria-label="Urutkan produk"
-              className="h-10 rounded-xs border-[#E5E7EB] bg-white px-3 text-xs font-medium normal-case text-[#1A1A1A]"
+              className="h-10 min-w-52 rounded-xs border-[#E5E7EB] bg-white px-3 text-xs font-medium normal-case text-[#1A1A1A]"
             >
               <SelectValue placeholder="Paling Relevan" />
             </SelectTrigger>
-            <SelectContent>
-              <SelectItem>Paling Relevan</SelectItem>
+            <SelectContent alignItemWithTrigger={false} className="rounded-xs">
+              <SelectItem className="rounded-xs text-xs">
+                Paling Relevan
+              </SelectItem>
               {SORT_OPTIONS.map((o) => (
-                <SelectItem key={o.value} value={o.value}>
+                <SelectItem
+                  key={o.value}
+                  value={o.value}
+                  className="rounded-xs text-xs"
+                >
                   {o.label}
                 </SelectItem>
               ))}
