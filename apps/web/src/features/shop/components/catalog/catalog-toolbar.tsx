@@ -54,8 +54,8 @@ export function CatalogToolbar({
 
   return (
     <div className="flex flex-col gap-2">
-      <div className="flex flex-wrap items-center gap-2">
-        <div className="relative min-w-32 flex-1">
+      <div className="flex flex-col gap-2 md:flex-row md:flex-wrap md:items-center">
+        <div className="relative w-full md:w-auto md:min-w-32 md:flex-1">
           <Search
             size={16}
             aria-hidden="true"
@@ -70,7 +70,7 @@ export function CatalogToolbar({
             className="h-10 rounded-xs border-[#E5E7EB] bg-white pr-4 pl-9 text-sm"
           />
         </div>
-        <Label className="gap-1.5 text-[11px] font-semibold tracking-wide text-[#6B7280] uppercase">
+        <Label className="w-full flex-col items-stretch gap-1.5 text-[11px] font-semibold tracking-wide text-[#6B7280] uppercase md:w-auto md:flex-row md:items-center">
           Kategori:
           <Select
             value={query.category ?? null}
@@ -78,7 +78,7 @@ export function CatalogToolbar({
           >
             <SelectTrigger
               aria-label="Filter kategori cepat"
-              className="h-10 min-w-52 rounded-xs border-[#E5E7EB] bg-white px-3 text-xs font-medium normal-case text-[#1A1A1A]"
+              className="h-10 w-full rounded-xs border-[#E5E7EB] bg-white px-3 text-xs font-medium normal-case text-[#1A1A1A] md:w-auto md:min-w-52"
             >
               <SelectValue placeholder="Semua" />
             </SelectTrigger>
@@ -92,7 +92,7 @@ export function CatalogToolbar({
             </SelectContent>
           </Select>
         </Label>
-        <Label className="gap-1.5 text-[11px] font-semibold tracking-wide text-[#6B7280] uppercase">
+        <Label className="w-full flex-col items-stretch gap-1.5 text-[11px] font-semibold tracking-wide text-[#6B7280] uppercase md:w-auto md:flex-row md:items-center">
           Urutkan:
           <Select
             value={query.sort ?? null}
@@ -100,7 +100,7 @@ export function CatalogToolbar({
           >
             <SelectTrigger
               aria-label="Urutkan produk"
-              className="h-10 min-w-52 rounded-xs border-[#E5E7EB] bg-white px-3 text-xs font-medium normal-case text-[#1A1A1A]"
+              className="h-10 w-full rounded-xs border-[#E5E7EB] bg-white px-3 text-xs font-medium normal-case text-[#1A1A1A] md:w-auto md:min-w-52"
             >
               <SelectValue placeholder="Paling Relevan" />
             </SelectTrigger>

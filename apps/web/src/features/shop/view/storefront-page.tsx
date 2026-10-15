@@ -94,7 +94,7 @@ export default function StorefrontPage({
     <main className="pb-4">
       <HeroSection />
       <CategoryGrid />
-      <TrustStrip />
+      {/*<TrustStrip />*/}
       <FlashSaleSection
         products={empty ? [] : (flash.data ?? [])}
         isPending={pending || flash.isPending}
