@@ -1,18 +1,16 @@
-import { ShoppingCart, Star } from "lucide-react";
-import { Button } from "~/components/ui/button";
+import { Star } from "lucide-react";
 import { formatIDR, formatSold } from "~/features/shop/lib/format";
 import type { UnifiedProduct } from "~/features/shop/types";
 import { cn } from "~/lib/utils";
 
 export type CardProductVariant = "flash-sale" | "catalog" | "default";
 
-/** Label tombol disamakan untuk semua varian (satu konstanta). */
-const BUY_LABEL = "Beli Sekarang";
-
 /**
  * Satu kartu produk untuk semua jenis (fondasi gaya flash sale).
  * Diversifikasi via `variant`: badge, rating, harga.
- * Tombol beli disamakan untuk semua varian (UI-only tahap ini).
+ * Seluruh kartu berperan sebagai link ke detail produk: hover cursor-pointer,
+ * klik/Enter/Spasi membuka detail. Halaman detail belum ada, jadi untuk
+ * sementara memunculkan alert (UI-only tahap ini).
  */
 export function CardProduct({
   item,
@@ -24,10 +22,23 @@ export function CardProduct({
   const left = item.stockLeft ?? item.stock;
   const soldOut = left !== undefined && left <= 0;
 
+  const openDetail = () => {
+    window.alert("Detail produk segera hadir (UI-only)");
+  };
+
   return (
     <article
-      aria-label={item.name}
-      className="group flex flex-col overflow-hidden rounded-xs border border-[#E5E7EB] bg-white shadow-[0_1px_2px_rgba(16,24,40,0.05)]"
+      role="link"
+      tabIndex={0}
+      aria-label={`Lihat detail ${item.name} (segera hadir)`}
+      onClick={openDetail}
+      onKeyDown={(event) => {
+        if (event.key === "Enter" || event.key === " ") {
+          event.preventDefault();
+          openDetail();
+        }
+      }}
+      className="group flex cursor-pointer flex-col overflow-hidden rounded-xs border border-[#E5E7EB] bg-white shadow-[0_1px_2px_rgba(16,24,40,0.05)] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-rose-600"
     >
       <div className="relative overflow-hidden bg-[#F8F9FA]">
         <img
@@ -66,18 +77,7 @@ export function CardProduct({
           {item.category}
         </p>
         <h3 className="line-clamp-2 min-h-[2.5rem] text-[13px] leading-snug font-semibold text-[#1A1A1A]">
-          {variant === "default" ? (
-            <a
-              href="#"
-              onClick={(e) => e.preventDefault()}
-              aria-label={`${item.name} (segera hadir)`}
-              className="hover:text-[#FF6B35]"
-            >
-              {item.name}
-            </a>
-          ) : (
-            item.name
-          )}
+          {item.name}
         </h3>
         {variant !== "flash-sale" ? (
           <p className="flex items-center gap-1 text-[11px] text-[#6B7280]">
@@ -115,17 +115,11 @@ export function CardProduct({
           </span>
         </p>
 
-        <Button
-          type="button"
-          size="sm"
-          disabled={soldOut}
-          onClick={() => window.alert("Beli segera hadir (UI-only)")}
-          aria-label={`${item.name}: ${soldOut ? "stok habis" : "beli (segera hadir)"}`}
-          className="mt-1 h-9 w-full rounded-xs cursor-pointer bg-[#111111] text-xs font-semibold text-white hover:bg-[#2A2A2A] disabled:opacity-50"
-        >
-          <ShoppingCart size={14} aria-hidden="true" />
-          {soldOut ? "Stok Habis" : BUY_LABEL}
-        </Button>
+        {soldOut ? (
+          <p className="mt-1 inline-flex h-9 w-full items-center justify-center rounded-xs bg-[#F3F4F6] text-xs font-semibold text-[#9CA3AF]">
+            Stok Habis
+          </p>
+        ) : null}
       </div>
     </article>
   );
