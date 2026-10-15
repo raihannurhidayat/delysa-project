@@ -1,9 +1,10 @@
 import { AtSign } from "lucide-react";
-import { SectionHeader } from "~/features/shop/components/section-header";
-import { STOREFRONT_PRODUCTS } from "~/features/shop/data/storefront";
+import { SectionHeader } from "~/features/shop/components/storefront/section-header";
+import bestSellersFixture from "~/mock/products/best-sellers.json";
+import type { UnifiedProduct } from "~/features/shop/types";
 
 export function InstagramStrip() {
-  const photos = STOREFRONT_PRODUCTS.slice(0, 5);
+  const photos = (bestSellersFixture as UnifiedProduct[]).slice(0, 5);
 
   return (
     <section

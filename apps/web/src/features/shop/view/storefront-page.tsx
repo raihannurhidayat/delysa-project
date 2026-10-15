@@ -1,16 +1,22 @@
 import { RotateCcw } from "lucide-react";
 import { Button } from "~/components/ui/button";
-import { CategoryGrid } from "~/features/shop/components/category-grid";
-import { FaqSection } from "~/features/shop/components/faq-section";
-import { FlashSaleSection } from "~/features/shop/components/flash-sale-section";
-import { HeroSection } from "~/features/shop/components/hero-section";
-import { InstagramStrip } from "~/features/shop/components/instagram-strip";
-import { ProductCardSkeleton } from "~/features/shop/components/product-card";
-import { ProductRail } from "~/features/shop/components/product-rail";
-import { PromoBanner } from "~/features/shop/components/promo-banner";
-import { Testimonials } from "~/features/shop/components/testimonials";
-import { TrustStrip } from "~/features/shop/components/trust-strip";
-import { useStorefrontData } from "~/features/shop/hooks/use-storefront-data";
+import { CategoryGrid } from "~/features/shop/components/storefront/category-grid";
+import { FaqSection } from "~/features/shop/components/storefront/faq-section";
+import { FlashSaleSection } from "~/features/shop/components/storefront/flash-sale-section";
+import { HeroSection } from "~/features/shop/components/storefront/hero-section";
+import { InstagramStrip } from "~/features/shop/components/storefront/instagram-strip";
+import { ProductCardSkeleton } from "~/features/shop/components/card-product";
+import { ProductRail } from "~/features/shop/components/storefront/product-rail";
+import { PromoBanner } from "~/features/shop/components/storefront/promo-banner";
+import { Testimonials } from "~/features/shop/components/storefront/testimonials";
+import { TrustStrip } from "~/features/shop/components/storefront/trust-strip";
+import {
+  useBestSellersProducts,
+  useCategoryProducts,
+  useFlashSaleProducts,
+  useNewArrivalsProducts,
+  useProducts,
+} from "~/features/shop/hooks/use-shop-queries";
 
 export type StorefrontDemoState = "loading" | "empty" | "error";
 
@@ -61,50 +67,72 @@ export default function StorefrontPage({
 }: {
   demo?: StorefrontDemoState;
 }) {
-  const { products } = useStorefrontData();
+  const flash = useFlashSaleProducts();
+  const best = useBestSellersProducts();
+  const fresh = useNewArrivalsProducts();
+  const wisuda = useCategoryProducts("Wisuda");
+  const kado = useCategoryProducts("Kado");
+  const reco = useProducts({ page: 1 });
+
+  const pending = demo === "loading";
 
   if (demo === "loading") return <StorefrontLoading />;
-  if (demo === "error") return <StorefrontError />;
+  if (
+    demo === "error" ||
+    flash.isError ||
+    best.isError ||
+    fresh.isError ||
+    wisuda.isError ||
+    kado.isError ||
+    reco.isError
+  )
+    return <StorefrontError />;
 
-  const list = demo === "empty" ? [] : products;
-  const byCategory = (category: string) =>
-    list.filter((p) => p.category === category);
+  const empty = demo === "empty";
 
   return (
     <main className="pb-4">
       <HeroSection />
       <CategoryGrid />
-      <TrustStrip />
-      <FlashSaleSection products={list.slice(0, 4)} />
+      {/*<TrustStrip />*/}
+      <FlashSaleSection
+        products={empty ? [] : (flash.data ?? [])}
+        isPending={pending || flash.isPending}
+      />
       <ProductRail
         eyebrow="Paling Laris"
         title="Produk Terlaris Minggu Ini"
-        products={list}
+        products={empty ? [] : (best.data ?? [])}
+        isPending={pending || best.isPending}
         tabs={["Semua", "Wisuda", "Mawar", "Anggrek"]}
       />
       <ProductRail
         eyebrow="Baru Datang"
         title="Koleksi Terbaru Atelier"
         linkText="Lihat Semua Produk Terbaru"
-        products={[...list].filter((p) => p.isNew)}
+        products={empty ? [] : (fresh.data ?? [])}
+        isPending={pending || fresh.isPending}
       />
       <ProductRail
         eyebrow="Wisuda"
         title="Koleksi Wisuda Favorit"
         linkText="Lihat Semua (42 Produk)"
-        products={byCategory("Wisuda")}
+        products={empty ? [] : (wisuda.data ?? [])}
+        isPending={pending || wisuda.isPending}
       />
       <ProductRail
         eyebrow="Kado"
         title="Buket Bunga Kado & Mawar Romantis"
         linkText="Lihat Semua (36 Produk)"
-        products={byCategory("Kado")}
+        products={empty ? [] : (kado.data ?? [])}
+        isPending={pending || kado.isPending}
       />
       <PromoBanner />
       <ProductRail
         eyebrow="Untuk Anda"
         title="Rekomendasi Untuk Anda"
-        products={list}
+        products={empty ? [] : reco.items}
+        isPending={pending || reco.isPending}
         loadMoreText="Muat Lebih Banyak Produk"
       />
       <Testimonials />
