@@ -58,13 +58,19 @@ export default function CatalogPage({ query }: { query: CatalogSearch }) {
   const { items, total, counts, isPending, isError } = useProducts(query);
   const pageCount = Math.max(1, Math.ceil(total / CATALOG_PAGE_SIZE));
 
+  // Diverifikasi via context7: TanStack Router docs "Scroll Restoration >
+  // Preventing Scroll Restoration" — navigate({ resetScroll: false })
+  // mempertahankan posisi scroll. Dipakai untuk semua perubahan filter agar
+  // pengguna yang sedang scroll di grid tidak tiba-tiba loncat ke atas.
+  // Navigasi pagination (onPage) sengaja dibiarkan default agar scroll ke atas.
   const update = (patch: Record<string, string | number | undefined>) => {
     void navigate({
       search: (prev) => ({ ...prev, ...patch, page: 1 }),
+      resetScroll: false,
     });
   };
   const resetAll = () => {
-    void navigate({ search: {} });
+    void navigate({ search: {}, resetScroll: false });
   };
 
   if (query.demo === "error" || isError) {
