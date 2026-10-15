@@ -1,34 +1,37 @@
 import {
   AtSign,
   MapPin,
+  Menu,
   Phone,
   Search,
   ShoppingCart,
   User,
 } from "lucide-react";
-import { Link, useLocation } from "@tanstack/react-router";
+import { Link, useLocation, useNavigate } from "@tanstack/react-router";
+import * as React from "react";
 import { Badge } from "~/components/ui/badge";
 import { Button } from "~/components/ui/button";
 import { Input } from "~/components/ui/input";
 import { useSlidingIndicator } from "~/features/shop/hooks/use-sliding-indicator";
+import { ShopMobileNav } from "./shop-mobile-nav";
 
-type ShopNavTo =
+export type ShopNavTo =
   | "/"
-  | "/shop"
+  | "/katalog"
   | "/new-arrivals"
   | "/best-sellers"
   | "/categories"
   | "/promo"
   | "/about";
 
-type ShopNavItem = {
+export type ShopNavItem = {
   label: string;
   to: ShopNavTo;
 };
 
-const NAV_LINKS: ShopNavItem[] = [
+export const NAV_LINKS: ShopNavItem[] = [
   { label: "Home", to: "/" },
-  { label: "Shop Semua Produk", to: "/shop" },
+  { label: "Shop Semua Produk", to: "/katalog" },
   { label: "New Arrivals", to: "/new-arrivals" },
   { label: "Best Sellers", to: "/best-sellers" },
   { label: "Kategori Bunga", to: "/categories" },
@@ -66,17 +69,62 @@ function DeadLink({
 
 export function ShopHeader() {
   const pathname = useLocation({ select: (location) => location.pathname });
-  const activeTo = NAV_LINKS.some((item) => item.to === pathname)
-    ? pathname
+  const navigate = useNavigate();
+  const activeTo: ShopNavTo | null = NAV_LINKS.some(
+    (item) => item.to === pathname,
+  )
+    ? (pathname as ShopNavTo)
     : null;
   const indicator = useSlidingIndicator({ value: activeTo });
+  const [mobileNavOpen, setMobileNavOpen] = React.useState(false);
+  const [mobileSearch, setMobileSearch] = React.useState("");
+
+  // Header persisten (tidak remount saat pindah route): tutup drawer manual.
+  React.useEffect(() => {
+    setMobileNavOpen(false);
+  }, [pathname]);
+
+  const submitMobileSearch = (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    // Batas 100 char mengikuti skema zod search katalog
+    // (catalog-query-schema.ts) agar tak pernah mengirim nilai tak valid.
+    const value = mobileSearch.trim().slice(0, 100);
+    if (pathname === "/katalog") {
+      // Di katalog: perlakukan seperti filter agar scroll tidak loncat
+      // (pola resetScroll:false di catalog-page.tsx). `to` membuat updater
+      // `search` terketik terhadap skema katalog (terverifikasi context7:
+      // TanStack Router "Navigate and update search params with useNavigate").
+      void navigate({
+        to: "/katalog",
+        search: (prev) => ({ ...prev, search: value || undefined, page: 1 }),
+        resetScroll: false,
+      });
+    } else {
+      void navigate({
+        to: "/katalog",
+        search: value ? { search: value } : {},
+      });
+    }
+  };
 
   return (
     <header className="sticky top-0 z-40 border-b border-[#E5E7EB] bg-white/95 backdrop-blur">
       <div className="mx-auto flex max-w-7xl items-center gap-3 px-4 py-3 sm:gap-6 sm:px-6">
+        <Button
+          type="button"
+          variant="ghost"
+          aria-label="Menu"
+          aria-expanded={mobileNavOpen}
+          aria-controls="mobile-nav"
+          onClick={() => setMobileNavOpen(true)}
+          className="h-11 shrink-0 gap-1.5 rounded-full px-3 text-[#111111] md:hidden"
+        >
+          <Menu size={20} aria-hidden="true" />
+          <span className="text-sm font-semibold">Menu</span>
+        </Button>
         <DeadLink
           label="Beranda Delysa Florist"
-          className="shrink-0 text-base font-extrabold tracking-tight text-[#111111]"
+          className="hidden shrink-0 text-base font-extrabold tracking-tight text-[#111111] md:block"
         >
           DELYSA FLORIST
         </DeadLink>
@@ -114,7 +162,33 @@ export function ShopHeader() {
           </DeadLink>
         </div>
       </div>
-      <nav aria-label="Navigasi toko" className="border-t border-[#F1F2F4]">
+      <div className="px-4 pb-3 md:hidden">
+        <form role="search" onSubmit={submitMobileSearch} className="relative">
+          <Search
+            size={16}
+            aria-hidden="true"
+            className="absolute top-1/2 left-3 -translate-y-1/2 text-[#9CA3AF]"
+          />
+          <Input
+            type="search"
+            aria-label="Cari produk"
+            placeholder="Cari buket wisuda, papan bunga, mawar..."
+            value={mobileSearch}
+            onChange={(event) => setMobileSearch(event.target.value)}
+            className="h-11 rounded-full border-[#E5E7EB] bg-[#F8F9FA] pr-4 pl-9 text-sm"
+          />
+        </form>
+      </div>
+      <ShopMobileNav
+        open={mobileNavOpen}
+        onOpenChange={setMobileNavOpen}
+        links={NAV_LINKS}
+        activeTo={activeTo}
+      />
+      <nav
+        aria-label="Navigasi toko"
+        className="hidden border-t border-[#F1F2F4] md:block"
+      >
         <div
           ref={indicator.listRef}
           className="relative mx-auto flex max-w-7xl items-center gap-5 overflow-x-auto px-4 py-2 text-[13px] font-medium whitespace-nowrap sm:px-6"

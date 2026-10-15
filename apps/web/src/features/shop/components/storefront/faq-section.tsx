@@ -7,11 +7,11 @@ import {
   AccordionPanelContent,
   AccordionTrigger,
 } from "~/components/ui/accordion";
-import { SectionHeader } from "~/features/shop/components/section-header";
-import { useStorefrontData } from "~/features/shop/hooks/use-storefront-data";
+import { SectionHeader } from "~/features/shop/components/storefront/section-header";
+import { STOREFRONT_FAQS } from "~/features/shop/data/storefront";
 
 export function FaqSection() {
-  const { faqs } = useStorefrontData();
+  const faqs = STOREFRONT_FAQS;
 
   return (
     <section

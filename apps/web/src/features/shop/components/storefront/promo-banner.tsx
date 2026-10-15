@@ -1,6 +1,7 @@
 import { ArrowRight } from "lucide-react";
 import { Button } from "~/components/ui/button";
-import { STOREFRONT_PRODUCTS } from "~/features/shop/data/storefront";
+import flashSaleFixture from "~/mock/products/flash-sale.json";
+import type { UnifiedProduct } from "~/features/shop/types";
 
 export function PromoBanner() {
   return (
@@ -10,7 +11,7 @@ export function PromoBanner() {
     >
       <div className="relative overflow-hidden rounded-2xl bg-[#111111] text-white">
         <img
-          src={STOREFRONT_PRODUCTS[4].image}
+          src={(flashSaleFixture as UnifiedProduct[])[4].image}
           alt=""
           width={1600}
           height={500}

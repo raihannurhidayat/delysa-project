@@ -1,0 +1,60 @@
+[
+  {
+    "id": "c02",
+    "slug": "buket-wisuda-mini-teddy-scholar",
+    "name": "Buket Boneka Wisuda Mini Teddy 'Scholar'",
+    "price": 85000,
+    "image": "https://images.unsplash.com/photo-1518895949257-7621c3c786d7?w=800&q=80&auto=format&fit=crop",
+    "rating": 4.9,
+    "sold": 640,
+    "reviewCount": 120,
+    "category": "Wisuda",
+    "isNew": true,
+    "stock": 8,
+    "stockTotal": 20,
+    "badge": "FAVORIT UNSIL"
+  },
+  {
+    "id": "c14",
+    "slug": "glass-dome-everlasting-beauty",
+    "name": "Glass Dome 'Everlasting Beauty' Lampu LED",
+    "price": 275000,
+    "image": "https://images.unsplash.com/photo-1591886960571-74d43a9d4166?w=800&q=80&auto=format&fit=crop",
+    "rating": 5.0,
+    "sold": 380,
+    "reviewCount": 112,
+    "category": "Kado",
+    "isNew": true,
+    "stock": 6,
+    "stockTotal": 20
+  },
+  {
+    "id": "c22",
+    "slug": "buket-mini-baby-breath-cloudlet",
+    "name": "Buket Mini Baby Breath 'Cloudlet'",
+    "price": 75000,
+    "image": "https://images.unsplash.com/photo-1520763185298-1b434c919102?w=800&q=80&auto=format&fit=crop",
+    "rating": 5.0,
+    "sold": 810,
+    "reviewCount": 132,
+    "category": "Meja",
+    "isNew": true,
+    "stock": 10,
+    "stockTotal": 20
+  },
+  {
+    "id": "c12",
+    "slug": "mini-anggrek-pastel-duo",
+    "name": "Mini Anggrek Pastel Duo Pot",
+    "price": 175000,
+    "image": "https://images.unsplash.com/photo-1561181286-d3fee7d55342?w=800&q=80&auto=format&fit=crop",
+    "rating": 4.7,
+    "sold": 210,
+    "reviewCount": 51,
+    "category": "Anggrek",
+    "isNew": true,
+    "stock": 2,
+    "stockTotal": 10,
+    "badge": "SISA 2 ITEM"
+  }
+]

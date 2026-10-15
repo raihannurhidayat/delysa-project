@@ -1,7 +1,7 @@
 import { createFileRoute, Outlet } from "@tanstack/react-router";
-import { PromoTopBar } from "~/features/shop/components/promo-top-bar";
-import { ShopFooter } from "~/features/shop/components/shop-footer";
-import { ShopHeader } from "~/features/shop/components/shop-header";
+import { PromoTopBar } from "~/features/shop/components/storefront/promo-top-bar";
+import { ShopFooter } from "~/features/shop/components/storefront/shop-footer";
+import { ShopHeader } from "~/features/shop/components/storefront/shop-header";
 
 export const Route = createFileRoute("/_shop")({
   component: ShopLayout,
