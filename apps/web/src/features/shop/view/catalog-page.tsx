@@ -189,14 +189,12 @@ export default function CatalogPage({ query }: { query: CatalogSearch }) {
             isPending={loading}
             onReset={resetAll}
           />
-          <div className="mt-4 text-center text-xs text-[#6B7280]">
-            Menampilkan 1–{visibleItems.length} dari {total} produk buket &amp;
-            rangkaian
-          </div>
-          <div className="mt-2">
+          <div className="mt-4">
             <CatalogPagination
               page={query.page}
               pageCount={pageCount}
+              total={total}
+              pageSize={CATALOG_PAGE_SIZE}
               onPage={(p) => {
                 void navigate({
                   search: (prev) => ({ ...prev, page: p }),
