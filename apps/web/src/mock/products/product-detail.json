@@ -1,0 +1,321 @@
+[
+  {
+    "id": "hero-grand-monolith",
+    "slug": "the-grand-monolith-peach-ivory",
+    "name": "The Grand Monolith Peach & Ivory Bouquet",
+    "price": 650000,
+    "originalPrice": 750000,
+    "discountPercent": 13,
+    "image": "https://images.unsplash.com/photo-1490750967868-88aa4486c946?w=800&q=80&auto=format&fit=crop",
+    "rating": 5.0,
+    "sold": 348,
+    "reviewCount": 348,
+    "category": "Wisuda",
+    "stock": 4,
+    "stockTotal": 20,
+    "badge": "Best Seller #1",
+    "isFlashSale": false,
+    "gallery": [
+      "https://images.unsplash.com/photo-1490750967868-88aa4486c946?w=800&q=80&auto=format&fit=crop",
+      "https://images.unsplash.com/photo-1520763185298-1b434c919102?w=800&q=80&auto=format&fit=crop",
+      "https://images.unsplash.com/photo-1533616688419-b7a585564566?w=800&q=80&auto=format&fit=crop",
+      "https://images.unsplash.com/photo-1487530811176-3780de880c2d?w=800&q=80&auto=format&fit=crop",
+      "https://images.unsplash.com/photo-1463320726281-696a485928c7?w=800&q=80&auto=format&fit=crop"
+    ],
+    "description": "The Grand Monolith Peach & Ivory Bouquet dirancang dengan pendekatan artistektural kontemporer oleh floral artisan Delysa Florist. Memadukan keanggunan monokromatik mawar ivory dengan kehangatan rona peach segar, rangkaian ini menghadirkan aura prestisius yang sempurna untuk momen kelulusan universitas, perayaan anniversary, maupun penghormatan personal. Setiap tangkai dipilih langsung dari hasil panen kurasi dataran tinggi, memastikan kelopak mekar sempurna dengan ketahanan optimal selama prosesi perayaan Anda di Tasikmalaya dan sekitarnya.",
+    "care": [
+      "Potong Tangkai: Potong miring 45 derajat sepanjang 1-2 cm di bawah air mengalir sebelum menempatkan ke dalam vas air bersih.",
+      "Ganti Air Rutin: Ganti air vas setiap 1-2 hari sekali dan bersihkan lendir pada batang untuk mencegah bakteri.",
+      "Hindari Paparan Panas: Jauhkan dari sinar matahari langsung, kipas angin kencang, atau hembusan pendingin ruangan (AC) secara berlebih agar bunga bertahan 5-7 hari."
+    ],
+    "specs": [
+      {
+        "label": "Isi Rangkaian",
+        "value": "Mawar Ekuador premium, Hydrangea Belanda, Eucalyptus Italia"
+      },
+      { "label": "Tinggi", "value": "55–65 cm (tergantung varian ukuran)" },
+      {
+        "label": "Kemasan",
+        "value": "Box pelindung water-bag + pita satin (tanpa biaya tambahan)"
+      },
+      { "label": "Kartu Ucapan", "value": "Gratis, maks. 200 karakter" }
+    ],
+    "shipping": [
+      "Same-day Tasikmalaya: pesan sebelum 18.00 WIB, antar 2-3 jam.",
+      "Foto rangkaian dikirim via WhatsApp sebelum kurir jalan.",
+      "Gratis ongkir Kota Tasikmalaya min. belanja Rp200.000."
+    ],
+    "sizes": [
+      {
+        "id": "standard",
+        "label": "Standard",
+        "stems": "15 Tangkai",
+        "priceDelta": -200000
+      },
+      {
+        "id": "grand-luxury",
+        "label": "Grand Luxury",
+        "stems": "25 Tangkai",
+        "priceDelta": 0
+      },
+      {
+        "id": "imperial",
+        "label": "Imperial",
+        "stems": "35 Tangkai",
+        "priceDelta": 270000
+      }
+    ],
+    "wraps": [
+      { "id": "onyx-gold", "label": "Onyx & Gold", "sub": "Edging" },
+      { "id": "cream-ivory", "label": "Cream Ivory", "sub": "Linen" },
+      { "id": "blush-pink", "label": "Blush Pink", "sub": "Silk" }
+    ],
+    "ratingBreakdown": [
+      { "stars": 5, "pct": 92 },
+      { "stars": 4, "pct": 6 },
+      { "stars": 3, "pct": 2 },
+      { "stars": 2, "pct": 0 },
+      { "stars": 1, "pct": 0 }
+    ],
+    "reviews": [
+      {
+        "id": "r1",
+        "name": "Nadia Dwi Putri",
+        "initials": "ND",
+        "rating": 5,
+        "date": "3 hari lalu",
+        "variant": "Grand Luxury (25 Tangkai)",
+        "text": "Sangat puas memesan untuk wisuda sahabat di Universitas Siliwangi kemarin. Ukuran buketnya beneran megah, warnanya persis foto katalog tanpa diedit lebay. Admin WhatsApp sigap kirim foto final pas jam 08.00 pagi sebelum kurir antar ke lokasi. Worth every rupiah!",
+        "verified": true,
+        "helpful": 38
+      },
+      {
+        "id": "r2",
+        "name": "Rizky Adrianasyah",
+        "initials": "RA",
+        "rating": 5,
+        "date": "1 minggu lalu",
+        "variant": "Grand Luxury (25 Tangkai)",
+        "text": "Packaging mewahnya dapat banget, kertas hitam list gold-nya tebal dan tidak mudah lecek. Kartu ucapan ditulis rapi dengan amplop wax seal. Istri suka sekali untuk kado anniversary ke-3. Pelayanan Delysa Florist konsisten terbaik di Tasik.",
+        "verified": true,
+        "helpful": 24
+      }
+    ]
+  },
+  {
+    "id": "c01",
+    "slug": "single-sunflower-mentari-wisuda",
+    "name": "Single Sunflower 'Mentari Wisuda'",
+    "price": 45000,
+    "originalPrice": 60000,
+    "discountPercent": 25,
+    "image": "https://images.unsplash.com/photo-1463320726281-696a485928c7?w=800&q=80&auto=format&fit=crop",
+    "rating": 4.9,
+    "sold": 1120,
+    "reviewCount": 140,
+    "category": "Wisuda",
+    "stock": 3,
+    "stockTotal": 20,
+    "badge": "DISKON 25%",
+    "isFlashSale": true,
+    "gallery": [
+      "https://images.unsplash.com/photo-1463320726281-696a485928c7?w=800&q=80&auto=format&fit=crop",
+      "https://images.unsplash.com/photo-1490750967868-88aa4486c946?w=800&q=80&auto=format&fit=crop",
+      "https://images.unsplash.com/photo-1520763185298-1b434c919102?w=800&q=80&auto=format&fit=crop"
+    ],
+    "description": "Single sunflower segar dengan wrapping kraft minimalis untuk momen wisuda yang hangat dan personal.",
+    "care": [
+      "Potong miring 1-2 cm sebelum dirangkai ke vas.",
+      "Ganti air tiap 2 hari agar mekar 5-7 hari."
+    ],
+    "specs": [
+      { "label": "Isi", "value": "1 tangkai sunflower grade A" },
+      { "label": "Kemasan", "value": "Kraft + pita satin" }
+    ],
+    "shipping": [
+      "Same-day Tasikmalaya sebelum 18.00 WIB.",
+      "Foto via WhatsApp sebelum kirim."
+    ],
+    "sizes": [
+      {
+        "id": "standard",
+        "label": "Standard",
+        "stems": "1 Tangkai",
+        "priceDelta": 0
+      },
+      {
+        "id": "trio",
+        "label": "Trio",
+        "stems": "3 Tangkai",
+        "priceDelta": 80000
+      }
+    ],
+    "wraps": [
+      { "id": "kraft", "label": "Kraft", "sub": "Natural" },
+      { "id": "onyx-gold", "label": "Onyx & Gold", "sub": "Edging" }
+    ],
+    "ratingBreakdown": [
+      { "stars": 5, "pct": 90 },
+      { "stars": 4, "pct": 8 },
+      { "stars": 3, "pct": 2 },
+      { "stars": 2, "pct": 0 },
+      { "stars": 1, "pct": 0 }
+    ],
+    "reviews": [
+      {
+        "id": "r1",
+        "name": "Sinta Ayu",
+        "initials": "SA",
+        "rating": 5,
+        "date": "2 hari lalu",
+        "variant": "Standard (1 Tangkai)",
+        "text": "Bunganya segar, wrapping rapi. Kurir ramah dan tepat waktu.",
+        "verified": true,
+        "helpful": 12
+      }
+    ]
+  },
+  {
+    "id": "c03",
+    "slug": "buket-wisuda-elegant-golden-champagne",
+    "name": "Buket Wisuda Elegant 'Golden Champagne'",
+    "price": 195000,
+    "originalPrice": 300000,
+    "discountPercent": 35,
+    "image": "https://images.unsplash.com/photo-1490750967868-88aa4486c946?w=800&q=80&auto=format&fit=crop",
+    "rating": 4.9,
+    "sold": 980,
+    "reviewCount": 184,
+    "category": "Wisuda",
+    "stock": 6,
+    "stockTotal": 20,
+    "badge": "PALING DICARI",
+    "isFlashSale": true,
+    "gallery": [
+      "https://images.unsplash.com/photo-1490750967868-88aa4486c946?w=800&q=80&auto=format&fit=crop",
+      "https://images.unsplash.com/photo-1487530811176-3780de880c2d?w=800&q=80&auto=format&fit=crop",
+      "https://images.unsplash.com/photo-1526047932273-341f2a7631f9?w=800&q=80&auto=format&fit=crop"
+    ],
+    "description": "Buket wisuda elegan nuansa golden champagne dengan aksen silver dan gold, siap antar di hari bahagia.",
+    "care": [
+      "Simpan di tempat sejuk sebelum diberikan.",
+      "Semprot kelopak dengan air bersih agar segar."
+    ],
+    "specs": [
+      { "label": "Isi", "value": "Mawar + filler premium" },
+      { "label": "Tinggi", "value": "45–55 cm" }
+    ],
+    "shipping": [
+      "Same-day Tasikmalaya sebelum 18.00 WIB.",
+      "Gratis ongkir kota min. Rp200.000."
+    ],
+    "sizes": [
+      {
+        "id": "standard",
+        "label": "Standard",
+        "stems": "12 Tangkai",
+        "priceDelta": 0
+      },
+      {
+        "id": "grand-luxury",
+        "label": "Grand Luxury",
+        "stems": "20 Tangkai",
+        "priceDelta": 100000
+      }
+    ],
+    "wraps": [
+      { "id": "cream-ivory", "label": "Cream Ivory", "sub": "Linen" },
+      { "id": "blush-pink", "label": "Blush Pink", "sub": "Silk" }
+    ],
+    "ratingBreakdown": [
+      { "stars": 5, "pct": 91 },
+      { "stars": 4, "pct": 7 },
+      { "stars": 3, "pct": 2 },
+      { "stars": 2, "pct": 0 },
+      { "stars": 1, "pct": 0 }
+    ],
+    "reviews": [
+      {
+        "id": "r1",
+        "name": "Dian Puspita",
+        "initials": "DP",
+        "rating": 5,
+        "date": "5 hari lalu",
+        "variant": "Standard (12 Tangkai)",
+        "text": "Rangkaiannya rapi banget, melebihi ekspektasi. Pasti order lagi.",
+        "verified": true,
+        "helpful": 9
+      }
+    ]
+  },
+  {
+    "id": "c06",
+    "slug": "buket-mawar-velvet-passion-15-tangkai",
+    "name": "Buket Mawar 'Velvet Passion' 15 Tangkai",
+    "price": 320000,
+    "originalPrice": 380000,
+    "discountPercent": 16,
+    "image": "https://images.unsplash.com/photo-1520763185298-1b434c919102?w=800&q=80&auto=format&fit=crop",
+    "rating": 4.9,
+    "sold": 510,
+    "reviewCount": 142,
+    "category": "Mawar",
+    "stock": 4,
+    "stockTotal": 20,
+    "badge": "TERLARIS",
+    "isFlashSale": true,
+    "gallery": [
+      "https://images.unsplash.com/photo-1520763185298-1b434c919102?w=800&q=80&auto=format&fit=crop",
+      "https://images.unsplash.com/photo-1533616688419-b7a585564566?w=800&q=80&auto=format&fit=crop",
+      "https://images.unsplash.com/photo-1490750967868-88aa4486c946?w=800&q=80&auto=format&fit=crop"
+    ],
+    "description": "Buket 15 tangkai mawar merah velvet untuk pernyataan romantis yang berani dan berkesan.",
+    "care": [
+      "Potong batang miring dan rendam air dingin.",
+      "Jauhkan dari buah matang agar tidak cepat mekar."
+    ],
+    "specs": [
+      { "label": "Isi", "value": "15 tangkai mawar merah" },
+      { "label": "Kemasan", "value": "Wrapping premium + pita" }
+    ],
+    "shipping": ["Same-day Tasikmalaya sebelum 18.00 WIB."],
+    "sizes": [
+      {
+        "id": "standard",
+        "label": "Standard",
+        "stems": "15 Tangkai",
+        "priceDelta": 0
+      },
+      {
+        "id": "deluxe",
+        "label": "Deluxe",
+        "stems": "24 Tangkai",
+        "priceDelta": 180000
+      }
+    ],
+    "wraps": [
+      { "id": "onyx-gold", "label": "Onyx & Gold", "sub": "Edging" },
+      { "id": "blush-pink", "label": "Blush Pink", "sub": "Silk" }
+    ],
+    "ratingBreakdown": [
+      { "stars": 5, "pct": 89 },
+      { "stars": 4, "pct": 9 },
+      { "stars": 3, "pct": 2 },
+      { "stars": 2, "pct": 0 },
+      { "stars": 1, "pct": 0 }
+    ],
+    "reviews": [
+      {
+        "id": "r1",
+        "name": "Maya Savitri",
+        "initials": "MS",
+        "rating": 5,
+        "date": "1 minggu lalu",
+        "variant": "Standard (15 Tangkai)",
+        "text": "Warnanya pekat dan segar. CS fast respon soal perawatan.",
+        "verified": true,
+        "helpful": 7
+      }
+    ]
+  }
+]

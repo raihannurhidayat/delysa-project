@@ -3,6 +3,7 @@ import byCategory from "~/mock/products/by-category.json";
 import catalog from "~/mock/products/catalog.json";
 import flashSale from "~/mock/products/flash-sale.json";
 import newArrivals from "~/mock/products/new-arrivals.json";
+import productDetail from "~/mock/products/product-detail.json";
 import {
   CATALOG_PAGE_SIZE,
   type CatalogItem,
@@ -25,6 +26,7 @@ const MOCK_REGISTRY: Record<string, unknown> = {
   "/products/new-arrivals": newArrivals,
   "/products/by-category": byCategory,
   "/products": catalog,
+  "/products/detail": productDetail,
 };
 
 function matchesSearch(item: CatalogItem, search: string): boolean {
