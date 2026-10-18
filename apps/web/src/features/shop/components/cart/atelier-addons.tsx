@@ -69,7 +69,7 @@ export function AtelierAddons({ lines }: AtelierAddonsProps) {
           </p>
         </div>
       </div>
-      <div className="grid gap-2 sm:grid-cols-2">
+      <div className="grid gap-3 sm:grid-cols-2">
         {CART_ADDONS.map((addon) => {
           const isAdded = existingAddonKeys.has(addon.id);
           return (

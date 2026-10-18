@@ -4,7 +4,7 @@ import { Link } from "@tanstack/react-router";
 
 export function GuestBanner() {
   return (
-    <div className="rounded-xl border border-amber-200 bg-amber-50 p-3">
+    <div className="rounded-xl border border-amber-200 bg-amber-50 p-3 mt-2">
       <div className="flex items-start gap-3">
         <UserPlus
           size={20}

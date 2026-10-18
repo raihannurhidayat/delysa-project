@@ -1,5 +1,6 @@
-import { RotateCcw } from "lucide-react";
+import { RotateCcw, AlertCircle } from "lucide-react";
 import { Button } from "~/components/ui/button";
+import { Alert, AlertTitle, AlertDescription } from "~/components/ui/alert";
 import { CategoryGrid } from "~/features/shop/components/storefront/category-grid";
 import { FaqSection } from "~/features/shop/components/storefront/faq-section";
 import { FlashSaleSection } from "~/features/shop/components/storefront/flash-sale-section";
@@ -39,16 +40,14 @@ function StorefrontLoading() {
 function StorefrontError() {
   return (
     <main className="mx-auto max-w-7xl px-4 py-16 sm:px-6">
-      <div
-        role="alert"
-        className="mx-auto max-w-md rounded-2xl border border-[#E5E7EB] bg-white p-8 text-center"
-      >
-        <p className="text-base font-bold text-[#1A1A1A]">
+      <Alert variant="destructive" className="mx-auto max-w-md">
+        <AlertCircle className="h-5 w-5" aria-hidden="true" />
+        <AlertTitle className="text-base font-bold text-[#1A1A1A]">
           Gagal memuat storefront
-        </p>
-        <p className="mt-1 text-sm text-[#6B7280]">
+        </AlertTitle>
+        <AlertDescription className="text-sm text-[#6B7280]">
           Periksa koneksi lalu coba lagi.
-        </p>
+        </AlertDescription>
         <Button
           type="button"
           onClick={() => window.location.reload()}
@@ -57,7 +56,7 @@ function StorefrontError() {
           <RotateCcw size={16} aria-hidden="true" />
           Coba lagi
         </Button>
-      </div>
+      </Alert>
     </main>
   );
 }

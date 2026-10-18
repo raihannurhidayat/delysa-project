@@ -1,11 +1,19 @@
 import { useState } from "react";
-import { ChevronLeft, ShieldCheck, Truck, Camera, X } from "lucide-react";
+import {
+  ChevronLeft,
+  ShieldCheck,
+  Truck,
+  Camera,
+  X,
+  AlertCircle,
+} from "lucide-react";
 import { Button } from "~/components/ui/button";
 import { formatIDR } from "~/features/shop/lib/format";
 import type { CartTotals } from "~/features/shop/lib/cart-totals";
 import type { CartCoupon } from "~/features/shop/types";
 import { couponCodeSchema } from "~/features/shop/lib/cart-coupons";
 import { toast } from "~/components/ui/toast";
+import { Alert, AlertTitle, AlertDescription } from "~/components/ui/alert";
 
 interface OrderSummaryProps {
   totals: CartTotals;
@@ -54,7 +62,7 @@ export function OrderSummary({
         Ringkasan Belanja
       </h2>
 
-      <dl className="mt-3 space-y-2 text-sm">
+      <dl className="mt-3 space-y-3 text-sm">
         <div className="flex justify-between">
           <dt className="text-[#6B7280]">
             Total Harga ({totals.itemCount} Produk)
@@ -116,9 +124,15 @@ export function OrderSummary({
         </div>
 
         {couponError && (
-          <p role="alert" className="text-xs text-red-600">
-            {couponError}
-          </p>
+          <Alert variant="destructive" className="mt-3">
+            <AlertCircle className="h-4 w-4" aria-hidden="true" />
+            <AlertTitle className="text-xs font-medium">
+              Kode kupon tidak valid
+            </AlertTitle>
+            <AlertDescription className="text-xs">
+              {couponError}
+            </AlertDescription>
+          </Alert>
         )}
 
         {coupon && (
@@ -152,7 +166,7 @@ export function OrderSummary({
           Termasuk PPn & garansi bunga mekar segar 100%
         </p>
 
-        <div className="mt-4 flex flex-col gap-2">
+        <div className="mt-4 flex flex-col gap-3">
           <Button
             type="button"
             onClick={handleCheckout}

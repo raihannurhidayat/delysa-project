@@ -13,6 +13,7 @@ import {
   Camera,
   Trash2,
   X,
+  AlertCircle,
 } from "lucide-react";
 import {
   Breadcrumb,
@@ -33,6 +34,7 @@ import { CartSelectBar } from "~/features/shop/components/cart/cart-select-bar";
 import { FreeShippingProgress } from "~/features/shop/components/cart/free-shipping-progress";
 import { CartInstructionsField } from "~/features/shop/components/cart/cart-instructions-field";
 import { OrderSummary } from "~/features/shop/components/cart/order-summary";
+import { Alert, AlertTitle, AlertDescription } from "~/components/ui/alert";
 import { AtelierAddons } from "~/features/shop/components/cart/atelier-addons";
 import { SavedForLater } from "~/features/shop/components/cart/saved-for-later";
 import { GuestBanner } from "~/features/shop/components/cart/guest-banner";
@@ -159,16 +161,14 @@ export default function CartPage({
   if (demo === "error") {
     return (
       <main className="mx-auto max-w-7xl px-4 py-16 sm:px-6">
-        <div
-          role="alert"
-          className="mx-auto max-w-md rounded-2xl border border-[#E5E7EB] bg-white p-8 text-center"
-        >
-          <p className="text-base font-bold text-[#1A1A1A]">
+        <Alert variant="destructive" className="mx-auto max-w-md">
+          <AlertCircle className="h-5 w-5" aria-hidden="true" />
+          <AlertTitle className="text-base font-bold text-[#1A1A1A]">
             Gagal memuat keranjang
-          </p>
-          <p className="mt-1 text-sm text-[#6B7280]">
+          </AlertTitle>
+          <AlertDescription className="text-sm text-[#6B7280]">
             Periksa koneksi lalu coba lagi.
-          </p>
+          </AlertDescription>
           <Button
             type="button"
             onClick={() => navigate({ search: {}, replace: true })}
@@ -176,7 +176,7 @@ export default function CartPage({
           >
             <RotateCcw size={16} aria-hidden="true" /> Coba lagi
           </Button>
-        </div>
+        </Alert>
       </main>
     );
   }
@@ -248,7 +248,7 @@ export default function CartPage({
           </BreadcrumbList>
         </Breadcrumb>
         <div className="mt-4 grid gap-4 lg:grid-cols-[minmax(0,1fr)_380px]">
-          <div className="space-y-3">
+          <div className="space-y-4">
             {[1, 2].map((i) => (
               <div
                 key={i}
@@ -263,7 +263,7 @@ export default function CartPage({
               </div>
             ))}
           </div>
-          <div className="lg:sticky lg:top-24 space-y-3">
+          <div className="lg:sticky lg:top-24 space-y-4">
             <div className="h-40 rounded-xl border border-[#E5E7EB] bg-white animate-pulse" />
           </div>
         </div>

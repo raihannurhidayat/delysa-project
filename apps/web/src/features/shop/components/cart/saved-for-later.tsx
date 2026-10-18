@@ -26,7 +26,7 @@ export function SavedForLater({
         <span>Disimpan untuk Nanti ({lines.length})</span>
         <Save size={16} className="text-[#6B7280]" aria-hidden="true" />
       </button>
-      <div className="mt-2 space-y-2">
+      <div className="mt-3 space-y-3">
         {lines.map((line) => (
           <div
             key={`${line.kind ?? "product"}:${line.slug}:${line.sizeId}:${line.wrapId}`}
