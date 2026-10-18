@@ -248,7 +248,7 @@ export default function CartPage({
           </BreadcrumbList>
         </Breadcrumb>
         <div className="mt-4 grid gap-4 lg:grid-cols-[minmax(0,1fr)_380px]">
-          <div className="space-y-4">
+          <div className="min-w-0 w-full space-y-4">
             {[1, 2].map((i) => (
               <div
                 key={i}
@@ -263,7 +263,7 @@ export default function CartPage({
               </div>
             ))}
           </div>
-          <div className="lg:sticky lg:top-24 space-y-4">
+          <div className="min-w-0 lg:sticky lg:top-24 w-full space-y-4">
             <div className="h-40 rounded-xl border border-[#E5E7EB] bg-white animate-pulse" />
           </div>
         </div>
@@ -310,7 +310,7 @@ export default function CartPage({
       <GuestBanner />
 
       <div className="mt-3 grid gap-4 lg:grid-cols-[minmax(0,1fr)_380px]">
-        <div className="space-y-3">
+        <div className="min-w-0 w-full space-y-4">
           <CartSelectBar
             itemCount={lines.length}
             selectedCount={selectedKeys.length}
@@ -359,7 +359,7 @@ export default function CartPage({
           />
         </div>
 
-        <div className="lg:sticky lg:top-24 space-y-3">
+        <div className="lg:sticky lg:top-24 w-full space-y-4">
           <OrderSummary
             totals={totals}
             coupon={coupon}
