@@ -67,20 +67,6 @@ export function VariantSelector({
                   {opt.sub}
                 </span>
               ) : null}
-              {opt.price !== undefined ? (
-                <span
-                  className={cn(
-                    "mt-0.5 block text-[11px] font-semibold tabular-nums",
-                    active ? "text-white" : "text-[#1A1A1A]",
-                  )}
-                >
-                  {new Intl.NumberFormat("id-ID", {
-                    maximumFractionDigits: 0,
-                  }).format(opt.price) === "0"
-                    ? ""
-                    : `Rp${new Intl.NumberFormat("id-ID", { maximumFractionDigits: 0 }).format(opt.price)}`}
-                </span>
-              ) : null}
             </button>
           );
         })}
