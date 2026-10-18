@@ -42,7 +42,7 @@
     ],
     "shipping": [
       "Same-day Tasikmalaya: pesan sebelum 18.00 WIB, antar 2-3 jam.",
-      "Foto rangkaian dikirim via WhatsApp sebelum kurir jalan.",
+      "Foto rangkaian dikirim via WhatsApp untuk verifikasi kualitas sebelum pengiriman.",
       "Gratis ongkir Kota Tasikmalaya min. belanja Rp200.000."
     ],
     "sizes": [
@@ -76,6 +76,10 @@
       { "stars": 3, "pct": 2 },
       { "stars": 2, "pct": 0 },
       { "stars": 1, "pct": 0 }
+    ],
+    "bonuses": [
+      "Kartu Ucapan Kustom",
+      "Bonus Pita Wisuda UNSIL Kuning-Emas"
     ],
     "reviews": [
       {

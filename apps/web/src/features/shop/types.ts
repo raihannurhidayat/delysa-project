@@ -139,7 +139,10 @@ export type ProductDetail = UnifiedProduct & {
   wraps: ProductWrapOption[];
   ratingBreakdown: { stars: number; pct: number }[];
   reviews: ProductReviewItem[];
+  bonuses?: string[];
 };
+
+export type CartLineKind = "product" | "addon";
 
 export type MiniCartLine = {
   slug: string;
@@ -151,4 +154,22 @@ export type MiniCartLine = {
   price: number;
   qty: number;
   note?: string;
+  kind?: CartLineKind;
+  originalPrice?: number;
+  bonuses?: string[];
+  maxQty?: number;
+  wrapLabel?: string;
+};
+
+export type CartCoupon = {
+  code: string;
+  label: string;
+  amount: number;
+};
+
+export type CartSnapshot = {
+  lines: MiniCartLine[];
+  saved: MiniCartLine[];
+  coupon: CartCoupon | null;
+  instructions: string;
 };

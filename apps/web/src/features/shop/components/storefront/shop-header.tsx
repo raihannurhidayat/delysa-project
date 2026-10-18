@@ -14,6 +14,7 @@ import { Button } from "~/components/ui/button";
 import { Input } from "~/components/ui/input";
 import { useSlidingIndicator } from "~/features/shop/hooks/use-sliding-indicator";
 import { ShopMobileNav } from "./shop-mobile-nav";
+import { useMiniCart } from "~/features/shop/hooks/use-mini-cart";
 
 export type ShopNavTo =
   | "/"
@@ -78,6 +79,7 @@ export function ShopHeader() {
   const indicator = useSlidingIndicator({ value: activeTo });
   const [mobileNavOpen, setMobileNavOpen] = React.useState(false);
   const [mobileSearch, setMobileSearch] = React.useState("");
+  const { count } = useMiniCart();
 
   // Header persisten (tidak remount saat pindah route): tutup drawer manual.
   React.useEffect(() => {
@@ -142,19 +144,20 @@ export function ShopHeader() {
           />
         </div>
         <div className="ml-auto flex shrink-0 items-center gap-1 md:ml-0">
-          <Button
-            type="button"
-            variant="ghost"
-            size="icon"
-            onClick={() => window.alert("Keranjang segera hadir (UI-only)")}
-            aria-label="Keranjang, 0 item (segera hadir)"
-            className="relative rounded-full"
-          >
-            <ShoppingCart size={20} aria-hidden="true" />
-            <Badge className="absolute -top-1 -right-1 h-4 min-w-4 rounded-full bg-rose-600 px-1 text-[10px] text-white">
-              0
-            </Badge>
-          </Button>
+          <Link to="/keranjang" className="relative">
+            <Button
+              type="button"
+              variant="ghost"
+              size="icon"
+              aria-label={`Keranjang, ${count} item`}
+              className="relative rounded-full"
+            >
+              <ShoppingCart size={20} aria-hidden="true" />
+              <Badge className="absolute -top-1 -right-1 h-4 min-w-4 rounded-full bg-rose-600 px-1 text-[10px] text-white">
+                {count}
+              </Badge>
+            </Button>
+          </Link>
           <DeadLink label="Akun saya">
             <span className="inline-flex size-9 items-center justify-center rounded-full hover:bg-muted">
               <User size={20} aria-hidden="true" />

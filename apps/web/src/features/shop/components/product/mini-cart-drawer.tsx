@@ -8,14 +8,15 @@ import {
   DrawerTitle,
 } from "~/components/ui/drawer";
 import { formatIDR } from "~/features/shop/lib/format";
+import {
+  FREE_SHIPPING_MIN,
+  SHIPPING_FLAT,
+} from "~/features/shop/lib/cart-rules";
 import type { MiniCartLine } from "~/features/shop/types";
-
-const FREE_SHIPPING_MIN = 200000;
 
 /**
  * Drawer kanan "Berhasil Ditambahkan" (Image 1): fokus trap + Esc/backdrop
- * via Base UI modal default. Tahap ini navigasi checkout ke `/katalog`
- * (route `/cart` milik S-04 belum ada — tanpa 404).
+ * via Base UI modal default. Navigasi checkout ke `/keranjang`.
  */
 export function MiniCartDrawer({
   open,
@@ -29,7 +30,8 @@ export function MiniCartDrawer({
   subtotal: number;
 }) {
   const last = lines[lines.length - 1];
-  const shipping = subtotal >= FREE_SHIPPING_MIN || subtotal === 0 ? 0 : 15000;
+  const shipping =
+    subtotal >= FREE_SHIPPING_MIN || subtotal === 0 ? 0 : SHIPPING_FLAT;
   const total = subtotal + shipping;
   const count = lines.reduce((n, l) => n + l.qty, 0);
 
@@ -109,11 +111,11 @@ export function MiniCartDrawer({
           </Button>
           <Button
             type="button"
-            render={<Link to="/katalog" />}
+            render={<Link to="/keranjang" />}
             onClick={() => onOpenChange(false)}
             className="h-11 w-full rounded-lg bg-[#111111] text-white hover:bg-[#2A2A2A]"
           >
-            Lihat Keranjang & Checkout ({count}) →
+            Lihat Keranjang ({count}) →
           </Button>
         </div>
       </DrawerContent>
