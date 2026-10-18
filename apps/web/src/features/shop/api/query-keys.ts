@@ -15,4 +15,6 @@ export const productQueries = {
     [...productQueries.all, "list", query] as const,
   counts: (query: Omit<CatalogQuery, "category" | "page">) =>
     [...productQueries.all, "counts", query] as const,
+  detail: (slug: string) =>
+    [...productQueries.all, "detail", slug.toLowerCase()] as const,
 };

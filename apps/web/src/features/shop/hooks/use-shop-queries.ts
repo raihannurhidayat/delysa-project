@@ -1,9 +1,15 @@
-import { keepPreviousData, useQuery } from "@tanstack/react-query";
+import {
+  keepPreviousData,
+  queryOptions,
+  useQuery,
+  useSuspenseQuery,
+} from "@tanstack/react-query";
 import {
   getBestSellers,
   getCategoryCounts,
   getFlashSaleProducts,
   getNewArrivals,
+  getProductBySlug,
   getProducts,
   getProductsByCategory,
 } from "~/features/shop/api/endpoints";
@@ -45,6 +51,30 @@ export function useCategoryProducts(category: string) {
     queryFn: ({ signal }) => getProductsByCategory(category, signal),
     retry: 1,
   });
+}
+
+/**
+ * Konfigurasi query detail by-slug, dipakai bersama loader route
+ * (`ensureQueryData`) dan komponen (`useSuspenseQuery`/`useQuery`)
+ * agar key + fn + staleTime selalu selaras.
+ * Diverifikasi via context7: `/tanstack/query` — `queryOptions`.
+ */
+export function productDetailQuery(slug: string) {
+  return queryOptions({
+    queryKey: productQueries.detail(slug),
+    queryFn: ({ signal }) => getProductBySlug(slug, signal),
+    staleTime: 5 * 60_000,
+    retry: 1,
+    placeholderData: keepPreviousData,
+  });
+}
+
+export function useProductDetail(slug: string) {
+  return useQuery(productDetailQuery(slug));
+}
+
+export function useSuspenseProductDetail(slug: string) {
+  return useSuspenseQuery(productDetailQuery(slug));
 }
 
 export function useProducts(query: CatalogQuery) {

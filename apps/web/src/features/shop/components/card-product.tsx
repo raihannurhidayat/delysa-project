@@ -1,3 +1,4 @@
+import { Link } from "@tanstack/react-router";
 import { Star } from "lucide-react";
 import { formatIDR, formatSold } from "~/features/shop/lib/format";
 import type { UnifiedProduct } from "~/features/shop/types";
@@ -8,9 +9,7 @@ export type CardProductVariant = "flash-sale" | "catalog" | "default";
 /**
  * Satu kartu produk untuk semua jenis (fondasi gaya flash sale).
  * Diversifikasi via `variant`: badge, rating, harga.
- * Seluruh kartu berperan sebagai link ke detail produk: hover cursor-pointer,
- * klik/Enter/Spasi membuka detail. Halaman detail belum ada, jadi untuk
- * sementara memunculkan alert (UI-only tahap ini).
+ * Seluruh kartu adalah link ke PDP `/products/$slug` (preload intent).
  */
 export function CardProduct({
   item,
@@ -22,22 +21,11 @@ export function CardProduct({
   const left = item.stockLeft ?? item.stock;
   const soldOut = left !== undefined && left <= 0;
 
-  const openDetail = () => {
-    window.alert("Detail produk segera hadir (UI-only)");
-  };
-
   return (
-    <article
-      role="link"
-      tabIndex={0}
-      aria-label={`Lihat detail ${item.name} (segera hadir)`}
-      onClick={openDetail}
-      onKeyDown={(event) => {
-        if (event.key === "Enter" || event.key === " ") {
-          event.preventDefault();
-          openDetail();
-        }
-      }}
+    <Link
+      to="/products/$slug"
+      params={{ slug: item.slug }}
+      aria-label={`Lihat detail ${item.name}`}
       className="group flex cursor-pointer flex-col overflow-hidden rounded-xs border border-[#E5E7EB] bg-white shadow-[0_1px_2px_rgba(16,24,40,0.05)] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-rose-600"
     >
       <div className="relative overflow-hidden bg-[#F8F9FA]">
@@ -121,7 +109,7 @@ export function CardProduct({
           </p>
         ) : null}
       </div>
-    </article>
+    </Link>
   );
 }
 
