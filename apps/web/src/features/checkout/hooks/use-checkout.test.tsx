@@ -2,22 +2,22 @@ import { renderHook, act, waitFor } from "@testing-library/react";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { vi, describe, it, expect, beforeEach } from "vitest";
 
-// Use vi.hoisted for mock functions to avoid hoisting issues
 const {
   mockUseMiniCart,
   mockCreateOrder,
   mockUploadProof,
   mockGetGuestToken,
   mockSetGuestToken,
+  mockClearCart,
 } = vi.hoisted(() => ({
   mockUseMiniCart: vi.fn(),
   mockCreateOrder: vi.fn(),
   mockUploadProof: vi.fn(),
   mockGetGuestToken: vi.fn(),
   mockSetGuestToken: vi.fn(),
+  mockClearCart: vi.fn(),
 }));
 
-// Mock modules with factory functions using hoisted mocks
 vi.mock("~/features/shop/hooks/use-mini-cart", () => ({
   useMiniCart: mockUseMiniCart,
 }));
@@ -32,7 +32,6 @@ vi.mock("~/features/shop/lib/mini-cart-storage", () => ({
   setGuestToken: mockSetGuestToken,
 }));
 
-// Import after mocks
 import { useCheckout } from "./use-checkout";
 
 const wrapper = ({ children }: { children: React.ReactNode }) => (
@@ -40,6 +39,13 @@ const wrapper = ({ children }: { children: React.ReactNode }) => (
     {children}
   </QueryClientProvider>
 );
+
+const ORDER = {
+  id: 1,
+  code: "DLF-20261019-ABCD",
+  status: "pending_payment" as const,
+  total: 75000,
+};
 
 describe("useCheckout", () => {
   beforeEach(() => {
@@ -54,6 +60,7 @@ describe("useCheckout", () => {
           name: "Test",
           image: "",
           sizeId: "s",
+          sizeLabel: "Medium",
           wrapId: "w",
           price: 50000,
           qty: 1,
@@ -76,58 +83,153 @@ describe("useCheckout", () => {
       instructions: "",
       count: 1,
       subtotal: 50000,
+      updateQty: vi.fn(),
+      remove: vi.fn(),
+      applyCoupon: vi.fn(),
+      removeCoupon: vi.fn(),
+      clearCart: mockClearCart,
     });
 
     mockGetGuestToken.mockReturnValue("test-guest-token");
     mockSetGuestToken.mockImplementation(() => {});
   });
 
-  it("initializes with review step and empty form", () => {
-    const { result } = renderHook(() => useCheckout(), { wrapper });
+  it("uses the step from the URL and starts with an empty form", () => {
+    const { result } = renderHook(() => useCheckout({ step: "review" }), {
+      wrapper,
+    });
     expect(result.current.step).toBe("review");
-    // Form values should be empty strings
     expect(result.current.form.getValues("recipientName")).toBe("");
     expect(result.current.form.getValues("recipientPhone")).toBe("");
     expect(result.current.form.getValues("shippingAddress")).toBe("");
   });
 
   it("persists draft to localStorage on form change", async () => {
-    const { result } = renderHook(() => useCheckout(), { wrapper });
+    const { result } = renderHook(() => useCheckout({ step: "alamat" }), {
+      wrapper,
+    });
     act(() => {
       result.current.form.setValue("recipientName", "Budi");
     });
     await waitFor(() => {
       const draft = localStorage.getItem("checkout_draft_test-guest-token");
       expect(draft).not.toBeNull();
-      expect(draft).not.toBe("undefined");
       if (draft) {
-        const parsed = JSON.parse(draft);
-        expect(parsed.recipientName).toBe("Budi");
+        expect(JSON.parse(draft).recipientName).toBe("Budi");
       }
     });
   });
 
-  it("submits order with idempotency-key and clears cart on success", async () => {
-    mockCreateOrder.mockResolvedValue({
-      id: 1,
-      code: "DLF-20261019-ABCD",
-      status: "pending_payment",
-      total: 75000,
-    });
-    const { result } = renderHook(() => useCheckout(), { wrapper });
+  it("restores a saved draft on mount", async () => {
+    localStorage.setItem(
+      "checkout_draft_test-guest-token",
+      JSON.stringify({
+        step: "alamat",
+        recipientName: "Sari",
+        recipientPhone: "08123456789",
+        shippingAddress: "Jl. Merdeka No. 10, Tasikmalaya",
+        customNote: "",
+        confirmed: false,
+        guestToken: "test-guest-token",
+        updatedAt: Date.now(),
+      }),
+    );
 
-    // Fill form data
+    const { result } = renderHook(() => useCheckout({ step: "alamat" }), {
+      wrapper,
+    });
+
+    await waitFor(() => {
+      expect(result.current.form.getValues("recipientName")).toBe("Sari");
+    });
+    expect(result.current.form.getValues("shippingAddress")).toBe(
+      "Jl. Merdeka No. 10, Tasikmalaya",
+    );
+  });
+
+  it("blocks forward navigation when the current step is invalid", async () => {
+    const { result } = renderHook(() => useCheckout({ step: "alamat" }), {
+      wrapper,
+    });
+
+    let allowed = true;
+    await act(async () => {
+      allowed = await result.current.goToStep("bayar");
+    });
+
+    expect(allowed).toBe(false);
+  });
+
+  it("allows backward navigation without validating", async () => {
+    const { result } = renderHook(() => useCheckout({ step: "ringkasan" }), {
+      wrapper,
+    });
+
+    let allowed = false;
+    await act(async () => {
+      allowed = await result.current.goToStep("alamat");
+    });
+
+    expect(allowed).toBe(true);
+  });
+
+  it("submits order with idempotency key and clears the cart", async () => {
+    mockCreateOrder.mockResolvedValue(ORDER);
+    const { result } = renderHook(() => useCheckout({ step: "ringkasan" }), {
+      wrapper,
+    });
+
     act(() => {
       result.current.form.setValue("recipientName", "Budi");
       result.current.form.setValue("recipientPhone", "08123456789");
-      result.current.form.setValue("shippingAddress", "Jl. Test No. 1");
+      result.current.form.setValue(
+        "shippingAddress",
+        "Jl. Test No. 1, Tasikmalaya",
+      );
+      result.current.form.setValue("confirmed", true);
     });
 
-    // Navigate to ringkasan step
+    let submitted: Awaited<
+      ReturnType<typeof result.current.submitOrder>
+    > | null = null;
     await act(async () => {
-      await result.current.goToStep("ringkasan");
+      submitted = await result.current.submitOrder();
     });
+
+    expect(mockCreateOrder).toHaveBeenCalledTimes(1);
+    expect(mockCreateOrder.mock.calls[0][0]).toMatchObject({
+      recipientName: "Budi",
+      recipientPhone: "08123456789",
+      shippingAddress: "Jl. Test No. 1, Tasikmalaya",
+      idempotencyKey: expect.any(String),
+    });
+    expect(mockClearCart).toHaveBeenCalledTimes(1);
+    expect(submitted).toMatchObject({ order: ORDER, proofError: null });
+    expect(localStorage.getItem("checkout_draft_test-guest-token")).toBeNull();
+  });
+
+  it("uploads the payment proof after the order is created", async () => {
+    mockCreateOrder.mockResolvedValue(ORDER);
+    mockUploadProof.mockResolvedValue({
+      ...ORDER,
+      status: "pending_verification",
+    });
+    const { result } = renderHook(() => useCheckout({ step: "ringkasan" }), {
+      wrapper,
+    });
+
+    const file = new File(["x"], "bukti.jpg", { type: "image/jpeg" });
     act(() => {
+      result.current.form.setValue("recipientName", "Budi");
+      result.current.form.setValue("recipientPhone", "08123456789");
+      result.current.form.setValue(
+        "shippingAddress",
+        "Jl. Test No. 1, Tasikmalaya",
+      );
+      result.current.form.setValue("paymentProof", {
+        file,
+        preview: "blob:mock",
+      });
       result.current.form.setValue("confirmed", true);
     });
 
@@ -135,71 +237,37 @@ describe("useCheckout", () => {
       await result.current.submitOrder();
     });
 
-    // Check that createOrder was called with correct first argument
-    expect(mockCreateOrder).toHaveBeenCalledTimes(1);
-    const callArgs = mockCreateOrder.mock.calls[0][0];
-    expect(callArgs).toMatchObject({
-      recipientName: "Budi",
-      recipientPhone: "08123456789",
-      shippingAddress: "Jl. Test No. 1",
-      idempotencyKey: expect.any(String),
-    });
+    expect(mockUploadProof).toHaveBeenCalledWith(ORDER.id, file);
   });
 
-  it("handles STOCK_INSUFFICIENT error and stays on ringkasan", async () => {
-    // Mock rejects with an object that has STOCK_INSUFFICIENT in message
+  it("returns a friendly STOCK_INSUFFICIENT error and keeps the cart", async () => {
     mockCreateOrder.mockRejectedValue({
       status: 409,
-      message: "STOCK_INSUFFICIENT",
+      message: "STOCK_INSUFFICIENT: stok habis",
     });
-    const { result } = renderHook(() => useCheckout(), { wrapper });
+    const { result } = renderHook(() => useCheckout({ step: "ringkasan" }), {
+      wrapper,
+    });
 
-    // Fill form data
     act(() => {
       result.current.form.setValue("recipientName", "Budi");
       result.current.form.setValue("recipientPhone", "08123456789");
-      result.current.form.setValue("shippingAddress", "Jl. Test No. 1");
-    });
-
-    await act(async () => {
-      await result.current.goToStep("ringkasan");
-    });
-    act(() => {
+      result.current.form.setValue(
+        "shippingAddress",
+        "Jl. Test No. 1, Tasikmalaya",
+      );
       result.current.form.setValue("confirmed", true);
     });
 
-    // submitOrder throws the error, catch it
     await expect(
       act(async () => {
         await result.current.submitOrder();
       }),
     ).rejects.toThrow("Stok tidak mencukupi");
 
-    // After the error, check that error state is set
     await waitFor(() => {
       expect(result.current.error).toContain("Stok tidak mencukupi");
     });
-    expect(result.current.step).toBe("ringkasan");
-  });
-
-  it("validates current step before allowing next", async () => {
-    const { result } = renderHook(() => useCheckout(), { wrapper });
-
-    // From review step, try to go to alamat without filling required fields
-    // The review step has no required fields, so it should succeed
-    // But if we're on alamat step and try to go to bayar without filling, it should fail
-    const success = await act(async () => {
-      return result.current.goToStep("alamat");
-    });
-    // From review step, validation passes (no required fields)
-    expect(success).toBe(true);
-    expect(result.current.step).toBe("alamat");
-
-    // Now try to go to bayar without filling alamat fields
-    const success2 = await act(async () => {
-      return result.current.goToStep("bayar");
-    });
-    expect(success2).toBe(false);
-    expect(result.current.step).toBe("alamat");
+    expect(mockClearCart).not.toHaveBeenCalled();
   });
 });

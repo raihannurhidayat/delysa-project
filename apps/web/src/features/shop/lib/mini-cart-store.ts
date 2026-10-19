@@ -16,6 +16,7 @@ export {
   applyCoupon,
   removeCoupon,
   setInstructions,
+  clearCart,
 } from "~/features/shop/lib/mini-cart-store-internal";
 
 export type {

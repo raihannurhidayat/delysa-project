@@ -3,13 +3,14 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 
 import {
   createOrder,
   uploadPaymentProof,
   type OrderResponse,
 } from "../api/endpoints";
+import { ApiError } from "../api/http";
 import { orderQueries } from "../api/query-keys";
 import { useMiniCart } from "~/features/shop/hooks/use-mini-cart";
 import {
@@ -17,7 +18,11 @@ import {
   DEFAULT_CHECKOUT_FORM,
   type CheckoutFormData,
 } from "../schemas";
-import type { CheckoutDraft } from "../types";
+import {
+  CHECKOUT_STEPS,
+  type CheckoutDraft,
+  type CheckoutStep,
+} from "../types";
 import {
   getGuestToken,
   setGuestToken,
@@ -45,8 +50,18 @@ function loadDraft(guestToken: string): CheckoutDraft | null {
   try {
     const raw = localStorage.getItem(getDraftKey(guestToken));
     if (!raw) return null;
-    const parsed = JSON.parse(raw);
-    return { ...parsed, paymentProof: null };
+    const parsed = JSON.parse(raw) as Partial<CheckoutDraft>;
+    return {
+      step: parsed.step ?? "review",
+      recipientName: parsed.recipientName ?? "",
+      recipientPhone: parsed.recipientPhone ?? "",
+      shippingAddress: parsed.shippingAddress ?? "",
+      customNote: parsed.customNote ?? "",
+      confirmed: parsed.confirmed ?? false,
+      paymentProof: null,
+      guestToken,
+      updatedAt: parsed.updatedAt ?? Date.now(),
+    };
   } catch {
     return null;
   }
@@ -67,87 +82,100 @@ function clearDraft(guestToken: string): void {
   sessionStorage.removeItem(IDEMPOTENCY_KEY);
 }
 
-export function useCheckout() {
-  const { lines, totals, coupon, instructions, count, subtotal } =
-    useMiniCart();
+/** Ubah error mentah (termasuk 409 STOCK_INSUFFICIENT) jadi pesan ramah. */
+function toFriendlyError(err: unknown): Error {
+  const raw =
+    err instanceof Error
+      ? err.message
+      : err && typeof err === "object" && "message" in err
+        ? String((err as { message: unknown }).message)
+        : String(err);
+  if (raw.includes("STOCK_INSUFFICIENT")) {
+    return new ApiError(
+      409,
+      "Stok tidak mencukupi, silakan perbarui keranjang",
+    );
+  }
+  return err instanceof Error ? err : new Error(raw);
+}
+
+export type SubmitOrderResult = {
+  order: OrderResponse;
+  proofError: string | null;
+};
+
+export function useCheckout({ step }: { step: CheckoutStep }) {
+  const {
+    lines,
+    totals,
+    coupon,
+    instructions,
+    count,
+    subtotal,
+    updateQty,
+    remove,
+    applyCoupon,
+    removeCoupon,
+    clearCart,
+  } = useMiniCart();
   const queryClient = useQueryClient();
   const guestToken = useMemo(() => getGuestToken() ?? crypto.randomUUID(), []);
 
-  // Initialize guest token if not exists
   useEffect(() => {
     if (!getGuestToken()) {
       setGuestToken(guestToken);
     }
   }, [guestToken]);
-
-  // Load draft on mount BEFORE form initialization
-  const initialDraft = loadDraft(guestToken);
-
-  // Initialize form with default values, ensuring all fields have proper defaults
-  const defaultValues = initialDraft ?? {
-    ...DEFAULT_CHECKOUT_FORM,
-    recipientName: DEFAULT_CHECKOUT_FORM.recipientName ?? "",
-    recipientPhone: DEFAULT_CHECKOUT_FORM.recipientPhone ?? "",
-    shippingAddress: DEFAULT_CHECKOUT_FORM.shippingAddress ?? "",
-    customNote: DEFAULT_CHECKOUT_FORM.customNote ?? "",
-    confirmed: DEFAULT_CHECKOUT_FORM.confirmed ?? false,
-    paymentProof: null,
-  };
 
   const form = useForm<CheckoutFormData>({
     resolver: zodResolver(checkoutFormSchema),
-    defaultValues,
+    defaultValues: DEFAULT_CHECKOUT_FORM,
     mode: "onChange",
-    // Force initial values to be set
-    values: defaultValues,
   });
+  const { watch, reset, setValue, getValues, trigger } = form;
 
-  // Manually set initial values after form creation to ensure they're registered
+  const [draft, setDraft] = useState<CheckoutDraft | null>(null);
+  const restoredRef = useRef(false);
+
+  // URL adalah sumber kebenaran langkah; selaraskan dengan nilai form.
   useEffect(() => {
-    Object.entries(defaultValues).forEach(([key, value]) => {
-      form.setValue(
-        key as keyof CheckoutFormData,
-        value as CheckoutFormData[keyof CheckoutFormData],
-        {
-          shouldValidate: false,
-          shouldDirty: false,
-        },
-      );
+    setValue("step", step, { shouldValidate: false, shouldDirty: false });
+  }, [step, setValue]);
+
+  // Pulihkan draft sekali di klien (hindari mismatch hidrasi SSR).
+  useEffect(() => {
+    if (restoredRef.current) return;
+    restoredRef.current = true;
+    const restored = loadDraft(guestToken);
+    if (!restored) return;
+    reset({
+      step,
+      recipientName: restored.recipientName,
+      recipientPhone: restored.recipientPhone,
+      shippingAddress: restored.shippingAddress,
+      customNote: restored.customNote,
+      paymentProof: null,
+      confirmed: false,
     });
-  }, []);
+    setDraft(restored);
+  }, [guestToken, reset, step]);
 
-  // Track draft state separately for return value
-  const [draft, setDraft] = useState<CheckoutDraft | null>(initialDraft);
-
-  // Initialize guest token if not exists
-  useEffect(() => {
-    if (!getGuestToken()) {
-      setGuestToken(guestToken);
-    }
-  }, [guestToken]);
-
-  // Persist draft on form change (debounced)
-  const { watch } = form;
+  // Simpan draft (debounce 300 ms) setiap form berubah.
   useEffect(() => {
     let timeoutId: ReturnType<typeof setTimeout>;
     const subscription = watch((value) => {
       clearTimeout(timeoutId);
       timeoutId = setTimeout(() => {
-        const paymentProof = value.paymentProof;
-        const file = paymentProof?.file;
-        const preview = paymentProof?.preview;
-        // Ensure step is always a valid CheckoutStep
-        const currentStep = value.step ?? step;
         const draftData: CheckoutDraft = {
-          step: currentStep,
+          step,
           recipientName: value.recipientName ?? "",
           recipientPhone: value.recipientPhone ?? "",
           shippingAddress: value.shippingAddress ?? "",
           customNote: value.customNote ?? "",
           confirmed: value.confirmed ?? false,
+          paymentProof: null,
           guestToken,
           updatedAt: Date.now(),
-          paymentProof: file && preview ? { file, preview } : null,
         };
         saveDraft(guestToken, draftData);
         setDraft(draftData);
@@ -157,123 +185,114 @@ export function useCheckout() {
       subscription.unsubscribe();
       clearTimeout(timeoutId);
     };
-  }, [guestToken, watch]);
+  }, [guestToken, step, watch]);
 
-  // Step navigation (updates URL via navigate in component, here just local state)
-  const [step, setStep] = useState<CheckoutFormData["step"]>("review");
-
-  // Sync step from form on mount
-  useEffect(() => {
-    setStep(form.getValues("step") ?? "review");
-  }, []);
-
+  /**
+   * Validasi langkah saat ini sebelum maju. Navigasi tetap dilakukan
+   * pemanggil (URL search param) — hook tidak menyimpan langkah lokal.
+   */
   const goToStep = useCallback(
-    async (newStep: CheckoutFormData["step"]) => {
-      // Validate current step before allowing next
-      const currentStep = form.getValues("step");
-      if (["alamat", "bayar", "ringkasan"].includes(newStep)) {
-        const validation = checkoutFormSchema.safeParse({
-          ...form.getValues(),
-          step: currentStep,
-        });
-        if (!validation.success && currentStep !== "review") {
-          // Trigger validation errors for current step
-          await form.trigger();
-          return false;
-        }
-      }
-      await form.setValue("step", newStep, { shouldValidate: false });
-      setStep(newStep);
-      return true;
-    },
-    [form],
-  );
+    async (nextStep: CheckoutStep): Promise<boolean> => {
+      const currentIndex = CHECKOUT_STEPS.indexOf(step);
+      const nextIndex = CHECKOUT_STEPS.indexOf(nextStep);
+      if (nextIndex <= currentIndex) return true;
 
-  // Create AbortController for timeout
-  const orderAbortController = new AbortController();
-  setTimeout(() => orderAbortController.abort(), 15_000);
+      const validation = checkoutFormSchema.safeParse({
+        ...getValues(),
+        step,
+      });
+      if (validation.success) return true;
+
+      const fields =
+        step === "alamat"
+          ? ([
+              "recipientName",
+              "recipientPhone",
+              "shippingAddress",
+              "customNote",
+            ] as const)
+          : step === "bayar"
+            ? (["paymentProof"] as const)
+            : (["confirmed"] as const);
+      await trigger([...fields]);
+      return false;
+    },
+    [getValues, step, trigger],
+  );
 
   const createOrderMutation = useMutation({
     mutationFn: (input: Parameters<typeof createOrder>[0]) =>
-      createOrder(input, orderAbortController.signal),
-    onMutate: async (input) => {
+      createOrder(input),
+    onMutate: async () => {
       await queryClient.cancelQueries({ queryKey: orderQueries.all });
-      return { previousLines: lines };
-    },
-    onError: (err, _input, context) => {
-      // Convert STOCK_INSUFFICIENT error to user-friendly message
-      let errorMessage = "";
-      if (err instanceof Error) {
-        errorMessage = err.message;
-      } else if (err && typeof err === "object" && "message" in err) {
-        errorMessage = String((err as { message: unknown }).message);
-      } else {
-        errorMessage = String(err);
-      }
-
-      if (errorMessage.includes("STOCK_INSUFFICIENT")) {
-        // Replace the error with user-friendly message
-        Object.assign(err, {
-          message: "Stok tidak mencukupi, silakan perbarui keranjang",
-        });
-      }
-      console.error("Create order failed:", err);
     },
     onSettled: () => {
       queryClient.invalidateQueries({ queryKey: orderQueries.all });
     },
   });
 
-  const submitOrder = useCallback(async () => {
-    if (step !== "ringkasan") return;
-    if (!form.getValues("confirmed")) return;
-
-    const formData = form.getValues();
-    const idempotencyKey = getIdempotencyKey();
-
-    const input = {
-      recipientName: formData.recipientName ?? "",
-      recipientPhone: formData.recipientPhone ?? "",
-      shippingAddress: formData.shippingAddress ?? "",
-      customNote: formData.customNote || undefined,
-      idempotencyKey,
-    };
-
-    try {
-      const order = await createOrderMutation.mutateAsync(input);
-      clearDraft(guestToken);
-      return order;
-    } catch {
-      // Error is handled by mutation's onError, just re-throw for caller
-      throw createOrderMutation.error;
-    }
-  }, [step, form, createOrderMutation, guestToken]);
-
-  // Upload payment proof mutation
   const uploadProofMutation = useMutation({
     mutationFn: ({ orderId, file }: { orderId: number; file: File }) =>
       uploadPaymentProof(orderId, file),
-    onError: (err) => console.error("Upload proof failed:", err),
   });
 
-  const uploadProof = useCallback(
-    async (orderId: number, file: File) => {
-      return uploadProofMutation.mutateAsync({ orderId, file });
-    },
-    [uploadProofMutation],
-  );
+  const submitOrder = useCallback(async (): Promise<SubmitOrderResult> => {
+    if (step !== "ringkasan") {
+      throw new Error("Pesanan hanya bisa dibuat dari langkah ringkasan");
+    }
+    if (!getValues("confirmed")) {
+      throw new Error("Harap centang konfirmasi pesanan");
+    }
 
-  const error =
-    createOrderMutation.error?.message ??
-    uploadProofMutation.error?.message ??
-    null;
+    const formData = getValues();
+    const idempotencyKey = getIdempotencyKey();
+
+    let order: OrderResponse;
+    try {
+      order = await createOrderMutation.mutateAsync({
+        recipientName: formData.recipientName,
+        recipientPhone: formData.recipientPhone,
+        shippingAddress: formData.shippingAddress,
+        customNote: formData.customNote || undefined,
+        idempotencyKey,
+      });
+    } catch (err) {
+      throw toFriendlyError(err);
+    }
+
+    clearDraft(guestToken);
+    clearCart();
+
+    const file = formData.paymentProof?.file ?? null;
+    if (!file) {
+      return { order, proofError: null };
+    }
+
+    try {
+      await uploadProofMutation.mutateAsync({ orderId: order.id, file });
+      return { order, proofError: null };
+    } catch (err) {
+      return { order, proofError: toFriendlyError(err).message };
+    }
+  }, [
+    clearCart,
+    createOrderMutation,
+    getValues,
+    guestToken,
+    step,
+    uploadProofMutation,
+  ]);
+
+  const error = useMemo(() => {
+    const source = createOrderMutation.error ?? uploadProofMutation.error;
+    return source ? toFriendlyError(source).message : null;
+  }, [createOrderMutation.error, uploadProofMutation.error]);
 
   return {
     form,
     step,
     goToStep,
     submitOrder,
-    uploadProof,
     draft,
     isSubmitting: createOrderMutation.isPending,
     isUploading: uploadProofMutation.isPending,
@@ -284,5 +303,9 @@ export function useCheckout() {
     cartSubtotal: subtotal,
     coupon,
     instructions,
+    updateQty,
+    removeLine: remove,
+    applyCoupon,
+    removeCoupon,
   };
 }
