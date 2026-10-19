@@ -6,6 +6,7 @@ import {
   RotateCcw,
   ShieldCheck,
   Truck,
+  AlertCircle,
 } from "lucide-react";
 import {
   Breadcrumb,
@@ -16,6 +17,7 @@ import {
   BreadcrumbSeparator,
 } from "~/components/ui/breadcrumb";
 import { Button } from "~/components/ui/button";
+import { Alert, AlertTitle, AlertDescription } from "~/components/ui/alert";
 import { ActiveFilterChips } from "~/features/shop/components/catalog/active-filter-chips";
 import { CatalogFilters } from "~/features/shop/components/catalog/catalog-filters";
 import { CatalogGrid } from "~/features/shop/components/catalog/catalog-grid";
@@ -76,16 +78,14 @@ export default function CatalogPage({ query }: { query: CatalogSearch }) {
   if (query.demo === "error" || isError) {
     return (
       <main className="mx-auto max-w-7xl px-4 py-16 sm:px-6">
-        <div
-          role="alert"
-          className="mx-auto max-w-md rounded-2xl border border-[#E5E7EB] bg-white p-8 text-center"
-        >
-          <p className="text-base font-bold text-[#1A1A1A]">
+        <Alert variant="destructive" className="mx-auto max-w-md">
+          <AlertCircle className="h-5 w-5" aria-hidden="true" />
+          <AlertTitle className="text-base font-bold text-[#1A1A1A]">
             Gagal memuat katalog
-          </p>
-          <p className="mt-1 text-sm text-[#6B7280]">
+          </AlertTitle>
+          <AlertDescription className="text-sm text-[#6B7280]">
             Periksa koneksi lalu coba lagi.
-          </p>
+          </AlertDescription>
           <Button
             type="button"
             onClick={resetAll}
@@ -94,7 +94,7 @@ export default function CatalogPage({ query }: { query: CatalogSearch }) {
             <RotateCcw size={16} aria-hidden="true" />
             Coba lagi
           </Button>
-        </div>
+        </Alert>
       </main>
     );
   }

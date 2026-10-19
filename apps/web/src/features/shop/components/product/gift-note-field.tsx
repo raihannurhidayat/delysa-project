@@ -1,5 +1,7 @@
 import { Textarea } from "~/components/ui/textarea";
 import { cn } from "~/lib/utils";
+import { Alert, AlertDescription } from "~/components/ui/alert";
+import { AlertCircle } from "lucide-react";
 
 export const GIFT_NOTE_MAX = 200;
 
@@ -48,14 +50,13 @@ export function GiftNoteField({
         )}
       />
       {over ? (
-        <p
-          id="gift-note-error"
-          role="alert"
-          className="mt-1 text-xs text-[#DC2626]"
-        >
-          Maks. {GIFT_NOTE_MAX} karakter — pesanan tidak dapat dilanjutkan
-          sampai dipersingkat.
-        </p>
+        <Alert variant="destructive" className="mt-1.5">
+          <AlertCircle className="h-3.5 w-3.5" aria-hidden="true" />
+          <AlertDescription className="text-xs">
+            Maks. {GIFT_NOTE_MAX} karakter — pesanan tidak dapat dilanjutkan
+            sampai dipersingkat.
+          </AlertDescription>
+        </Alert>
       ) : null}
     </div>
   );

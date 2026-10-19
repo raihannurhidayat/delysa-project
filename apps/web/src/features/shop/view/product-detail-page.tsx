@@ -128,9 +128,14 @@ export default function ProductDetailPage({ slug }: { slug: string }) {
       sizeId: size?.id ?? "standard",
       sizeLabel: size?.label ?? "Standard",
       wrapId: wrap?.id ?? "standard",
+      wrapLabel: wrap?.label,
       price,
       qty: safeQty,
       note: note.trim() ? note.trim() : undefined,
+      kind: "product",
+      originalPrice: data.originalPrice,
+      bonuses: data.bonuses,
+      maxQty: data.stock,
     });
   };
 
@@ -284,7 +289,7 @@ export default function ProductDetailPage({ slug }: { slug: string }) {
       <RelatedRail category={data.category} currentSlug={data.slug} />
 
       <p className="mt-8 border-t border-[#E5E7EB] pt-3 text-[11px] text-[#6B7280]">
-        Terakhir dilihat: • {data.name} (Sedang Dilihat)
+        Terakhir dilihat: &bull; {data.name} (Sedang Dilihat)
       </p>
 
       {stickyVisible && !soldOut ? (
@@ -303,7 +308,7 @@ export default function ProductDetailPage({ slug }: { slug: string }) {
               onClick={handleAdd}
               className="h-10 rounded-lg bg-[#111111] text-xs font-bold text-white"
             >
-              Tambah • {formatIDR(price * safeQty)}
+              Tambah &bull; {formatIDR(price * safeQty)}
             </Button>
           </div>
         </div>
