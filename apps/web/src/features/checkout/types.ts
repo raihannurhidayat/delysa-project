@@ -1,8 +1,28 @@
 import type { MiniCartLine } from "~/features/shop/types";
 import type { CartTotals } from "~/features/shop/lib/cart-totals";
-import type { OrderCreateInput, PaymentProofInput } from "@delysa/shared";
 
-export type CheckoutStep = "review" | "alamat" | "bayar" | "ringkasan";
+export const CHECKOUT_STEPS = [
+  "review",
+  "alamat",
+  "bayar",
+  "ringkasan",
+] as const;
+
+export type CheckoutStep = (typeof CHECKOUT_STEPS)[number];
+
+export const CHECKOUT_STEP_LABELS: Record<CheckoutStep, string> = {
+  review: "Review Keranjang",
+  alamat: "Alamat Pengiriman",
+  bayar: "Metode Pembayaran",
+  ringkasan: "Ringkasan & Bayar",
+};
+
+export const CHECKOUT_STEP_SHORT_LABELS: Record<CheckoutStep, string> = {
+  review: "Keranjang",
+  alamat: "Alamat",
+  bayar: "Bayar",
+  ringkasan: "Ringkasan",
+};
 
 export type CheckoutFormData = {
   step: CheckoutStep;
