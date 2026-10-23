@@ -83,3 +83,30 @@ export function upsertLine(
   };
   return next;
 }
+
+const GUEST_TOKEN_KEY = "guest_token";
+const GUEST_TOKEN_COOKIE = "guest_token";
+
+export function getGuestToken(): string | null {
+  if (typeof window === "undefined") return null;
+  // Try localStorage first
+  const lsToken = localStorage.getItem(GUEST_TOKEN_KEY);
+  if (lsToken) return lsToken;
+  // Fallback to cookie
+  const cookieToken = document.cookie
+    .split("; ")
+    .find((row) => row.startsWith(`${GUEST_TOKEN_COOKIE}=`))
+    ?.split("=")[1];
+  if (cookieToken) {
+    localStorage.setItem(GUEST_TOKEN_KEY, cookieToken);
+    return cookieToken;
+  }
+  return null;
+}
+
+export function setGuestToken(token: string): void {
+  if (typeof window === "undefined") return;
+  localStorage.setItem(GUEST_TOKEN_KEY, token);
+  // Set cookie (7 days, httpOnly not possible from client, but BE can set httpOnly)
+  document.cookie = `${GUEST_TOKEN_COOKIE}=${token}; path=/; max-age=${7 * 24 * 60 * 60}; SameSite=Lax`;
+}

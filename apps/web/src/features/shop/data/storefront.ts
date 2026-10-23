@@ -69,7 +69,7 @@ export const STOREFRONT_FAQS: Faq[] = [
   {
     question: "Bagaimana cara pembayaran via Bank BCA?",
     answer:
-      "Transfer manual ke rekening BCA a.n. Kartinah, lalu unggah bukti pembayaran di halaman instruksi bayar untuk verifikasi atelier.",
+      "Transfer manual ke rekening BCA a.n. Kartinah, lalu kirim bukti pembayaran ke WhatsApp admin untuk verifikasi atelier.",
   },
   {
     question: "Apakah ada garansi jika bunga layu saat diterima?",

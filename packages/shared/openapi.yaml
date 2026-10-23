@@ -45,6 +45,51 @@ paths:
                   data:
                     type: array
                     items: { $ref: "#/components/schemas/Product" }
+  /orders:
+    post:
+      operationId: createOrder
+      summary: Create new order (checkout submit)
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/OrderCreateRequest"
+      responses:
+        "201":
+          description: Order created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/OrderResponse"
+        "409":
+          description: Stock insufficient
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+  /orders/{id}/payment-proof:
+    post:
+      operationId: uploadPaymentProof
+      summary: Upload payment proof for order
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema: { type: integer }
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              $ref: "#/components/schemas/PaymentProofUpload"
+      responses:
+        "200":
+          description: Proof uploaded
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/OrderResponse"
 components:
   schemas:
     Product:
@@ -64,3 +109,41 @@ components:
       properties:
         message: { type: string }
         code: { type: string, example: STOCK_INSUFFICIENT }
+    OrderCreateRequest:
+      type: object
+      required: [recipientName, recipientPhone, shippingAddress, idempotencyKey]
+      properties:
+        recipientName: { type: string, minLength: 2, maxLength: 100 }
+        recipientPhone: { type: string, minLength: 9, maxLength: 20 }
+        shippingAddress: { type: string, minLength: 10, maxLength: 500 }
+        customNote: { type: string, maxLength: 500 }
+        idempotencyKey: { type: string, format: uuid }
+    PaymentProofUpload:
+      type: object
+      required: [proof]
+      properties:
+        proof:
+          type: string
+          format: binary
+    OrderResponse:
+      type: object
+      required: [id, code, status, total]
+      properties:
+        id: { type: integer }
+        code: { type: string, example: "DLF-20261019-ABCD" }
+        status:
+          {
+            type: string,
+            enum:
+              [
+                pending_payment,
+                pending_verification,
+                paid,
+                processing,
+                shipped,
+                delivered,
+                cancelled,
+                rejected,
+              ],
+          }
+        total: { type: integer }

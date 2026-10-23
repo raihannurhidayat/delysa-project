@@ -13,6 +13,7 @@ import {
   applyCoupon,
   removeCoupon,
   setInstructions,
+  clearCart,
 } from "~/features/shop/lib/mini-cart-store";
 import type {
   MiniCartLine,
@@ -90,6 +91,10 @@ export function useMiniCart() {
     setInstructions(text);
   }, []);
 
+  const clearCartFn = useCallback(() => {
+    clearCart();
+  }, []);
+
   return {
     lines,
     saved,
@@ -112,5 +117,6 @@ export function useMiniCart() {
     applyCoupon: applyCouponFn,
     removeCoupon: removeCouponFn,
     setInstructions: setInstructionsFn,
+    clearCart: clearCartFn,
   };
 }

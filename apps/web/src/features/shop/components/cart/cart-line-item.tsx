@@ -11,6 +11,10 @@ interface CartLineItemProps {
   onQtyChange: (qty: number) => void;
   onRemove: () => void;
   onSaveLater: () => void;
+  /** Tampilkan checkbox pilih massal (default true). */
+  showSelection?: boolean;
+  /** Tampilkan tombol simpan untuk nanti (default true). */
+  showSaveLater?: boolean;
 }
 
 export function CartLineItem({
@@ -20,6 +24,8 @@ export function CartLineItem({
   onQtyChange,
   onRemove,
   onSaveLater,
+  showSelection = true,
+  showSaveLater = true,
 }: CartLineItemProps) {
   const key = `${line.kind ?? "product"}:${line.slug}:${line.sizeId}:${line.wrapId}`;
   const lineTotal = line.price * line.qty;
@@ -29,12 +35,14 @@ export function CartLineItem({
 
   return (
     <div className="flex gap-3 rounded-xl border border-[#E5E7EB] bg-white p-3">
-      <Checkbox
-        checked={selected}
-        onCheckedChange={onSelectedChange}
-        aria-label={`Pilih ${line.name}`}
-        className="mt-1 shrink-0"
-      />
+      {showSelection && (
+        <Checkbox
+          checked={selected}
+          onCheckedChange={onSelectedChange}
+          aria-label={`Pilih ${line.name}`}
+          className="mt-1 shrink-0"
+        />
+      )}
       <div className="aspect-square w-20 shrink-0 rounded-lg bg-white overflow-hidden border border-[#E5E7EB]">
         <img
           src={line.image}
@@ -67,14 +75,16 @@ export function CartLineItem({
               </div>
             )}
           </div>
-          <button
-            type="button"
-            onClick={onSaveLater}
-            className="shrink-0 flex items-center gap-1 rounded-lg border border-[#E5E7EB] bg-white px-2 py-1 text-xs font-medium text-[#6B7280] hover:bg-[#F9FAFB] transition-colors"
-            aria-label="Simpan untuk nanti"
-          >
-            <Save size={12} aria-hidden="true" /> Simpan
-          </button>
+          {showSaveLater && (
+            <button
+              type="button"
+              onClick={onSaveLater}
+              className="shrink-0 flex items-center gap-1 rounded-lg border border-[#E5E7EB] bg-white px-2 py-1 text-xs font-medium text-[#6B7280] hover:bg-[#F9FAFB] transition-colors"
+              aria-label="Simpan untuk nanti"
+            >
+              <Save size={12} aria-hidden="true" /> Simpan
+            </button>
+          )}
         </div>
 
         <div className="flex items-center justify-between">

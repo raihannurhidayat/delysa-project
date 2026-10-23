@@ -201,3 +201,8 @@ export function removeCoupon(): void {
 export function setInstructions(text: string): void {
   mutate((state) => ({ ...state, instructions: text.slice(0, 300) }));
 }
+
+/** Kosongkan keranjang setelah pesanan berhasil dibuat. */
+export function clearCart(): void {
+  mutate((state) => ({ ...state, lines: [], coupon: null }));
+}

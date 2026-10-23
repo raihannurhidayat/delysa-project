@@ -38,6 +38,40 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/orders": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Create new order (checkout submit) */
+        post: operations["createOrder"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/orders/{id}/payment-proof": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Upload payment proof for order */
+        post: operations["uploadPaymentProof"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
 }
 export type webhooks = Record<string, never>;
 export interface components {
@@ -55,6 +89,26 @@ export interface components {
             message: string;
             /** @example STOCK_INSUFFICIENT */
             code?: string;
+        };
+        OrderCreateRequest: {
+            recipientName: string;
+            recipientPhone: string;
+            shippingAddress: string;
+            customNote?: string;
+            /** Format: uuid */
+            idempotencyKey: string;
+        };
+        PaymentProofUpload: {
+            /** Format: binary */
+            proof: string;
+        };
+        OrderResponse: {
+            id: number;
+            /** @example DLF-20261019-ABCD */
+            code: string;
+            /** @enum {string} */
+            status: "pending_payment" | "pending_verification" | "paid" | "processing" | "shipped" | "delivered" | "cancelled" | "rejected";
+            total: number;
         };
     };
     responses: never;
@@ -110,6 +164,65 @@ export interface operations {
                     "application/json": {
                         data: components["schemas"]["Product"][];
                     };
+                };
+            };
+        };
+    };
+    createOrder: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["OrderCreateRequest"];
+            };
+        };
+        responses: {
+            /** @description Order created */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["OrderResponse"];
+                };
+            };
+            /** @description Stock insufficient */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+        };
+    };
+    uploadPaymentProof: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: number;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "multipart/form-data": components["schemas"]["PaymentProofUpload"];
+            };
+        };
+        responses: {
+            /** @description Proof uploaded */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["OrderResponse"];
                 };
             };
         };

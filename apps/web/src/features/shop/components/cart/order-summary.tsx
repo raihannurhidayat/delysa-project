@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { Link } from "@tanstack/react-router";
 import {
   ChevronLeft,
   ShieldCheck,
@@ -12,7 +13,6 @@ import { formatIDR } from "~/features/shop/lib/format";
 import type { CartTotals } from "~/features/shop/lib/cart-totals";
 import type { CartCoupon } from "~/features/shop/types";
 import { couponCodeSchema } from "~/features/shop/lib/cart-coupons";
-import { toast } from "~/components/ui/toast";
 import { Alert, AlertTitle, AlertDescription } from "~/components/ui/alert";
 
 interface OrderSummaryProps {
@@ -21,6 +21,8 @@ interface OrderSummaryProps {
   onApplyCoupon: (code: string) => { ok: boolean; error?: string };
   onRemoveCoupon: () => void;
   checkoutDisabled: boolean;
+  /** Sembunyikan CTA checkout & tombol kembali (dipakai di dalam wizard). */
+  hideActions?: boolean;
 }
 
 export function OrderSummary({
@@ -29,6 +31,7 @@ export function OrderSummary({
   onApplyCoupon,
   onRemoveCoupon,
   checkoutDisabled,
+  hideActions = false,
 }: OrderSummaryProps) {
   const [couponInput, setCouponInput] = useState("");
   const [couponError, setCouponError] = useState("");
@@ -46,14 +49,6 @@ export function OrderSummary({
     } else {
       setCouponError(res.error ?? "Kode kupon tidak valid");
     }
-  };
-
-  const handleCheckout = () => {
-    toast.add({
-      title: "Checkout segera hadir",
-      description: "Keranjang & ringkasanmu sudah tersimpan.",
-      type: "info",
-    });
   };
 
   return (
@@ -167,22 +162,34 @@ export function OrderSummary({
         </p>
 
         <div className="mt-4 flex flex-col gap-3">
-          <Button
-            type="button"
-            onClick={handleCheckout}
-            disabled={checkoutDisabled}
-            className="w-full rounded-full bg-[#111111] text-white hover:bg-[#2A2A2A] disabled:bg-[#D1D5DB] disabled:text-[#9CA3AF]"
-          >
-            Lanjut ke Pembayaran (Checkout) →
-          </Button>
-          <Button
-            type="button"
-            variant="ghost"
-            className="w-full rounded-full text-[#6B7280] hover:bg-[#F3F4F6]"
-          >
-            <ChevronLeft size={14} aria-hidden="true" className="mr-1" />
-            Kembali Belanja Katalog
-          </Button>
+          {!hideActions && (
+            <>
+              {checkoutDisabled ? (
+                <Button
+                  type="button"
+                  disabled
+                  className="w-full rounded-full bg-[#111111] text-white hover:bg-[#2A2A2A] disabled:bg-[#D1D5DB] disabled:text-[#9CA3AF]"
+                >
+                  Lanjut ke Pembayaran (Checkout) →
+                </Button>
+              ) : (
+                <Button
+                  render={<Link to="/checkout" search={{ step: "review" }} />}
+                  className="w-full rounded-full bg-[#111111] text-white hover:bg-[#2A2A2A]"
+                >
+                  Lanjut ke Pembayaran (Checkout) →
+                </Button>
+              )}
+              <Button
+                variant="ghost"
+                render={<Link to="/katalog" />}
+                className="w-full rounded-full text-[#6B7280] hover:bg-[#F3F4F6]"
+              >
+                <ChevronLeft size={14} aria-hidden="true" className="mr-1" />
+                Kembali Belanja Katalog
+              </Button>
+            </>
+          )}
         </div>
 
         <ul
