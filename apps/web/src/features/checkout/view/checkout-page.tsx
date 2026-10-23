@@ -56,6 +56,11 @@ export function CheckoutPage({ step, onStepChange }: CheckoutPageProps) {
     setMounted(true);
   }, []);
 
+  useEffect(() => {
+    if (!result) return;
+    window.scrollTo({ top: 0, left: 0, behavior: "auto" });
+  }, [result]);
+
   const go = async (next: CheckoutStep) => {
     const allowed = await goToStep(next);
     if (allowed) onStepChange(next);

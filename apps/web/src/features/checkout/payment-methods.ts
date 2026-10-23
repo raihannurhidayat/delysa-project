@@ -23,7 +23,7 @@ export const PAYMENT_METHODS: readonly PaymentMethodDetails[] = [
     id: "manual_transfer_bca",
     label: "Transfer Manual BCA",
     description:
-      "Transfer ke rekening BCA, lalu konfirmasi bukti pembayaran via WhatsApp.",
+      "Transfer ke rekening BCA, lalu unggah bukti pembayaran atau konfirmasi via WhatsApp.",
     bank: {
       name: "BCA",
       accountNumber: BCA_ACCOUNT_NUMBER,
@@ -32,7 +32,7 @@ export const PAYMENT_METHODS: readonly PaymentMethodDetails[] = [
     steps: [
       "Transfer tepat sebesar total pesanan ke rekening BCA di bawah.",
       "Simpan bukti transfer dari aplikasi bank atau ATM.",
-      "Kirim bukti transfer ke WhatsApp admin agar pesanan diverifikasi.",
+      "Unggah bukti transfer di halaman ini, atau kirim ke WhatsApp admin.",
     ],
   },
   {
@@ -42,7 +42,7 @@ export const PAYMENT_METHODS: readonly PaymentMethodDetails[] = [
     steps: [
       "Minta QR code QRIS kepada admin melalui WhatsApp.",
       "Scan QR code dan bayar sesuai total pesanan.",
-      "Simpan bukti pembayaran, lalu kirim ke WhatsApp admin.",
+      "Unggah bukti pembayaran di halaman ini, atau kirim ke WhatsApp admin.",
     ],
     ctaLabel: "Minta QRIS via WhatsApp",
     whatsappMessage: (totalLabel) =>
