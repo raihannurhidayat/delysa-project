@@ -3,7 +3,7 @@ import {
   checkoutFormSchema,
   checkoutSearchSchema,
   alamatStepSchema,
-  paymentProofFileSchema,
+  bayarStepSchema,
   type CheckoutFormData,
 } from "./schemas";
 
@@ -15,7 +15,7 @@ describe("checkoutFormSchema", () => {
       recipientPhone: "08123456789",
       shippingAddress: "Jl. Pancasila 123",
       customNote: "Note",
-      paymentProof: null,
+      paymentMethod: "",
       confirmed: false,
     };
     const result = checkoutFormSchema.safeParse(data);
@@ -29,7 +29,7 @@ describe("checkoutFormSchema", () => {
       recipientPhone: "123",
       shippingAddress: "Alamat lengkap",
       customNote: "",
-      paymentProof: null,
+      paymentMethod: "",
       confirmed: false,
     });
     expect(result.success).toBe(false);
@@ -42,7 +42,7 @@ describe("checkoutFormSchema", () => {
       recipientPhone: "",
       shippingAddress: "",
       customNote: "",
-      paymentProof: null,
+      paymentMethod: "",
       confirmed: false,
     });
     expect(result.success).toBe(true);
@@ -55,7 +55,7 @@ describe("checkoutFormSchema", () => {
       recipientPhone: "08123456789",
       shippingAddress: "Alamat lengkap",
       customNote: "",
-      paymentProof: null,
+      paymentMethod: "",
       confirmed: false,
     });
     expect(result.success).toBe(false);
@@ -108,41 +108,32 @@ describe("alamatStepSchema", () => {
   });
 });
 
-describe("paymentProofFileSchema", () => {
-  it("accepts a valid jpeg under 5MB", () => {
-    const file = new File(["x"], "bukti.jpg", { type: "image/jpeg" });
-    const result = paymentProofFileSchema.safeParse({
-      file,
-      preview: "blob:mock",
-    });
-    expect(result.success).toBe(true);
-  });
-
-  it("rejects non-image type", () => {
-    const file = new File(["x"], "bukti.pdf", { type: "application/pdf" });
-    const result = paymentProofFileSchema.safeParse({
-      file,
-      preview: "blob:mock",
-    });
+describe("bayarStepSchema", () => {
+  it("rejects an empty payment method with a friendly message", () => {
+    const result = bayarStepSchema.safeParse({ paymentMethod: "" });
     expect(result.success).toBe(false);
     if (!result.success) {
-      expect(result.error.issues[0].message).toBe(
-        "Format file harus JPG, PNG, atau WEBP",
-      );
+      expect(result.error.issues[0].message).toBe("Pilih metode pembayaran");
     }
   });
 
-  it("rejects files over 5MB", () => {
-    const file = new File([new Uint8Array(5 * 1024 * 1024 + 1)], "besar.png", {
-      type: "image/png",
-    });
-    const result = paymentProofFileSchema.safeParse({
-      file,
-      preview: "blob:mock",
+  it.each(["manual_transfer_bca", "qris"])(
+    "accepts the %s method",
+    (paymentMethod) => {
+      expect(bayarStepSchema.safeParse({ paymentMethod }).success).toBe(true);
+    },
+  );
+
+  it("is required by the bayar step of the checkout form", () => {
+    const result = checkoutFormSchema.safeParse({
+      step: "bayar",
+      recipientName: "",
+      recipientPhone: "",
+      shippingAddress: "",
+      customNote: "",
+      paymentMethod: "",
+      confirmed: false,
     });
     expect(result.success).toBe(false);
-    if (!result.success) {
-      expect(result.error.issues[0].message).toBe("Ukuran file maksimal 5 MB");
-    }
   });
 });

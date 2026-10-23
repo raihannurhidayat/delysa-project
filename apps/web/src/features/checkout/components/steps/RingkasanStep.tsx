@@ -15,6 +15,7 @@ import { Field, FieldError, FieldLabel } from "~/components/ui/field";
 import { formatIDR } from "~/features/shop/lib/format";
 import type { CartTotals } from "~/features/shop/lib/cart-totals";
 import type { CartCoupon, MiniCartLine } from "~/features/shop/types";
+import { getPaymentMethod } from "../../payment-methods";
 import type { CheckoutFormData } from "../../schemas";
 
 interface RingkasanStepProps {
@@ -44,7 +45,8 @@ export function RingkasanStep({
   const recipientPhone = watch("recipientPhone");
   const shippingAddress = watch("shippingAddress");
   const customNote = watch("customNote");
-  const paymentProof = watch("paymentProof");
+  const paymentMethod = watch("paymentMethod");
+  const method = getPaymentMethod(paymentMethod);
 
   return (
     <section aria-labelledby="checkout-ringkasan-heading" className="space-y-4">
@@ -82,13 +84,20 @@ export function RingkasanStep({
             Pembayaran
           </p>
           <p className="mt-1 text-sm font-bold text-[#1A1A1A]">
-            Transfer Manual BCA
+            {method?.label ?? "Belum dipilih"}
           </p>
-          <p className="text-xs text-[#6B7280]">a.n. Kartinah</p>
-          <p className="mt-1 text-xs text-[#6B7280]">
-            {paymentProof
-              ? `Bukti: ${paymentProof.file.name} (diunggah setelah order dibuat)`
-              : "Bukti transfer belum dipilih — bisa diunggah setelah order dibuat."}
+          {method?.bank && (
+            <p className="text-xs text-[#6B7280]">
+              {method.bank.name} {method.bank.accountNumber} a.n.{" "}
+              {method.bank.accountName}
+            </p>
+          )}
+          <p className="mt-1 text-xs leading-relaxed text-[#6B7280]">
+            {method
+              ? method.bank
+                ? "Transfer sesuai total, lalu konfirmasi bukti pembayaran via WhatsApp."
+                : "QR code QRIS dikirim admin melalui WhatsApp setelah pesanan dibuat."
+              : "Pilih metode pembayaran di langkah sebelumnya."}
           </p>
         </div>
       </div>

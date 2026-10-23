@@ -1,15 +1,12 @@
 import { z } from "zod";
 
-import { CHECKOUT_STEPS, type CheckoutFormData } from "./types";
+import {
+  CHECKOUT_STEPS,
+  PAYMENT_METHOD_IDS,
+  type CheckoutFormData,
+} from "./types";
 
 export type { CheckoutFormData };
-
-export const MAX_PROOF_BYTES = 5 * 1024 * 1024;
-export const ALLOWED_PROOF_TYPES = [
-  "image/jpeg",
-  "image/png",
-  "image/webp",
-] as const;
 
 export const checkoutStepSchema = z.enum(CHECKOUT_STEPS);
 
@@ -23,19 +20,6 @@ export const checkoutSearchSchema = z.object({
 });
 
 export type CheckoutSearch = z.infer<typeof checkoutSearchSchema>;
-
-export const paymentProofFileSchema = z.object({
-  file: z
-    .instanceof(File, { message: "Pilih file bukti transfer" })
-    .refine(
-      (file) => (ALLOWED_PROOF_TYPES as readonly string[]).includes(file.type),
-      { message: "Format file harus JPG, PNG, atau WEBP" },
-    )
-    .refine((file) => file.size <= MAX_PROOF_BYTES, {
-      message: "Ukuran file maksimal 5 MB",
-    }),
-  preview: z.string(),
-});
 
 export const alamatStepSchema = z.object({
   recipientName: z
@@ -60,7 +44,9 @@ export const alamatStepSchema = z.object({
 });
 
 export const bayarStepSchema = z.object({
-  paymentProof: paymentProofFileSchema.nullable(),
+  paymentMethod: z.enum(PAYMENT_METHOD_IDS, {
+    errorMap: () => ({ message: "Pilih metode pembayaran" }),
+  }),
 });
 
 export const ringkasanStepSchema = z.object({
@@ -82,6 +68,6 @@ export const DEFAULT_CHECKOUT_FORM: CheckoutFormData = {
   recipientPhone: "",
   shippingAddress: "",
   customNote: "",
-  paymentProof: null,
+  paymentMethod: "",
   confirmed: false,
 };

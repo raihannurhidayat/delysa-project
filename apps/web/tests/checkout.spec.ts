@@ -123,7 +123,7 @@ test("guest checkout 4 langkah sampai pesanan berhasil dibuat", async ({
     "Jl. Pancasila No. 123, Kel. Cihideung, Tasikmalaya",
   );
 
-  // Langkah 3: Metode bayar + unggah bukti transfer.
+  // Langkah 3: pilih metode bayar, instruksi muncul, tanpa upload bukti.
   const bayarHeading = page.getByRole("heading", {
     name: "Metode Pembayaran",
   });
@@ -132,11 +132,28 @@ test("guest checkout 4 langkah sampai pesanan berhasil dibuat", async ({
     page.getByRole("button", { name: "Lanjut ke Pembayaran" }),
     bayarHeading,
   );
-  await page.setInputFiles(
-    'input[type="file"]',
-    "tests/fixtures/bukti-transfer.png",
+  await expect(page.locator('input[type="file"]')).toHaveCount(0);
+  await expect(page.getByText("Langkah pembayaran")).toHaveCount(0);
+  await page.click("#payment-method");
+  await expect(page.getByRole("listbox")).toBeVisible();
+  const triggerBox = await page.locator("#payment-method").boundingBox();
+  const popupBox = await page.getByRole("listbox").boundingBox();
+  expect(triggerBox).not.toBeNull();
+  expect(popupBox).not.toBeNull();
+  expect(popupBox!.y).toBeGreaterThanOrEqual(
+    triggerBox!.y + triggerBox!.height + 7,
   );
-  await expect(page.getByText("bukti-transfer.png")).toBeVisible();
+  await page.getByRole("option", { name: "Transfer Manual BCA" }).click();
+  const instructions = page.getByTestId("payment-instructions");
+  await expect(instructions.getByText("054-082-9912")).toBeVisible();
+  await expect(instructions.getByText("a.n. Kartinah")).toBeVisible();
+  await expect(instructions.getByText("Langkah pembayaran")).toBeVisible();
+  await expect(
+    instructions.getByRole("link", {
+      name: "Konfirmasi Transfer via WhatsApp",
+    }),
+  ).toHaveCount(0);
+  await expect(page.locator('input[type="file"]')).toHaveCount(0);
 
   // Langkah 4: Ringkasan + submit.
   const ringkasanHeading = page.getByRole("heading", {
@@ -158,6 +175,78 @@ test("guest checkout 4 langkah sampai pesanan berhasil dibuat", async ({
     successHeading,
   );
   await expect(page.getByText(/DLF-\d{8}-/)).toBeVisible();
+});
+
+test("metode bayar QRIS: instruksi muncul setelah dipilih, tanpa upload", async ({
+  page,
+}) => {
+  await seedCart(page);
+  await page.goto("/checkout?step=bayar");
+  await expect(
+    page.getByRole("heading", { name: "Metode Pembayaran" }),
+  ).toBeVisible();
+
+  await expect(page.getByText("Langkah pembayaran")).toHaveCount(0);
+  await page.getByRole("button", { name: "Lanjut ke Ringkasan" }).click();
+  await expect(
+    page.getByRole("alert").filter({ hasText: "Pilih metode pembayaran" }),
+  ).toBeVisible();
+
+  await page.click("#payment-method");
+  await page.getByRole("option", { name: "QRIS" }).click();
+  const instructions = page.getByTestId("payment-instructions");
+  await expect(
+    instructions.getByText("Minta QR code QRIS kepada admin melalui WhatsApp."),
+  ).toBeVisible();
+  await expect(instructions.getByText("Minta QRIS via WhatsApp")).toBeVisible();
+  await expect(instructions.getByText("Rekening BCA")).toHaveCount(0);
+  await expect(page.locator('input[type="file"]')).toHaveCount(0);
+});
+
+test("select tidak mengunci scroll halaman dan sudut item lebih rapi", async ({
+  page,
+}) => {
+  await page.setViewportSize({ width: 1280, height: 600 });
+  await seedCart(page);
+  await page.goto("/checkout?step=bayar");
+  await expect(
+    page.getByRole("heading", { name: "Metode Pembayaran" }),
+  ).toBeVisible();
+
+  await page.click("#payment-method");
+  const listbox = page.getByRole("listbox");
+  await expect(listbox).toBeVisible();
+
+  const before = await page.evaluate(() => window.scrollY);
+  await page.mouse.move(640, 100);
+  await page.mouse.wheel(0, 500);
+  await expect
+    .poll(() => page.evaluate(() => window.scrollY))
+    .toBeGreaterThan(before);
+  await expect(listbox).toBeVisible();
+
+  await expect(page.locator('[data-slot="select-content"]')).toHaveCSS(
+    "border-radius",
+    "10px",
+  );
+  await expect(
+    page.getByRole("option", { name: "Transfer Manual BCA" }),
+  ).toHaveCSS("border-radius", "8px");
+});
+
+test("alamat tetap terang saat OS memakai dark mode", async ({ page }) => {
+  await page.emulateMedia({ colorScheme: "dark" });
+  await seedCart(page);
+  await page.goto("/checkout?step=alamat");
+  await expect(
+    page.getByRole("heading", { name: "Alamat Pengiriman" }),
+  ).toBeVisible();
+
+  for (const id of ["recipientName", "shippingAddress"]) {
+    const field = page.locator(`#${id}`);
+    await expect(field).toHaveCSS("color-scheme", "light");
+    await expect(field).toHaveCSS("background-color", "rgb(255, 255, 255)");
+  }
 });
 
 test("keranjang kosong: empty state inline di /checkout tanpa redirect", async ({

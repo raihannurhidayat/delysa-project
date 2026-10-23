@@ -132,7 +132,7 @@ export function CheckoutPage({ step, onStepChange }: CheckoutPageProps) {
         <div className="mt-6">
           <CheckoutSuccess
             order={result.order}
-            proofError={result.proofError}
+            paymentMethod={result.paymentMethod}
           />
         </div>
       </main>

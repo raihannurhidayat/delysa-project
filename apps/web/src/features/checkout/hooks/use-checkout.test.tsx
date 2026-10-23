@@ -5,14 +5,12 @@ import { vi, describe, it, expect, beforeEach } from "vitest";
 const {
   mockUseMiniCart,
   mockCreateOrder,
-  mockUploadProof,
   mockGetGuestToken,
   mockSetGuestToken,
   mockClearCart,
 } = vi.hoisted(() => ({
   mockUseMiniCart: vi.fn(),
   mockCreateOrder: vi.fn(),
-  mockUploadProof: vi.fn(),
   mockGetGuestToken: vi.fn(),
   mockSetGuestToken: vi.fn(),
   mockClearCart: vi.fn(),
@@ -24,7 +22,6 @@ vi.mock("~/features/shop/hooks/use-mini-cart", () => ({
 
 vi.mock("../api/endpoints", () => ({
   createOrder: mockCreateOrder,
-  uploadPaymentProof: mockUploadProof,
 }));
 
 vi.mock("~/features/shop/lib/mini-cart-storage", () => ({
@@ -110,12 +107,14 @@ describe("useCheckout", () => {
     });
     act(() => {
       result.current.form.setValue("recipientName", "Budi");
+      result.current.form.setValue("paymentMethod", "qris");
     });
     await waitFor(() => {
       const draft = localStorage.getItem("checkout_draft_test-guest-token");
       expect(draft).not.toBeNull();
       if (draft) {
         expect(JSON.parse(draft).recipientName).toBe("Budi");
+        expect(JSON.parse(draft).paymentMethod).toBe("qris");
       }
     });
   });
@@ -129,6 +128,7 @@ describe("useCheckout", () => {
         recipientPhone: "08123456789",
         shippingAddress: "Jl. Merdeka No. 10, Tasikmalaya",
         customNote: "",
+        paymentMethod: "manual_transfer_bca",
         confirmed: false,
         guestToken: "test-guest-token",
         updatedAt: Date.now(),
@@ -145,6 +145,9 @@ describe("useCheckout", () => {
     expect(result.current.form.getValues("shippingAddress")).toBe(
       "Jl. Merdeka No. 10, Tasikmalaya",
     );
+    expect(result.current.form.getValues("paymentMethod")).toBe(
+      "manual_transfer_bca",
+    );
   });
 
   it("blocks forward navigation when the current step is invalid", async () => {
@@ -158,6 +161,27 @@ describe("useCheckout", () => {
     });
 
     expect(allowed).toBe(false);
+  });
+
+  it("requires a payment method before leaving the bayar step", async () => {
+    const { result } = renderHook(() => useCheckout({ step: "bayar" }), {
+      wrapper,
+    });
+
+    let allowed = true;
+    await act(async () => {
+      allowed = await result.current.goToStep("ringkasan");
+    });
+    expect(allowed).toBe(false);
+
+    act(() => {
+      result.current.form.setValue("paymentMethod", "qris");
+    });
+
+    await act(async () => {
+      allowed = await result.current.goToStep("ringkasan");
+    });
+    expect(allowed).toBe(true);
   });
 
   it("allows backward navigation without validating", async () => {
@@ -186,6 +210,7 @@ describe("useCheckout", () => {
         "shippingAddress",
         "Jl. Test No. 1, Tasikmalaya",
       );
+      result.current.form.setValue("paymentMethod", "manual_transfer_bca");
       result.current.form.setValue("confirmed", true);
     });
 
@@ -204,40 +229,11 @@ describe("useCheckout", () => {
       idempotencyKey: expect.any(String),
     });
     expect(mockClearCart).toHaveBeenCalledTimes(1);
-    expect(submitted).toMatchObject({ order: ORDER, proofError: null });
+    expect(submitted).toMatchObject({
+      order: ORDER,
+      paymentMethod: "manual_transfer_bca",
+    });
     expect(localStorage.getItem("checkout_draft_test-guest-token")).toBeNull();
-  });
-
-  it("uploads the payment proof after the order is created", async () => {
-    mockCreateOrder.mockResolvedValue(ORDER);
-    mockUploadProof.mockResolvedValue({
-      ...ORDER,
-      status: "pending_verification",
-    });
-    const { result } = renderHook(() => useCheckout({ step: "ringkasan" }), {
-      wrapper,
-    });
-
-    const file = new File(["x"], "bukti.jpg", { type: "image/jpeg" });
-    act(() => {
-      result.current.form.setValue("recipientName", "Budi");
-      result.current.form.setValue("recipientPhone", "08123456789");
-      result.current.form.setValue(
-        "shippingAddress",
-        "Jl. Test No. 1, Tasikmalaya",
-      );
-      result.current.form.setValue("paymentProof", {
-        file,
-        preview: "blob:mock",
-      });
-      result.current.form.setValue("confirmed", true);
-    });
-
-    await act(async () => {
-      await result.current.submitOrder();
-    });
-
-    expect(mockUploadProof).toHaveBeenCalledWith(ORDER.id, file);
   });
 
   it("returns a friendly STOCK_INSUFFICIENT error and keeps the cart", async () => {

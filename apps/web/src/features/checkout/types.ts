@@ -24,13 +24,24 @@ export const CHECKOUT_STEP_SHORT_LABELS: Record<CheckoutStep, string> = {
   ringkasan: "Ringkasan",
 };
 
+export const PAYMENT_METHOD_IDS = ["manual_transfer_bca", "qris"] as const;
+
+export type PaymentMethod = (typeof PAYMENT_METHOD_IDS)[number];
+
+export function isPaymentMethod(value: unknown): value is PaymentMethod {
+  return (
+    typeof value === "string" &&
+    (PAYMENT_METHOD_IDS as readonly string[]).includes(value)
+  );
+}
+
 export type CheckoutFormData = {
   step: CheckoutStep;
   recipientName: string;
   recipientPhone: string;
   shippingAddress: string;
   customNote: string;
-  paymentProof: { file: File; preview: string } | null;
+  paymentMethod: PaymentMethod | "";
   confirmed: boolean;
 };
 

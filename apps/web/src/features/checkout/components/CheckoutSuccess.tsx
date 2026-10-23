@@ -10,13 +10,22 @@ import {
 import { Button } from "~/components/ui/button";
 import { formatIDR } from "~/features/shop/lib/format";
 import type { OrderResponse } from "../api/endpoints";
+import { getPaymentMethod, WHATSAPP_NUMBER } from "../payment-methods";
+import type { PaymentMethod } from "../types";
 
 interface CheckoutSuccessProps {
   order: OrderResponse;
-  proofError: string | null;
+  paymentMethod: PaymentMethod | "";
 }
 
-export function CheckoutSuccess({ order, proofError }: CheckoutSuccessProps) {
+export function CheckoutSuccess({
+  order,
+  paymentMethod,
+}: CheckoutSuccessProps) {
+  const method = getPaymentMethod(paymentMethod);
+  const methodLabel = method?.label;
+  const methodText = methodLabel ? ` dengan metode ${methodLabel}` : "";
+
   return (
     <section
       aria-labelledby="checkout-success-heading"
@@ -54,28 +63,25 @@ export function CheckoutSuccess({ order, proofError }: CheckoutSuccessProps) {
               {formatIDR(order.total)}
             </dd>
           </div>
+          {methodLabel && (
+            <div className="flex justify-between">
+              <dt className="text-[#6B7280]">Metode</dt>
+              <dd className="font-semibold text-[#1A1A1A]">{methodLabel}</dd>
+            </div>
+          )}
         </dl>
 
-        {proofError ? (
-          <p className="mt-4 rounded-xl border border-amber-200 bg-amber-50 p-3 text-left text-xs text-amber-800">
-            Pesanan berhasil dibuat, tetapi bukti transfer gagal diunggah:{" "}
-            {proofError}. Kirim bukti via WhatsApp admin dengan menyertakan kode
-            pesanan.
-          </p>
-        ) : (
-          <p className="mt-4 rounded-xl border border-[#E5E7EB] bg-[#F8F9FA] p-3 text-left text-xs text-[#6B7280]">
-            Lanjutkan transfer manual BCA, lalu unggah bukti agar pesanan
-            diverifikasi. Belum transfer? Konfirmasi nomor rekening via WhatsApp
-            admin.
-          </p>
-        )}
+        <p className="mt-4 rounded-xl border border-[#E5E7EB] bg-[#F8F9FA] p-3 text-left text-xs text-[#6B7280]">
+          Selesaikan pembayaran sesuai metode yang dipilih, lalu kirim bukti
+          pembayaran ke WhatsApp admin agar pesanan diverifikasi.
+        </p>
 
         <div className="mt-5 flex flex-col gap-2">
           <Button
             render={
               <a
-                href={`https://wa.me/6282116789558?text=${encodeURIComponent(
-                  `Halo Delysa Florist, saya sudah membuat pesanan ${order.code} sebesar ${formatIDR(order.total)}. Mohon info nomor rekening BCA dan konfirmasi pembayaran.`,
+                href={`https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(
+                  `Halo Delysa Florist, saya sudah membuat pesanan ${order.code} sebesar ${formatIDR(order.total)}${methodText}. Mohon konfirmasi pembayaran.`,
                 )}`}
                 target="_blank"
                 rel="noopener noreferrer"

@@ -5,11 +5,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 
-import {
-  createOrder,
-  uploadPaymentProof,
-  type OrderResponse,
-} from "../api/endpoints";
+import { createOrder, type OrderResponse } from "../api/endpoints";
 import { ApiError } from "../api/http";
 import { orderQueries } from "../api/query-keys";
 import { useMiniCart } from "~/features/shop/hooks/use-mini-cart";
@@ -20,8 +16,10 @@ import {
 } from "../schemas";
 import {
   CHECKOUT_STEPS,
+  isPaymentMethod,
   type CheckoutDraft,
   type CheckoutStep,
+  type PaymentMethod,
 } from "../types";
 import {
   getGuestToken,
@@ -57,8 +55,10 @@ function loadDraft(guestToken: string): CheckoutDraft | null {
       recipientPhone: parsed.recipientPhone ?? "",
       shippingAddress: parsed.shippingAddress ?? "",
       customNote: parsed.customNote ?? "",
+      paymentMethod: isPaymentMethod(parsed.paymentMethod)
+        ? parsed.paymentMethod
+        : "",
       confirmed: parsed.confirmed ?? false,
-      paymentProof: null,
       guestToken,
       updatedAt: parsed.updatedAt ?? Date.now(),
     };
@@ -101,7 +101,7 @@ function toFriendlyError(err: unknown): Error {
 
 export type SubmitOrderResult = {
   order: OrderResponse;
-  proofError: string | null;
+  paymentMethod: PaymentMethod | "";
 };
 
 export function useCheckout({ step }: { step: CheckoutStep }) {
@@ -154,7 +154,7 @@ export function useCheckout({ step }: { step: CheckoutStep }) {
       recipientPhone: restored.recipientPhone,
       shippingAddress: restored.shippingAddress,
       customNote: restored.customNote,
-      paymentProof: null,
+      paymentMethod: restored.paymentMethod,
       confirmed: false,
     });
     setDraft(restored);
@@ -172,8 +172,8 @@ export function useCheckout({ step }: { step: CheckoutStep }) {
           recipientPhone: value.recipientPhone ?? "",
           shippingAddress: value.shippingAddress ?? "",
           customNote: value.customNote ?? "",
+          paymentMethod: value.paymentMethod ?? "",
           confirmed: value.confirmed ?? false,
-          paymentProof: null,
           guestToken,
           updatedAt: Date.now(),
         };
@@ -212,7 +212,7 @@ export function useCheckout({ step }: { step: CheckoutStep }) {
               "customNote",
             ] as const)
           : step === "bayar"
-            ? (["paymentProof"] as const)
+            ? (["paymentMethod"] as const)
             : (["confirmed"] as const);
       await trigger([...fields]);
       return false;
@@ -229,11 +229,6 @@ export function useCheckout({ step }: { step: CheckoutStep }) {
     onSettled: () => {
       queryClient.invalidateQueries({ queryKey: orderQueries.all });
     },
-  });
-
-  const uploadProofMutation = useMutation({
-    mutationFn: ({ orderId, file }: { orderId: number; file: File }) =>
-      uploadPaymentProof(orderId, file),
   });
 
   const submitOrder = useCallback(async (): Promise<SubmitOrderResult> => {
@@ -263,30 +258,14 @@ export function useCheckout({ step }: { step: CheckoutStep }) {
     clearDraft(guestToken);
     clearCart();
 
-    const file = formData.paymentProof?.file ?? null;
-    if (!file) {
-      return { order, proofError: null };
-    }
-
-    try {
-      await uploadProofMutation.mutateAsync({ orderId: order.id, file });
-      return { order, proofError: null };
-    } catch (err) {
-      return { order, proofError: toFriendlyError(err).message };
-    }
-  }, [
-    clearCart,
-    createOrderMutation,
-    getValues,
-    guestToken,
-    step,
-    uploadProofMutation,
-  ]);
+    return { order, paymentMethod: formData.paymentMethod };
+  }, [clearCart, createOrderMutation, getValues, guestToken, step]);
 
   const error = useMemo(() => {
-    const source = createOrderMutation.error ?? uploadProofMutation.error;
-    return source ? toFriendlyError(source).message : null;
-  }, [createOrderMutation.error, uploadProofMutation.error]);
+    return createOrderMutation.error
+      ? toFriendlyError(createOrderMutation.error).message
+      : null;
+  }, [createOrderMutation.error]);
 
   return {
     form,
@@ -295,7 +274,6 @@ export function useCheckout({ step }: { step: CheckoutStep }) {
     submitOrder,
     draft,
     isSubmitting: createOrderMutation.isPending,
-    isUploading: uploadProofMutation.isPending,
     error,
     cartLines: lines,
     cartTotals: totals,

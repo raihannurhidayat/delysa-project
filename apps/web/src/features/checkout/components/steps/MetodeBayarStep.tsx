@@ -1,28 +1,34 @@
 "use client";
 
-import { useEffect, useRef } from "react";
 import { useFormContext } from "react-hook-form";
 import {
   ArrowLeft,
   ArrowRight,
-  CheckCircle2,
-  ImagePlus,
+  Copy,
+  Landmark,
   MessageCircle,
-  Trash2,
-  Upload,
+  QrCode,
 } from "lucide-react";
 import { Button } from "~/components/ui/button";
-import { Alert, AlertDescription, AlertTitle } from "~/components/ui/alert";
-import { formatIDR } from "~/features/shop/lib/format";
+import { Field, FieldError, FieldLabel } from "~/components/ui/field";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "~/components/ui/select";
 import { toast } from "~/components/ui/toast";
+import { formatIDR } from "~/features/shop/lib/format";
 import type { CartTotals } from "~/features/shop/lib/cart-totals";
 import {
-  ALLOWED_PROOF_TYPES,
-  MAX_PROOF_BYTES,
-  type CheckoutFormData,
-} from "../../schemas";
-
-const WHATSAPP_NUMBER = "6282116789558";
+  getPaymentMethod,
+  PAYMENT_METHOD_ITEMS,
+  WHATSAPP_DISPLAY,
+  WHATSAPP_NUMBER,
+} from "../../payment-methods";
+import { isPaymentMethod } from "../../types";
+import type { CheckoutFormData } from "../../schemas";
 
 interface MetodeBayarStepProps {
   cartTotals: CartTotals;
@@ -40,49 +46,23 @@ export function MetodeBayarStep({
     setValue,
     formState: { errors },
   } = useFormContext<CheckoutFormData>();
-  const paymentProof = watch("paymentProof");
-  const previewUrl = paymentProof?.preview;
-  const fileInputRef = useRef<HTMLInputElement>(null);
+  const paymentMethod = watch("paymentMethod");
+  const method = getPaymentMethod(paymentMethod);
+  const totalLabel = formatIDR(cartTotals.grandTotal);
 
-  useEffect(() => {
-    return () => {
-      if (previewUrl) URL.revokeObjectURL(previewUrl);
-    };
-  }, [previewUrl]);
+  const handleCopyAccount = async () => {
+    if (!method?.bank) return;
 
-  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files?.[0];
-    event.target.value = "";
-    if (!file) return;
-
-    if (!(ALLOWED_PROOF_TYPES as readonly string[]).includes(file.type)) {
+    try {
+      await navigator.clipboard.writeText(method.bank.accountNumber);
+      toast.add({ title: "Nomor rekening disalin", type: "success" });
+    } catch {
       toast.add({
-        title: "Format tidak didukung",
-        description: "Hanya JPG, PNG, atau WEBP yang diterima.",
+        title: "Gagal menyalin",
+        description: "Salin nomor rekening secara manual.",
         type: "error",
       });
-      return;
     }
-    if (file.size > MAX_PROOF_BYTES) {
-      toast.add({
-        title: "File terlalu besar",
-        description: "Ukuran maksimal 5 MB.",
-        type: "error",
-      });
-      return;
-    }
-
-    if (previewUrl) URL.revokeObjectURL(previewUrl);
-    setValue(
-      "paymentProof",
-      { file, preview: URL.createObjectURL(file) },
-      { shouldValidate: true, shouldDirty: true },
-    );
-  };
-
-  const handleRemoveProof = () => {
-    if (previewUrl) URL.revokeObjectURL(previewUrl);
-    setValue("paymentProof", null, { shouldValidate: true, shouldDirty: true });
   };
 
   return (
@@ -95,125 +75,151 @@ export function MetodeBayarStep({
           Metode Pembayaran
         </h2>
         <p className="mt-0.5 text-sm text-[#6B7280]">
-          Transfer manual BCA, lalu unggah bukti pembayaran.
+          Pilih metode pembayaran untuk melihat instruksi yang perlu dilakukan.
         </p>
       </div>
 
       <div className="rounded-xl border border-[#E5E7EB] bg-white p-4">
-        <div className="flex items-start gap-3">
-          <span className="flex size-10 shrink-0 items-center justify-center rounded-full bg-[#FFF3ED] text-[#FF6B35]">
-            <MessageCircle size={20} aria-hidden="true" />
-          </span>
-          <div className="min-w-0 flex-1">
-            <p className="text-sm font-bold text-[#1A1A1A]">
-              Transfer Manual BCA
-            </p>
-            <p className="mt-0.5 text-xs text-[#6B7280]">
-              a.n. Kartinah — konfirmasi nomor rekening via WhatsApp admin
-              sebelum transfer.
-            </p>
-            <a
-              href={`https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(
-                `Halo Delysa Florist, mohon info nomor rekening BCA untuk pembayaran pesanan saya sebesar ${formatIDR(cartTotals.grandTotal)}.`,
-              )}`}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="mt-2 inline-flex items-center gap-1.5 rounded-full bg-emerald-600 px-3 py-1.5 text-xs font-semibold text-white transition-colors hover:bg-emerald-700"
-            >
-              <MessageCircle size={14} aria-hidden="true" />
-              Chat Admin (082116789558)
-            </a>
-          </div>
-        </div>
-
-        <dl className="mt-4 space-y-2 border-t border-[#E5E7EB] pt-3 text-sm">
-          <div className="flex items-center justify-between">
-            <dt className="text-[#6B7280]">Total yang harus dibayar</dt>
-            <dd className="text-base font-extrabold text-[#1A1A1A]">
-              {formatIDR(cartTotals.grandTotal)}
-            </dd>
-          </div>
-          <div className="flex items-center justify-between">
-            <dt className="text-[#6B7280]">Batas konfirmasi</dt>
-            <dd className="font-medium text-[#1A1A1A]">1×24 jam</dd>
-          </div>
-        </dl>
-      </div>
-
-      <div className="rounded-xl border border-[#E5E7EB] bg-white p-4">
-        <p className="text-sm font-bold text-[#1A1A1A]">
-          Bukti Transfer (opsional sekarang)
-        </p>
-        <p className="mt-0.5 text-xs text-[#6B7280]">
-          Kamu bisa mengunggah bukti sekarang, atau menyusul dari halaman
-          pesanan setelah order dibuat. Format JPG/PNG/WEBP maksimal 5 MB.
-        </p>
-
-        <input
-          ref={fileInputRef}
-          type="file"
-          accept={ALLOWED_PROOF_TYPES.join(",")}
-          onChange={handleFileChange}
-          className="sr-only"
-          aria-label="Pilih file bukti transfer"
-        />
-
-        {paymentProof ? (
-          <div className="mt-3 flex items-center gap-3 rounded-lg border border-[#E5E7EB] p-2">
-            <img
-              src={paymentProof.preview}
-              alt="Pratinjau bukti transfer"
-              className="size-16 rounded-md object-cover"
-            />
-            <div className="min-w-0 flex-1">
-              <p className="truncate text-sm font-medium text-[#1A1A1A]">
-                {paymentProof.file.name}
-              </p>
-              <p className="text-xs text-[#6B7280]">
-                {(paymentProof.file.size / 1024).toFixed(0)} KB
-              </p>
-            </div>
-            <Button
-              type="button"
-              variant="ghost"
-              size="icon-sm"
-              onClick={handleRemoveProof}
-              aria-label="Hapus bukti transfer"
-              className="rounded-full text-[#6B7280] hover:bg-[#F3F4F6]"
-            >
-              <Trash2 size={16} aria-hidden="true" />
-            </Button>
-          </div>
-        ) : (
-          <Button
-            type="button"
-            variant="outline"
-            onClick={() => fileInputRef.current?.click()}
-            className="mt-3 w-full rounded-full border-dashed border-[#E5E7EB] text-[#6B7280] hover:bg-[#F9FAFB]"
+        <Field data-invalid={!!errors.paymentMethod}>
+          <FieldLabel htmlFor="payment-method">
+            Metode Pembayaran <span className="text-[#FF6B35]">*</span>
+          </FieldLabel>
+          <Select
+            value={paymentMethod || null}
+            onValueChange={(value) => {
+              if (isPaymentMethod(value)) {
+                setValue("paymentMethod", value, {
+                  shouldValidate: true,
+                  shouldDirty: true,
+                });
+              }
+            }}
+            items={PAYMENT_METHOD_ITEMS}
           >
-            <Upload size={16} aria-hidden="true" className="mr-1.5" />
-            Pilih File Bukti Transfer
-          </Button>
-        )}
+            <SelectTrigger
+              id="payment-method"
+              aria-invalid={!!errors.paymentMethod}
+              aria-describedby={
+                errors.paymentMethod ? "payment-method-error" : undefined
+              }
+              className="h-11 w-full rounded-lg border border-[#E5E7EB] bg-white px-3 text-sm"
+            >
+              <SelectValue placeholder="Pilih metode pembayaran" />
+            </SelectTrigger>
+            <SelectContent alignItemWithTrigger={false} sideOffset={8}>
+              {PAYMENT_METHOD_ITEMS.map((item) => (
+                <SelectItem key={item.value} value={item.value}>
+                  {item.label}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+          <FieldError
+            id="payment-method-error"
+            errors={[errors.paymentMethod]}
+          />
+        </Field>
 
-        {errors.paymentProof && (
-          <Alert variant="destructive" className="mt-3">
-            <ImagePlus className="h-4 w-4" aria-hidden="true" />
-            <AlertTitle className="text-xs font-medium">
-              File tidak valid
-            </AlertTitle>
-            <AlertDescription className="text-xs">
-              {errors.paymentProof.message}
-            </AlertDescription>
-          </Alert>
-        )}
+        <div aria-live="polite">
+          {method && (
+            <div
+              data-testid="payment-instructions"
+              className="mt-4 border-t border-[#E5E7EB] pt-4"
+            >
+              <div className="flex items-start gap-3">
+                <span className="flex size-10 shrink-0 items-center justify-center rounded-full bg-[#FFF3ED] text-[#FF6B35]">
+                  {method.bank ? (
+                    <Landmark size={20} aria-hidden="true" />
+                  ) : (
+                    <QrCode size={20} aria-hidden="true" />
+                  )}
+                </span>
+                <div className="min-w-0 flex-1">
+                  <p className="text-sm font-bold text-[#1A1A1A]">
+                    {method.label}
+                  </p>
+                  <p className="mt-0.5 text-xs text-[#6B7280]">
+                    {method.description}
+                  </p>
+                </div>
+              </div>
 
-        {paymentProof && (
-          <p className="mt-2 flex items-center gap-1 text-[11px] text-emerald-700">
-            <CheckCircle2 size={12} aria-hidden="true" />
-            File siap diunggah setelah pesanan dibuat.
-          </p>
-        )}
+              {method.bank && (
+                <div className="mt-4 rounded-lg border border-[#E5E7EB] bg-[#F9FAFB] p-3">
+                  <div className="flex items-start justify-between gap-3">
+                    <div className="min-w-0">
+                      <p className="text-[11px] font-semibold uppercase tracking-wide text-[#9CA3AF]">
+                        Rekening {method.bank.name}
+                      </p>
+                      <p className="mt-1 font-mono text-lg font-extrabold tracking-wide text-[#1A1A1A]">
+                        {method.bank.accountNumber}
+                      </p>
+                      <p className="text-xs text-[#6B7280]">
+                        a.n. {method.bank.accountName}
+                      </p>
+                    </div>
+                    <Button
+                      type="button"
+                      variant="outline"
+                      size="sm"
+                      onClick={() => void handleCopyAccount()}
+                      className="shrink-0 rounded-full"
+                    >
+                      <Copy size={14} aria-hidden="true" className="mr-1" />
+                      Salin
+                    </Button>
+                  </div>
+                </div>
+              )}
+
+              <div className="mt-4">
+                <p className="text-xs font-semibold text-[#1A1A1A]">
+                  Langkah pembayaran
+                </p>
+                <ol className="mt-2 space-y-2">
+                  {method.steps.map((step, index) => (
+                    <li
+                      key={step}
+                      className="flex gap-2 text-xs leading-relaxed text-[#6B7280]"
+                    >
+                      <span className="flex size-5 shrink-0 items-center justify-center rounded-full bg-[#FFF3ED] text-[11px] font-bold text-[#FF6B35]">
+                        {index + 1}
+                      </span>
+                      <span>{step}</span>
+                    </li>
+                  ))}
+                </ol>
+              </div>
+
+              <dl className="mt-4 space-y-2 border-t border-[#E5E7EB] pt-3 text-sm">
+                <div className="flex items-center justify-between gap-3">
+                  <dt className="text-[#6B7280]">Total yang harus dibayar</dt>
+                  <dd className="text-base font-extrabold text-[#1A1A1A]">
+                    {totalLabel}
+                  </dd>
+                </div>
+                <div className="flex items-center justify-between gap-3">
+                  <dt className="text-[#6B7280]">Batas konfirmasi</dt>
+                  <dd className="font-medium text-[#1A1A1A]">1×24 jam</dd>
+                </div>
+              </dl>
+
+              {method.ctaLabel && method.whatsappMessage ? (
+                <a
+                  href={`https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(
+                    method.whatsappMessage(totalLabel),
+                  )}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="mt-3 inline-flex w-full items-center justify-center gap-1.5 rounded-full bg-emerald-600 px-3 py-2 text-xs font-semibold text-white transition-colors hover:bg-emerald-700"
+                >
+                  <MessageCircle size={14} aria-hidden="true" />
+                  {method.ctaLabel}
+                </a>
+              ) : null}
+            </div>
+          )}
+        </div>
       </div>
 
       <div className="flex flex-col-reverse gap-2 sm:flex-row sm:items-center sm:justify-between">
