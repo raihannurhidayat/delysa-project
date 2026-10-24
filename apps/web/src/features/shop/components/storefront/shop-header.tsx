@@ -13,7 +13,10 @@ import { Badge } from "~/components/ui/badge";
 import { Button } from "~/components/ui/button";
 import { Input } from "~/components/ui/input";
 import { useSlidingIndicator } from "~/features/shop/hooks/use-sliding-indicator";
+import { useDemoAuth } from "~/features/shop/hooks/use-demo-auth";
+import { DEMO_CUSTOMER_NAME } from "~/features/shop/lib/demo-auth-store";
 import { ShopMobileNav } from "./shop-mobile-nav";
+import { useMiniCart } from "~/features/shop/hooks/use-mini-cart";
 
 export type ShopNavTo =
   | "/"
@@ -22,6 +25,7 @@ export type ShopNavTo =
   | "/best-sellers"
   | "/categories"
   | "/promo"
+  | "/riwayat-pesanan"
   | "/about";
 
 export type ShopNavItem = {
@@ -36,6 +40,7 @@ export const NAV_LINKS: ShopNavItem[] = [
   { label: "Best Sellers", to: "/best-sellers" },
   { label: "Kategori Bunga", to: "/categories" },
   { label: "Promo Spesial", to: "/promo" },
+  { label: "Pesanan Saya", to: "/riwayat-pesanan" },
   { label: "About", to: "/about" },
 ];
 
@@ -78,6 +83,8 @@ export function ShopHeader() {
   const indicator = useSlidingIndicator({ value: activeTo });
   const [mobileNavOpen, setMobileNavOpen] = React.useState(false);
   const [mobileSearch, setMobileSearch] = React.useState("");
+  const { count } = useMiniCart();
+  const { isCustomer } = useDemoAuth();
 
   // Header persisten (tidak remount saat pindah route): tutup drawer manual.
   React.useEffect(() => {
@@ -142,24 +149,34 @@ export function ShopHeader() {
           />
         </div>
         <div className="ml-auto flex shrink-0 items-center gap-1 md:ml-0">
-          <Button
-            type="button"
-            variant="ghost"
-            size="icon"
-            onClick={() => window.alert("Keranjang segera hadir (UI-only)")}
-            aria-label="Keranjang, 0 item (segera hadir)"
-            className="relative rounded-full"
+          <Link to="/keranjang" className="relative">
+            <Button
+              type="button"
+              variant="ghost"
+              size="icon"
+              aria-label={`Keranjang, ${count} item`}
+              className="relative rounded-full"
+            >
+              <ShoppingCart size={20} aria-hidden="true" />
+              <Badge className="absolute -top-1 -right-1 h-4 min-w-4 rounded-full bg-rose-600 px-1 text-[10px] text-white">
+                {count}
+              </Badge>
+            </Button>
+          </Link>
+          <Link
+            to="/riwayat-pesanan"
+            aria-label="Riwayat pesanan"
+            className="inline-flex items-center gap-1.5 rounded-full transition-colors hover:bg-muted"
           >
-            <ShoppingCart size={20} aria-hidden="true" />
-            <Badge className="absolute -top-1 -right-1 h-4 min-w-4 rounded-full bg-rose-600 px-1 text-[10px] text-white">
-              0
-            </Badge>
-          </Button>
-          <DeadLink label="Akun saya">
-            <span className="inline-flex size-9 items-center justify-center rounded-full hover:bg-muted">
+            <span className="inline-flex size-9 items-center justify-center rounded-full">
               <User size={20} aria-hidden="true" />
             </span>
-          </DeadLink>
+            {isCustomer ? (
+              <span className="hidden pr-2 text-xs font-semibold text-[#111111] sm:inline">
+                {DEMO_CUSTOMER_NAME.split(" ")[0]}
+              </span>
+            ) : null}
+          </Link>
         </div>
       </div>
       <div className="px-4 pb-3 md:hidden">

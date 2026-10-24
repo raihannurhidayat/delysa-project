@@ -1,3 +1,6 @@
+import type { OrderStatus } from "@delysa/shared";
+import type { CartTotals } from "~/features/shop/lib/cart-totals";
+
 export type Product = {
   id: string;
   slug: string;
@@ -92,3 +95,132 @@ export type CatalogResult = {
 
 /** Ukuran halaman katalog prototype (PRD 20/page berlaku saat BE paginasi). */
 export const CATALOG_PAGE_SIZE = 12;
+
+export type ProductSizeOption = {
+  id: string;
+  label: string;
+  stems?: string;
+  /** Selisih terhadap harga dasar (bisa negatif untuk ukuran lebih kecil). */
+  priceDelta: number;
+};
+
+export type ProductWrapOption = {
+  id: string;
+  label: string;
+  sub?: string;
+  priceDelta?: number;
+};
+
+export type ProductReviewItem = {
+  id: string;
+  name: string;
+  initials: string;
+  rating: number;
+  date: string;
+  variant: string;
+  text: string;
+  verified: boolean;
+  helpful: number;
+};
+
+/**
+ * Detail produk untuk PDP `/products/$slug` (tipe FE lokal tahap mock-only).
+ * Kontrak BE `GET /products/{slug}` belum ada di `openapi.yaml`
+ * ("tidak terverifikasi") — evolusi BE tinggal ganti isi
+ * `getProductBySlug` tanpa mengubah tipe ini.
+ */
+export type ProductDetail = UnifiedProduct & {
+  stock: number;
+  reviewCount: number;
+  badge?: string;
+  gallery: string[];
+  description: string;
+  care: string[];
+  specs: { label: string; value: string }[];
+  shipping: string[];
+  sizes: ProductSizeOption[];
+  wraps: ProductWrapOption[];
+  ratingBreakdown: { stars: number; pct: number }[];
+  reviews: ProductReviewItem[];
+  bonuses?: string[];
+};
+
+export type CartLineKind = "product" | "addon";
+
+export type MiniCartLine = {
+  slug: string;
+  name: string;
+  image: string;
+  sizeId: string;
+  sizeLabel: string;
+  wrapId: string;
+  price: number;
+  qty: number;
+  note?: string;
+  kind?: CartLineKind;
+  originalPrice?: number;
+  bonuses?: string[];
+  maxQty?: number;
+  wrapLabel?: string;
+};
+
+export type CartCoupon = {
+  code: string;
+  label: string;
+  amount: number;
+};
+
+export type CartSnapshot = {
+  lines: MiniCartLine[];
+  saved: MiniCartLine[];
+  coupon: CartCoupon | null;
+  instructions: string;
+};
+
+export type OrderPaymentMethod = "manual_transfer_bca" | "qris";
+
+export type OrderPaymentSnapshot = {
+  methodId: OrderPaymentMethod | "";
+  label: string;
+  description: string;
+  bank?: { name: string; accountNumber: string; accountName: string };
+  steps: readonly string[];
+};
+
+export type OrderTimelineEvent = {
+  status: OrderStatus;
+  at: string;
+  note?: string;
+};
+
+export type OrderRecord = {
+  id: number;
+  code: string;
+  status: OrderStatus;
+  createdAt: string;
+  updatedAt: string;
+  paymentDeadline: string;
+  recipientName: string;
+  recipientPhone: string;
+  shippingAddress: string;
+  customNote?: string;
+  items: MiniCartLine[];
+  totals: CartTotals;
+  payment: OrderPaymentSnapshot;
+  timeline: OrderTimelineEvent[];
+  courier?: string;
+  trackingNumber?: string;
+  deliveredAt?: string;
+};
+
+export type OrderPeriod = "30d" | "90d" | "1y" | "all";
+export type OrderSort = "newest" | "oldest" | "total_desc";
+export type OrderTab =
+  | "all"
+  | "pending_payment"
+  | "pending_verification"
+  | "paid"
+  | "processing"
+  | "shipped"
+  | "delivered"
+  | "closed";

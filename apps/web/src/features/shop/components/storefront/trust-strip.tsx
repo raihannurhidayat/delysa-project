@@ -1,17 +1,37 @@
+import type { LucideIcon } from "lucide-react";
 import { Clock, Headset, ShieldCheck, Truck } from "lucide-react";
 import { STOREFRONT_TRUST } from "~/features/shop/data/storefront";
 
+export type TrustItem = {
+  title: string;
+  subtitle: string;
+  icon: LucideIcon;
+};
+
 const ICONS = [Clock, Truck, ShieldCheck, Headset];
 
-export function TrustStrip() {
+export const DEFAULT_TRUST_ITEMS: TrustItem[] = STOREFRONT_TRUST.map(
+  (item, index) => ({
+    ...item,
+    icon: ICONS[index % ICONS.length],
+  }),
+);
+
+export function TrustStrip({
+  items = DEFAULT_TRUST_ITEMS,
+  ariaLabel = "Keunggulan toko",
+}: {
+  items?: readonly TrustItem[];
+  ariaLabel?: string;
+}) {
   return (
     <section
-      aria-label="Keunggulan toko"
+      aria-label={ariaLabel}
       className="mx-auto max-w-7xl px-4 pt-6 sm:px-6"
     >
       <ul className="grid grid-cols-2 gap-3 lg:grid-cols-4">
-        {STOREFRONT_TRUST.map((item, i) => {
-          const Icon = ICONS[i % ICONS.length];
+        {items.map((item) => {
+          const Icon = item.icon;
           return (
             <li
               key={item.title}
