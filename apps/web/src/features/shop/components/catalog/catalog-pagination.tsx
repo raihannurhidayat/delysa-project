@@ -12,12 +12,16 @@ export function CatalogPagination({
   total,
   pageSize,
   onPage,
+  itemLabel = "produk buket & rangkaian",
+  ariaLabel = "Pagination katalog",
 }: {
   page: number;
   pageCount: number;
   total: number;
   pageSize: number;
   onPage: (page: number) => void;
+  itemLabel?: string;
+  ariaLabel?: string;
 }) {
   const safeTotal = Math.max(0, total);
   const rawFrom = (page - 1) * pageSize + 1;
@@ -39,11 +43,11 @@ export function CatalogPagination({
           {from} - {to}
         </span>{" "}
         dari <span className="font-semibold text-[#1A1A1A]">{safeTotal}</span>{" "}
-        produk buket &amp; rangkaian
+        {itemLabel}
       </p>
 
       {pageCount > 1 && (
-        <nav aria-label="Pagination katalog">
+        <nav aria-label={ariaLabel}>
           <ul className="flex flex-wrap items-center justify-center gap-2 sm:justify-end">
             <li>
               <Button
