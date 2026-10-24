@@ -1,3 +1,6 @@
+import type { OrderStatus } from "@delysa/shared";
+import type { CartTotals } from "~/features/shop/lib/cart-totals";
+
 export type Product = {
   id: string;
   slug: string;
@@ -173,3 +176,51 @@ export type CartSnapshot = {
   coupon: CartCoupon | null;
   instructions: string;
 };
+
+export type OrderPaymentMethod = "manual_transfer_bca" | "qris";
+
+export type OrderPaymentSnapshot = {
+  methodId: OrderPaymentMethod | "";
+  label: string;
+  description: string;
+  bank?: { name: string; accountNumber: string; accountName: string };
+  steps: readonly string[];
+};
+
+export type OrderTimelineEvent = {
+  status: OrderStatus;
+  at: string;
+  note?: string;
+};
+
+export type OrderRecord = {
+  id: number;
+  code: string;
+  status: OrderStatus;
+  createdAt: string;
+  updatedAt: string;
+  paymentDeadline: string;
+  recipientName: string;
+  recipientPhone: string;
+  shippingAddress: string;
+  customNote?: string;
+  items: MiniCartLine[];
+  totals: CartTotals;
+  payment: OrderPaymentSnapshot;
+  timeline: OrderTimelineEvent[];
+  courier?: string;
+  trackingNumber?: string;
+  deliveredAt?: string;
+};
+
+export type OrderPeriod = "30d" | "90d" | "1y" | "all";
+export type OrderSort = "newest" | "oldest" | "total_desc";
+export type OrderTab =
+  | "all"
+  | "pending_payment"
+  | "pending_verification"
+  | "paid"
+  | "processing"
+  | "shipped"
+  | "delivered"
+  | "closed";

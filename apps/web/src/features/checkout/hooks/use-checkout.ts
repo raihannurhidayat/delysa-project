@@ -8,6 +8,8 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { createOrder, type OrderResponse } from "../api/endpoints";
 import { ApiError } from "../api/http";
 import { orderQueries } from "../api/query-keys";
+import { buildOrderRecord } from "../lib/order-record";
+import { saveOrder } from "~/features/shop/lib/order-store";
 import { useMiniCart } from "~/features/shop/hooks/use-mini-cart";
 import {
   checkoutFormSchema,
@@ -255,11 +257,25 @@ export function useCheckout({ step }: { step: CheckoutStep }) {
       throw toFriendlyError(err);
     }
 
+    try {
+      saveOrder(buildOrderRecord({ order, form: formData, lines, totals }));
+    } catch {
+      // Order sudah dibuat; kegagalan menyimpan riwayat demo tidak menggagalkan checkout.
+    }
+
     clearDraft(guestToken);
     clearCart();
 
     return { order, paymentMethod: formData.paymentMethod };
-  }, [clearCart, createOrderMutation, getValues, guestToken, step]);
+  }, [
+    clearCart,
+    createOrderMutation,
+    getValues,
+    guestToken,
+    lines,
+    step,
+    totals,
+  ]);
 
   const error = useMemo(() => {
     return createOrderMutation.error

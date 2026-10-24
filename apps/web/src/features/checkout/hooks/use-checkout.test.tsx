@@ -8,12 +8,14 @@ const {
   mockGetGuestToken,
   mockSetGuestToken,
   mockClearCart,
+  mockSaveOrder,
 } = vi.hoisted(() => ({
   mockUseMiniCart: vi.fn(),
   mockCreateOrder: vi.fn(),
   mockGetGuestToken: vi.fn(),
   mockSetGuestToken: vi.fn(),
   mockClearCart: vi.fn(),
+  mockSaveOrder: vi.fn(),
 }));
 
 vi.mock("~/features/shop/hooks/use-mini-cart", () => ({
@@ -27,6 +29,10 @@ vi.mock("../api/endpoints", () => ({
 vi.mock("~/features/shop/lib/mini-cart-storage", () => ({
   getGuestToken: mockGetGuestToken,
   setGuestToken: mockSetGuestToken,
+}));
+
+vi.mock("~/features/shop/lib/order-store", () => ({
+  saveOrder: mockSaveOrder,
 }));
 
 import { useCheckout } from "./use-checkout";
@@ -89,6 +95,7 @@ describe("useCheckout", () => {
 
     mockGetGuestToken.mockReturnValue("test-guest-token");
     mockSetGuestToken.mockImplementation(() => {});
+    mockSaveOrder.mockImplementation(() => {});
   });
 
   it("uses the step from the URL and starts with an empty form", () => {
@@ -229,11 +236,48 @@ describe("useCheckout", () => {
       idempotencyKey: expect.any(String),
     });
     expect(mockClearCart).toHaveBeenCalledTimes(1);
+    expect(mockSaveOrder).toHaveBeenCalledTimes(1);
+    expect(mockSaveOrder.mock.calls[0][0]).toMatchObject({
+      code: ORDER.code,
+      status: ORDER.status,
+      payment: { label: "Transfer Manual BCA" },
+      items: [{ slug: "test" }],
+      totals: { grandTotal: 75000 },
+    });
     expect(submitted).toMatchObject({
       order: ORDER,
       paymentMethod: "manual_transfer_bca",
     });
     expect(localStorage.getItem("checkout_draft_test-guest-token")).toBeNull();
+  });
+
+  it("keeps checkout successful when saving the demo order fails", async () => {
+    mockCreateOrder.mockResolvedValue(ORDER);
+    mockSaveOrder.mockImplementation(() => {
+      throw new Error("localStorage penuh");
+    });
+    const { result } = renderHook(() => useCheckout({ step: "ringkasan" }), {
+      wrapper,
+    });
+
+    act(() => {
+      result.current.form.setValue("recipientName", "Budi");
+      result.current.form.setValue("recipientPhone", "08123456789");
+      result.current.form.setValue(
+        "shippingAddress",
+        "Jl. Test No. 1, Tasikmalaya",
+      );
+      result.current.form.setValue("paymentMethod", "manual_transfer_bca");
+      result.current.form.setValue("confirmed", true);
+    });
+
+    await expect(
+      act(async () => {
+        await result.current.submitOrder();
+      }),
+    ).resolves.toBeUndefined();
+    expect(mockClearCart).toHaveBeenCalledTimes(1);
+    expect(mockSaveOrder).toHaveBeenCalledTimes(1);
   });
 
   it("returns a friendly STOCK_INSUFFICIENT error and keeps the cart", async () => {

@@ -13,6 +13,8 @@ import { Badge } from "~/components/ui/badge";
 import { Button } from "~/components/ui/button";
 import { Input } from "~/components/ui/input";
 import { useSlidingIndicator } from "~/features/shop/hooks/use-sliding-indicator";
+import { useDemoAuth } from "~/features/shop/hooks/use-demo-auth";
+import { DEMO_CUSTOMER_NAME } from "~/features/shop/lib/demo-auth-store";
 import { ShopMobileNav } from "./shop-mobile-nav";
 import { useMiniCart } from "~/features/shop/hooks/use-mini-cart";
 
@@ -23,6 +25,7 @@ export type ShopNavTo =
   | "/best-sellers"
   | "/categories"
   | "/promo"
+  | "/riwayat-pesanan"
   | "/about";
 
 export type ShopNavItem = {
@@ -37,6 +40,7 @@ export const NAV_LINKS: ShopNavItem[] = [
   { label: "Best Sellers", to: "/best-sellers" },
   { label: "Kategori Bunga", to: "/categories" },
   { label: "Promo Spesial", to: "/promo" },
+  { label: "Pesanan Saya", to: "/riwayat-pesanan" },
   { label: "About", to: "/about" },
 ];
 
@@ -80,6 +84,7 @@ export function ShopHeader() {
   const [mobileNavOpen, setMobileNavOpen] = React.useState(false);
   const [mobileSearch, setMobileSearch] = React.useState("");
   const { count } = useMiniCart();
+  const { isCustomer } = useDemoAuth();
 
   // Header persisten (tidak remount saat pindah route): tutup drawer manual.
   React.useEffect(() => {
@@ -158,11 +163,20 @@ export function ShopHeader() {
               </Badge>
             </Button>
           </Link>
-          <DeadLink label="Akun saya">
-            <span className="inline-flex size-9 items-center justify-center rounded-full hover:bg-muted">
+          <Link
+            to="/riwayat-pesanan"
+            aria-label="Riwayat pesanan"
+            className="inline-flex items-center gap-1.5 rounded-full transition-colors hover:bg-muted"
+          >
+            <span className="inline-flex size-9 items-center justify-center rounded-full">
               <User size={20} aria-hidden="true" />
             </span>
-          </DeadLink>
+            {isCustomer ? (
+              <span className="hidden pr-2 text-xs font-semibold text-[#111111] sm:inline">
+                {DEMO_CUSTOMER_NAME.split(" ")[0]}
+              </span>
+            ) : null}
+          </Link>
         </div>
       </div>
       <div className="px-4 pb-3 md:hidden">

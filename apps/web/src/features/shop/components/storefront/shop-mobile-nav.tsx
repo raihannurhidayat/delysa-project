@@ -94,9 +94,6 @@ export function ShopMobileNav({
             <li className="inline-flex min-h-11 items-center gap-2">
               <AtSign size={14} aria-hidden="true" /> @delysafloristt
             </li>
-            <li className="inline-flex min-h-11 items-center gap-2 text-[#9CA3AF]">
-              Akun saya (segera hadir)
-            </li>
           </ul>
         </nav>
       </DialogContent>
