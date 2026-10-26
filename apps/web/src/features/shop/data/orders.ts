@@ -8,7 +8,7 @@ import type {
   OrderTimelineEvent,
 } from "~/features/shop/types";
 import { computeCartTotals } from "~/features/shop/lib/cart-totals";
-import { getPaymentMethod } from "~/features/checkout/payment-methods";
+import { getPaymentMethod } from "~/features/shop/lib/payment-methods";
 
 const DEMO_ITEMS: MiniCartLine[] = [
   {

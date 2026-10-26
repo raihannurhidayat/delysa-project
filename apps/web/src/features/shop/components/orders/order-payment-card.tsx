@@ -7,7 +7,7 @@ import { copyText } from "~/features/shop/lib/clipboard";
 import { formatIDR } from "~/features/shop/lib/format";
 import { formatOrderDate } from "~/features/shop/lib/order-format";
 import type { OrderRecord } from "~/features/shop/types";
-import { WHATSAPP_NUMBER } from "~/features/checkout/payment-methods";
+import { WHATSAPP_NUMBER } from "~/features/shop/lib/payment-methods";
 import { PaymentProofUploader } from "./payment-proof-uploader";
 
 const STATUS_NOTES: Partial<Record<OrderStatus, string>> = {

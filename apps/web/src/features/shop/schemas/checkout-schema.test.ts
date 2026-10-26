@@ -5,7 +5,7 @@ import {
   alamatStepSchema,
   bayarStepSchema,
   type CheckoutFormData,
-} from "./schemas";
+} from "./checkout-schema";
 
 describe("checkoutFormSchema", () => {
   it("validates full form data", () => {

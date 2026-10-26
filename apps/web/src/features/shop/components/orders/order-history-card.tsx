@@ -1,6 +1,6 @@
 import { MessageCircle } from "lucide-react";
 import { Button, buttonVariants } from "~/components/ui/button";
-import { WHATSAPP_NUMBER } from "~/features/checkout/payment-methods";
+import { WHATSAPP_NUMBER } from "~/features/shop/lib/payment-methods";
 import { formatIDR } from "~/features/shop/lib/format";
 import { formatOrderDate } from "~/features/shop/lib/order-format";
 import {

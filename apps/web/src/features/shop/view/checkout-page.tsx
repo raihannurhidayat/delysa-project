@@ -16,15 +16,15 @@ import {
 import { Alert, AlertDescription, AlertTitle } from "~/components/ui/alert";
 import { Button } from "~/components/ui/button";
 import { OrderSummary } from "~/features/shop/components/cart/order-summary";
-import { CheckoutStepper } from "../components/CheckoutStepper";
-import { CheckoutSuccess } from "../components/CheckoutSuccess";
-import { AlamatStep } from "../components/steps/AlamatStep";
-import { MetodeBayarStep } from "../components/steps/MetodeBayarStep";
-import { ReviewCartStep } from "../components/steps/ReviewCartStep";
-import { RingkasanStep } from "../components/steps/RingkasanStep";
-import { useCheckout } from "../hooks/use-checkout";
-import type { SubmitOrderResult } from "../hooks/use-checkout";
-import { CHECKOUT_STEPS, type CheckoutStep } from "../types";
+import { CheckoutStepper } from "~/features/shop/components/checkout/checkout-stepper";
+import { CheckoutSuccess } from "~/features/shop/components/checkout/checkout-success";
+import { AlamatStep } from "~/features/shop/components/checkout/steps/alamat-step";
+import { MetodeBayarStep } from "~/features/shop/components/checkout/steps/metode-bayar-step";
+import { ReviewCartStep } from "~/features/shop/components/checkout/steps/review-cart-step";
+import { RingkasanStep } from "~/features/shop/components/checkout/steps/ringkasan-step";
+import { useCheckout } from "~/features/shop/hooks/use-checkout";
+import type { SubmitOrderResult } from "~/features/shop/hooks/use-checkout";
+import { CHECKOUT_STEPS, type CheckoutStep } from "~/features/shop/types";
 
 interface CheckoutPageProps {
   step: CheckoutStep;

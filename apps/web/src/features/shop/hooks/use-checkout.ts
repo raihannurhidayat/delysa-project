@@ -5,24 +5,24 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 
-import { createOrder, type OrderResponse } from "../api/endpoints";
-import { ApiError } from "../api/http";
-import { orderQueries } from "../api/query-keys";
-import { buildOrderRecord } from "../lib/order-record";
+import { createOrder, type OrderResponse } from "~/features/shop/api/endpoints";
+import { ApiError } from "~/features/shop/api/http";
+import { orderQueries } from "~/features/shop/api/query-keys";
+import { buildOrderRecord } from "~/features/shop/lib/order-record";
 import { saveOrder } from "~/features/shop/lib/order-store";
 import { useMiniCart } from "~/features/shop/hooks/use-mini-cart";
 import {
   checkoutFormSchema,
   DEFAULT_CHECKOUT_FORM,
   type CheckoutFormData,
-} from "../schemas";
+} from "~/features/shop/schemas/checkout-schema";
 import {
   CHECKOUT_STEPS,
   isPaymentMethod,
   type CheckoutDraft,
   type CheckoutStep,
   type PaymentMethod,
-} from "../types";
+} from "~/features/shop/types";
 import {
   getGuestToken,
   setGuestToken,

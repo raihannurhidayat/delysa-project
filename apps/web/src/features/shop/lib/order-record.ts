@@ -1,8 +1,8 @@
 import type { OrderRecord, MiniCartLine } from "~/features/shop/types";
 import type { CartTotals } from "~/features/shop/lib/cart-totals";
-import { getPaymentMethod } from "../payment-methods";
-import type { OrderResponse } from "../api/endpoints";
-import type { CheckoutFormData } from "../types";
+import { getPaymentMethod } from "~/features/shop/lib/payment-methods";
+import type { OrderResponse } from "~/features/shop/api/endpoints";
+import type { CheckoutFormData } from "~/features/shop/types";
 
 export function buildOrderRecord({
   order,

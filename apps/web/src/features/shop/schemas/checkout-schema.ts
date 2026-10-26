@@ -4,7 +4,7 @@ import {
   CHECKOUT_STEPS,
   PAYMENT_METHOD_IDS,
   type CheckoutFormData,
-} from "./types";
+} from "~/features/shop/types";
 
 export type { CheckoutFormData };
 

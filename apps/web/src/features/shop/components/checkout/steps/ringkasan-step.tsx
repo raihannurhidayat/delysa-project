@@ -15,8 +15,8 @@ import { Field, FieldError, FieldLabel } from "~/components/ui/field";
 import { formatIDR } from "~/features/shop/lib/format";
 import type { CartTotals } from "~/features/shop/lib/cart-totals";
 import type { CartCoupon, MiniCartLine } from "~/features/shop/types";
-import { getPaymentMethod } from "../../payment-methods";
-import type { CheckoutFormData } from "../../schemas";
+import { getPaymentMethod } from "~/features/shop/lib/payment-methods";
+import type { CheckoutFormData } from "~/features/shop/schemas/checkout-schema";
 
 interface RingkasanStepProps {
   lines: MiniCartLine[];
