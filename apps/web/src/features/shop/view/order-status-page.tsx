@@ -19,7 +19,7 @@ import { OrderItemsCard } from "~/features/shop/components/orders/order-items-ca
 import { OrderNotFound } from "~/features/shop/components/orders/order-not-found";
 import { OrderPaymentCard } from "~/features/shop/components/orders/order-payment-card";
 import { OrderStatusSummary } from "~/features/shop/components/orders/order-status-summary";
-import { useDemoAuth } from "~/features/shop/hooks/use-demo-auth";
+import { useSession } from "~/features/auth/hooks/use-session";
 import { useMiniCart } from "~/features/shop/hooks/use-mini-cart";
 import { useOrder } from "~/features/shop/hooks/use-orders";
 import { updateOrderStatus } from "~/features/shop/lib/order-store";
@@ -34,7 +34,8 @@ export function OrderStatusPage({
 }) {
   const [mounted, setMounted] = useState(false);
   const order = useOrder(code);
-  const { isCustomer } = useDemoAuth();
+  const { user } = useSession();
+  const isAuthenticated = Boolean(user);
   const { add } = useMiniCart();
   const navigate = useNavigate();
 
@@ -125,7 +126,7 @@ export function OrderStatusPage({
         <div className="space-y-4">
           <OrderStatusSummary order={order} />
           <OrderItemsCard order={order} />
-          <OrderDeliveryCard order={order} isCustomer={isCustomer} />
+          <OrderDeliveryCard order={order} isAuthenticated={isAuthenticated} />
         </div>
 
         <div className="space-y-4">

@@ -25,8 +25,16 @@ export const checkoutSchema = z.object({
   customNote: z.string().max(500).optional(),
 });
 
+export const authUserSchema = z.object({
+  id: z.number().int(),
+  name: z.string(),
+  email: z.string().email(),
+  role: z.enum(["customer", "store_owner", "admin"]),
+});
+
 export type RegisterInput = z.infer<typeof registerSchema>;
 export type LoginInput = z.infer<typeof loginSchema>;
+export type AuthUser = z.infer<typeof authUserSchema>;
 
 export const orderCreateSchema = z.object({
   recipientName: z.string().min(2).max(100),

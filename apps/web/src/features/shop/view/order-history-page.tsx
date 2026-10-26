@@ -1,8 +1,9 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { useNavigate } from "@tanstack/react-router";
+import { Link, useNavigate } from "@tanstack/react-router";
 import { Flower2, Headset, ShieldCheck } from "lucide-react";
+import { buttonVariants } from "~/components/ui/button";
 import { CatalogPagination } from "~/features/shop/components/catalog/catalog-pagination";
 import { OrderHistoryCard } from "~/features/shop/components/orders/order-history-card";
 import { OrderHistoryEmpty } from "~/features/shop/components/orders/order-history-empty";
@@ -14,7 +15,8 @@ import {
   TrustStrip,
   type TrustItem,
 } from "~/features/shop/components/storefront/trust-strip";
-import { useDemoAuth } from "~/features/shop/hooks/use-demo-auth";
+import { useSession } from "~/features/auth/hooks/use-session";
+import { roleHome, roleLabel } from "~/features/auth/lib/role-home";
 import { useMiniCart } from "~/features/shop/hooks/use-mini-cart";
 import { useOrders } from "~/features/shop/hooks/use-orders";
 import {
@@ -54,7 +56,8 @@ export function OrderHistoryPage({
 }) {
   const [mounted, setMounted] = useState(false);
   const { orders } = useOrders();
-  const { isCustomer, setMode } = useDemoAuth();
+  const { user } = useSession();
+  const isCustomer = user?.role === "customer";
   const { add } = useMiniCart();
   const navigate = useNavigate();
 
@@ -76,7 +79,9 @@ export function OrderHistoryPage({
 
   const handleLookup = (code: string) => openOrder(code);
 
-  const handleEnableDemo = () => setMode("customer");
+  const handleSignIn = () => {
+    void navigate({ to: "/sign-in" });
+  };
 
   const handleBrowse = () => {
     void navigate({ to: "/katalog" });
@@ -111,7 +116,7 @@ export function OrderHistoryPage({
 
   return (
     <div className="mx-auto w-full max-w-7xl space-y-5 px-4 py-6 sm:px-6">
-      <OrderHistoryHeader isCustomer={isCustomer} />
+      <OrderHistoryHeader userName={isCustomer ? user?.name : undefined} />
 
       {isCustomer ? (
         <>
@@ -161,11 +166,30 @@ export function OrderHistoryPage({
             ) : null}
           </div>
         </>
+      ) : user ? (
+        <section className="mx-auto max-w-xl rounded-2xl border border-[#E5E7EB] bg-white p-5 text-center shadow-sm sm:p-7">
+          <span className="mx-auto flex size-12 items-center justify-center rounded-full bg-[#EFF6FF] text-[#1D4ED8] ring-1 ring-[#DBEAFE]">
+            <ShieldCheck size={23} aria-hidden="true" />
+          </span>
+          <h2 className="mt-3 text-lg font-extrabold tracking-tight text-[#1A1A1A]">
+            Riwayat pelanggan tidak tersedia
+          </h2>
+          <p className="mx-auto mt-1 max-w-sm text-xs leading-relaxed text-[#6B7280]">
+            Anda masuk sebagai {roleLabel(user.role)}. Riwayat pesanan pelanggan
+            hanya dapat dilihat dari akun pelanggan.
+          </p>
+          <Link
+            to={roleHome(user.role)}
+            className={buttonVariants({
+              className:
+                "mt-4 h-10 rounded-lg bg-[#111111] px-4 text-sm font-semibold text-white hover:bg-[#2A2A2A]",
+            })}
+          >
+            Kembali ke dasbor
+          </Link>
+        </section>
       ) : (
-        <OrderHistoryLocked
-          onEnableDemo={handleEnableDemo}
-          onLookup={handleLookup}
-        />
+        <OrderHistoryLocked onSignIn={handleSignIn} onLookup={handleLookup} />
       )}
 
       <TrustStrip items={TRUST_ITEMS} ariaLabel="Keunggulan riwayat pesanan" />

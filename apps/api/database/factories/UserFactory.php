@@ -2,6 +2,7 @@
 
 namespace Database\Factories;
 
+use App\Enums\Role;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Facades\Hash;
@@ -17,6 +18,15 @@ class UserFactory extends Factory
      */
     protected static ?string $password;
 
+    public function configure(): static
+    {
+        return $this->afterMaking(function (User $user): void {
+            if ($user->role === null) {
+                $user->forceFill(['role' => Role::Customer]);
+            }
+        });
+    }
+
     /**
      * Define the model's default state.
      *
@@ -31,6 +41,27 @@ class UserFactory extends Factory
             'password' => static::$password ??= Hash::make('password'),
             'remember_token' => Str::random(10),
         ];
+    }
+
+    public function customer(): static
+    {
+        return $this->afterMaking(
+            fn (User $user) => $user->forceFill(['role' => Role::Customer]),
+        );
+    }
+
+    public function storeOwner(): static
+    {
+        return $this->afterMaking(
+            fn (User $user) => $user->forceFill(['role' => Role::StoreOwner]),
+        );
+    }
+
+    public function admin(): static
+    {
+        return $this->afterMaking(
+            fn (User $user) => $user->forceFill(['role' => Role::Admin]),
+        );
     }
 
     /**

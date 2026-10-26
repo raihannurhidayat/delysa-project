@@ -1,9 +1,8 @@
 import { MessageCircle, Sparkles } from "lucide-react";
 import { buttonVariants } from "~/components/ui/button";
 import { WHATSAPP_NUMBER } from "~/features/shop/lib/payment-methods";
-import { DEMO_CUSTOMER_NAME } from "~/features/shop/lib/demo-auth-store";
 
-export function OrderHistoryHeader({ isCustomer }: { isCustomer: boolean }) {
+export function OrderHistoryHeader({ userName }: { userName?: string }) {
   return (
     <header className="flex flex-col gap-4 border-b border-[#E5E7EB] pb-5 sm:flex-row sm:items-end sm:justify-between">
       <div>
@@ -17,10 +16,10 @@ export function OrderHistoryHeader({ isCustomer }: { isCustomer: boolean }) {
           Pantau status rangkaian, unduh bukti pembayaran, dan pesan kembali
           buket favoritmu.
         </p>
-        {isCustomer ? (
+        {userName ? (
           <p className="mt-3 inline-flex items-center gap-1.5 rounded-full bg-[#FFF3ED] px-3 py-1 text-xs font-semibold text-[#C2410C] ring-1 ring-[#FFE1D2]">
             <Sparkles size={13} aria-hidden="true" />
-            {`Halo, ${DEMO_CUSTOMER_NAME.split(" ")[0]}`}
+            {`Halo, ${userName.split(" ")[0]}`}
           </p>
         ) : null}
       </div>

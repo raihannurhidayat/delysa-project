@@ -1,9 +1,17 @@
-import { Link } from "@tanstack/react-router";
-import { GoogleButton } from "~/features/auth/components/google-button";
+import { Link, useNavigate } from "@tanstack/react-router";
+import type { AuthUser } from "@delysa/shared";
+import { AuthConfigNotice } from "~/features/auth/components/auth-config-notice";
 import { LoginForm } from "~/features/auth/components/login-form";
 import { SigninShowcase } from "~/features/auth/components/signin-showcase";
+import { roleHome } from "~/features/auth/lib/role-home";
 
 export default function SignInPage() {
+  const navigate = useNavigate();
+
+  const handleSuccess = (user: AuthUser) => {
+    void navigate({ to: roleHome(user.role), replace: true });
+  };
+
   return (
     <div className="grid min-h-dvh bg-[#FFFFFF] text-[#1A1A1A] lg:h-dvh lg:grid-cols-[1fr_1fr] lg:overflow-hidden">
       <section className="flex items-center justify-center px-6 py-6 sm:px-12 lg:overflow-y-auto lg:py-4">
@@ -22,19 +30,11 @@ export default function SignInPage() {
             Masuk untuk melanjutkan pesanan buket eksklusif Anda
           </p>
 
+          <AuthConfigNotice />
+
           <div className="mt-4">
-            <GoogleButton>Masuk Dengan Google</GoogleButton>
+            <LoginForm onSuccess={handleSuccess} />
           </div>
-
-          <div className="my-3 flex items-center gap-3">
-            <span aria-hidden="true" className="h-px flex-1 bg-[#E5E7EB]" />
-            <span className="shrink-0 text-[11px] font-medium tracking-[0.12em] text-[#9CA3AF]">
-              ATAU LANJUT DENGAN EMAIL
-            </span>
-            <span aria-hidden="true" className="h-px flex-1 bg-[#E5E7EB]" />
-          </div>
-
-          <LoginForm />
 
           <p className="mt-4 text-center text-[13px] text-[#6B7280]">
             Baru pertama kali di Delysa Florist?{" "}

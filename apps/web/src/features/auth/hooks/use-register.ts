@@ -1,22 +1,18 @@
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { register } from "~/features/auth/api/auth";
+import { sessionQueryKey } from "~/features/auth/api/session";
 import type { RegisterFormValues } from "~/features/auth/schemas/register-form-schema";
-
-type MockRegisterResult = { ok: true };
-
-async function mockRegister(
-  values: RegisterFormValues,
-): Promise<MockRegisterResult> {
-  await new Promise((resolve) => setTimeout(resolve, 800));
-  if (values.email === "terdaftar@delysa.id") {
-    throw new Error("Email sudah terdaftar");
-  }
-  return { ok: true };
-}
+import type { AuthUser } from "@delysa/shared";
 
 export function useRegister() {
+  const queryClient = useQueryClient();
   const mutation = useMutation({
     mutationKey: ["auth", "register"],
-    mutationFn: mockRegister,
+    mutationFn: (values: RegisterFormValues): Promise<AuthUser> =>
+      register(values),
+    onSuccess: (user) => {
+      queryClient.setQueryData(sessionQueryKey, user);
+    },
   });
 
   return {
@@ -24,7 +20,7 @@ export function useRegister() {
     registerAsync: mutation.mutateAsync,
     isPending: mutation.isPending,
     isSuccess: mutation.isSuccess,
-    error: mutation.error as Error | null,
+    error: mutation.error,
     reset: mutation.reset,
   };
 }

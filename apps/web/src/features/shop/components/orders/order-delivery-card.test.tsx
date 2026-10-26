@@ -10,26 +10,26 @@ describe("OrderDeliveryCard", () => {
     const order = ORDERS.find((item) => item.code.endsWith("8842"));
     expect(order).toBeDefined();
     if (!order) return;
-    render(<OrderDeliveryCard order={order} isCustomer={false} />);
+    render(<OrderDeliveryCard order={order} isAuthenticated={false} />);
 
     expect(screen.getByText("Sari A***")).toBeInTheDocument();
     expect(screen.getByText("0821****558")).toBeInTheDocument();
     expect(
       screen.getByText(/alamat lengkap disembunyikan/),
     ).toBeInTheDocument();
-    expect(screen.getByText(/Aktifkan login demo/)).toBeInTheDocument();
+    expect(screen.getByText(/Masuk ke akun/)).toBeInTheDocument();
   });
 
-  it("shows full data for customers", () => {
+  it("shows full data for signed-in users", () => {
     const order = ORDERS.find((item) => item.code.endsWith("8842"));
     expect(order).toBeDefined();
     if (!order) return;
-    render(<OrderDeliveryCard order={order} isCustomer />);
+    render(<OrderDeliveryCard order={order} isAuthenticated />);
 
     expect(screen.getByText(order.recipientName)).toBeInTheDocument();
     expect(screen.getByText(order.recipientPhone)).toBeInTheDocument();
     expect(screen.getByText(order.shippingAddress)).toBeInTheDocument();
-    expect(screen.queryByText(/Aktifkan login demo/)).not.toBeInTheDocument();
+    expect(screen.queryByText(/Masuk ke akun/)).not.toBeInTheDocument();
   });
 
   it("shows courier, tracking number, and custom note", () => {
@@ -39,7 +39,7 @@ describe("OrderDeliveryCard", () => {
     render(
       <OrderDeliveryCard
         order={{ ...order, customNote: "Kirim pagi" }}
-        isCustomer
+        isAuthenticated
       />,
     );
     expect(screen.getByText(/JNE/)).toBeInTheDocument();

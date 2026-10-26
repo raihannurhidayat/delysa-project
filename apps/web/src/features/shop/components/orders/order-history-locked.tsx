@@ -3,10 +3,10 @@ import { Button } from "~/components/ui/button";
 import { OrderCodeLookupForm } from "./order-code-lookup-form";
 
 export function OrderHistoryLocked({
-  onEnableDemo,
+  onSignIn,
   onLookup,
 }: {
-  onEnableDemo: () => void;
+  onSignIn: () => void;
   onLookup: (code: string) => void;
 }) {
   return (
@@ -18,16 +18,16 @@ export function OrderHistoryLocked({
         Riwayat pesanan terkunci
       </h2>
       <p className="mx-auto mt-1 max-w-sm text-xs leading-relaxed text-[#6B7280]">
-        Aktifkan mode login demo untuk melihat seluruh riwayat pesanan Sari
-        Amelia. Kamu juga tetap bisa melacak satu pesanan dengan kodenya.
+        Masuk ke akun Anda untuk melihat seluruh riwayat pesanan. Anda juga
+        tetap bisa melacak satu pesanan dengan kodenya.
       </p>
 
       <Button
         type="button"
-        onClick={onEnableDemo}
+        onClick={onSignIn}
         className="mt-4 h-10 rounded-lg bg-[#FF6B35] px-4 text-sm font-semibold text-[#21140D] hover:bg-[#F25C26]"
       >
-        Aktifkan login demo
+        Masuk ke akun
       </Button>
 
       <div className="mx-auto mt-5 max-w-sm border-t border-[#F3F4F6] pt-4 text-left">
@@ -43,7 +43,7 @@ export function OrderHistoryLocked({
           aria-hidden="true"
           className="text-emerald-600"
         />
-        Mode demo ini hanya menyimpan data di browser.
+        Pelacakan dengan kode tetap tersedia tanpa masuk.
       </p>
     </section>
   );
