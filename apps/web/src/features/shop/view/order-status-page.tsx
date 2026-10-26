@@ -75,9 +75,9 @@ export function OrderStatusPage({
 
   if (!mounted) {
     return (
-      <div className="mx-auto w-full max-w-5xl space-y-4">
+      <div className="mx-auto w-full max-w-5xl space-y-4 px-4 py-6 sm:px-6">
         {breadcrumb}
-        <div className="grid gap-4 lg:grid-cols-[minmax(0,1fr)_360px]">
+        <div className="grid grid-cols-1 gap-4 lg:grid-cols-[minmax(0,1fr)_360px]">
           <div className="space-y-4">
             {[0, 1, 2].map((item) => (
               <div
@@ -94,7 +94,7 @@ export function OrderStatusPage({
 
   if (!order) {
     return (
-      <div className="mx-auto w-full max-w-5xl space-y-4">
+      <div className="mx-auto w-full max-w-5xl space-y-4 px-4 py-6 sm:px-6">
         {breadcrumb}
         <OrderNotFound code={code} onLookup={onLookup} />
       </div>
@@ -118,10 +118,10 @@ export function OrderStatusPage({
   const whatsappMessage = `Halo Delysa Florist, saya ingin bertanya tentang pesanan ${order.code}.`;
 
   return (
-    <div className="mx-auto w-full max-w-5xl space-y-4">
-      <div className="mt-4">{breadcrumb}</div>
+    <div className="mx-auto w-full max-w-5xl space-y-4 px-4 py-6 sm:px-6">
+      {breadcrumb}
 
-      <div className="grid gap-4 lg:grid-cols-[minmax(0,1fr)_360px]">
+      <div className="grid grid-cols-1 gap-4 lg:grid-cols-[minmax(0,1fr)_360px]">
         <div className="space-y-4">
           <OrderStatusSummary order={order} />
           <OrderItemsCard order={order} />
