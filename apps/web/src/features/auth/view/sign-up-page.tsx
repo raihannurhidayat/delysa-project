@@ -1,9 +1,17 @@
-import { Link } from "@tanstack/react-router";
+import { Link, useNavigate } from "@tanstack/react-router";
+import type { AuthUser } from "@delysa/shared";
+import { AuthConfigNotice } from "~/features/auth/components/auth-config-notice";
 import { RegisterForm } from "~/features/auth/components/register-form";
 import { SignupShowcase } from "~/features/auth/components/signup-showcase";
-import { GoogleButton } from "../components/google-button";
+import { roleHome } from "~/features/auth/lib/role-home";
 
 export default function SignUpPage() {
+  const navigate = useNavigate();
+
+  const handleSuccess = (user: AuthUser) => {
+    void navigate({ to: roleHome(user.role), replace: true });
+  };
+
   return (
     <div className="grid min-h-dvh bg-[#FFFFFF] text-[#1A1A1A] lg:h-dvh lg:grid-cols-[1fr_1fr] lg:overflow-hidden">
       <aside className="relative hidden p-3 lg:block">
@@ -28,19 +36,11 @@ export default function SignUpPage() {
           <p className="mt-1.5 max-w-[44ch] text-[13px] leading-snug text-[#6B7280]">
             Daftar untuk membeli buket eksklusif Anda
           </p>
+          <AuthConfigNotice />
+
           <div className="mt-3">
-            <GoogleButton>Lanjut Dengan Google</GoogleButton>
+            <RegisterForm onSuccess={handleSuccess} />
           </div>
-
-          <div className="my-2 flex items-center gap-3">
-            <span aria-hidden="true" className="h-px flex-1 bg-[#E5E7EB]" />
-            <span className="shrink-0 text-[11px] font-medium tracking-[0.12em] text-[#9CA3AF]">
-              ATAU DAFTAR DENGAN EMAIL
-            </span>
-            <span aria-hidden="true" className="h-px flex-1 bg-[#E5E7EB]" />
-          </div>
-
-          <RegisterForm />
 
           <p className="mt-3 text-center text-[13px] text-[#6B7280]">
             Sudah punya akun?{" "}

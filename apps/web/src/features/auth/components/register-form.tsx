@@ -2,6 +2,9 @@ import { useState } from "react";
 import { Controller, useForm, useWatch } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { ArrowRight, Eye, EyeOff } from "lucide-react";
+import type { AuthUser } from "@delysa/shared";
+import { Link } from "@tanstack/react-router";
+import { Alert, AlertDescription } from "~/components/ui/alert";
 import { Button } from "~/components/ui/button";
 import {
   Field,
@@ -12,14 +15,17 @@ import {
 import { Input } from "~/components/ui/input";
 import { PasswordStrengthMeter } from "~/features/auth/components/password-strength-meter";
 import {
+  authErrorMessage,
+  firstFieldErrors,
+} from "~/features/auth/lib/auth-errors";
+import {
   registerFormSchema,
   type RegisterFormValues,
 } from "~/features/auth/schemas/register-form-schema";
 import { useRegister } from "~/features/auth/hooks/use-register";
-import { Link } from "@tanstack/react-router";
 
 type RegisterFormProps = {
-  onSuccess?: () => void;
+  onSuccess?: (user: AuthUser) => void;
 };
 
 const inputClassName =
@@ -35,7 +41,7 @@ function RequiredMark() {
 
 export function RegisterForm({ onSuccess }: RegisterFormProps) {
   const [showPassword, setShowPassword] = useState(false);
-  const { registerAsync, isPending, error: mutationError } = useRegister();
+  const { registerAsync, isPending } = useRegister();
 
   const form = useForm<RegisterFormValues>({
     resolver: zodResolver(registerFormSchema),
@@ -49,17 +55,22 @@ export function RegisterForm({ onSuccess }: RegisterFormProps) {
     useWatch({ control: form.control, name: "password" }) ?? "";
 
   const onSubmit = async (values: RegisterFormValues) => {
+    form.clearErrors("root");
     try {
-      await registerAsync(values);
-      onSuccess?.();
-    } catch {
-      form.setError("root", { message: "Email sudah terdaftar" });
+      const user = await registerAsync(values);
+      onSuccess?.(user);
+    } catch (error) {
+      const fieldErrors = firstFieldErrors(error);
+      for (const field of ["name", "email", "password"] as const) {
+        const message = fieldErrors?.[field];
+        if (message) form.setError(field, { message });
+      }
+      form.setError("root", { message: authErrorMessage(error, "register") });
     }
   };
 
   const isSubmitting = form.formState.isSubmitting || isPending;
-  const rootError =
-    form.formState.errors.root?.message ?? mutationError?.message;
+  const rootError = form.formState.errors.root?.message;
 
   return (
     <form
@@ -180,6 +191,17 @@ export function RegisterForm({ onSuccess }: RegisterFormProps) {
           )}
         />
       </FieldGroup>
+
+      {rootError ? (
+        <Alert
+          variant="destructive"
+          className="rounded-xl border-[#FECACA] bg-[#FEF2F2] px-3 py-2"
+        >
+          <AlertDescription className="text-[12px] leading-snug text-[#B91C1C]">
+            {rootError}
+          </AlertDescription>
+        </Alert>
+      ) : null}
 
       <Button
         type="submit"

@@ -1,20 +1,17 @@
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { login } from "~/features/auth/api/auth";
+import { sessionQueryKey } from "~/features/auth/api/session";
 import type { LoginFormValues } from "~/features/auth/schemas/login-form-schema";
-
-type MockLoginResult = { ok: true };
-
-async function mockLogin(values: LoginFormValues): Promise<MockLoginResult> {
-  await new Promise((resolve) => setTimeout(resolve, 800));
-  if (values.email === "gagal@delysa.id") {
-    throw new Error("Email atau password salah");
-  }
-  return { ok: true };
-}
+import type { AuthUser } from "@delysa/shared";
 
 export function useLogin() {
+  const queryClient = useQueryClient();
   const mutation = useMutation({
     mutationKey: ["auth", "login"],
-    mutationFn: mockLogin,
+    mutationFn: (values: LoginFormValues): Promise<AuthUser> => login(values),
+    onSuccess: (user) => {
+      queryClient.setQueryData(sessionQueryKey, user);
+    },
   });
 
   return {
@@ -22,7 +19,7 @@ export function useLogin() {
     loginAsync: mutation.mutateAsync,
     isPending: mutation.isPending,
     isSuccess: mutation.isSuccess,
-    error: mutation.error as Error | null,
+    error: mutation.error,
     reset: mutation.reset,
   };
 }

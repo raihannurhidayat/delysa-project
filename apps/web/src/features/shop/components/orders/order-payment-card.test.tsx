@@ -13,7 +13,15 @@ describe("OrderPaymentCard", () => {
     const order = ORDERS.find((item) => item.code.endsWith("8842"));
     expect(order).toBeDefined();
     if (!order) return;
-    render(<OrderPaymentCard order={order} onStatusChange={onStatusChange} />);
+    render(
+      <OrderPaymentCard
+        order={{
+          ...order,
+          paymentDeadline: new Date(Date.now() + 60 * 60 * 1000).toISOString(),
+        }}
+        onStatusChange={onStatusChange}
+      />,
+    );
 
     expect(screen.getByText("Transfer Manual BCA")).toBeInTheDocument();
     expect(

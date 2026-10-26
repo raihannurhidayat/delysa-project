@@ -44,6 +44,14 @@ expect()->extend('toBeOne', function () {
 |
 */
 
+function spaHeaders(): array
+{
+    return [
+        'Origin' => 'http://localhost:3000',
+        'Referer' => 'http://localhost:3000/',
+    ];
+}
+
 function something()
 {
     // ..

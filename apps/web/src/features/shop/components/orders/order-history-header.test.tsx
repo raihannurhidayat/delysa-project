@@ -4,7 +4,7 @@ import { OrderHistoryHeader } from "./order-history-header";
 
 describe("OrderHistoryHeader", () => {
   it("renders the heading and WhatsApp CTA for guests", () => {
-    render(<OrderHistoryHeader isCustomer={false} />);
+    render(<OrderHistoryHeader />);
 
     expect(
       screen.getByRole("heading", { name: "Pesanan Saya" }),
@@ -13,8 +13,8 @@ describe("OrderHistoryHeader", () => {
     expect(screen.getByRole("link", { name: /WhatsApp/ })).toBeInTheDocument();
   });
 
-  it("greets the demo customer", () => {
-    render(<OrderHistoryHeader isCustomer />);
+  it("greets the signed-in customer", () => {
+    render(<OrderHistoryHeader userName="Sari Amelia" />);
     expect(screen.getByText(/Halo, Sari/)).toBeInTheDocument();
   });
 });
