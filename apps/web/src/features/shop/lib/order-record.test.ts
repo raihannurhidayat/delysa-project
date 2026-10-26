@@ -1,7 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { buildOrderRecord } from "./order-record";
-import type { CheckoutFormData } from "../types";
-import type { MiniCartLine } from "~/features/shop/types";
+import type { CheckoutFormData, MiniCartLine } from "~/features/shop/types";
 import type { CartTotals } from "~/features/shop/lib/cart-totals";
 
 const NOW = new Date("2026-10-24T10:00:00.000Z");

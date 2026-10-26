@@ -26,9 +26,9 @@ import {
   PAYMENT_METHOD_ITEMS,
   WHATSAPP_DISPLAY,
   WHATSAPP_NUMBER,
-} from "../../payment-methods";
-import { isPaymentMethod } from "../../types";
-import type { CheckoutFormData } from "../../schemas";
+} from "~/features/shop/lib/payment-methods";
+import { isPaymentMethod } from "~/features/shop/types";
+import type { CheckoutFormData } from "~/features/shop/schemas/checkout-schema";
 
 interface MetodeBayarStepProps {
   cartTotals: CartTotals;

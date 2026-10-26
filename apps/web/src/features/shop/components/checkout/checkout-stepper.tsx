@@ -12,7 +12,7 @@ import {
   CHECKOUT_STEP_LABELS,
   CHECKOUT_STEP_SHORT_LABELS,
   type CheckoutStep,
-} from "../types";
+} from "~/features/shop/types";
 
 const STEP_ICONS: Record<CheckoutStep, LucideIcon> = {
   review: ShoppingBag,

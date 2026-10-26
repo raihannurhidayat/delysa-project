@@ -11,7 +11,7 @@ import {
   FieldError,
   FieldLabel,
 } from "~/components/ui/field";
-import type { CheckoutFormData } from "../../schemas";
+import type { CheckoutFormData } from "~/features/shop/schemas/checkout-schema";
 
 interface AlamatStepProps {
   onBack: () => void;

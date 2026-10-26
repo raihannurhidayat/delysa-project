@@ -1,6 +1,6 @@
 import { MessageCircle, Sparkles } from "lucide-react";
 import { buttonVariants } from "~/components/ui/button";
-import { WHATSAPP_NUMBER } from "~/features/checkout/payment-methods";
+import { WHATSAPP_NUMBER } from "~/features/shop/lib/payment-methods";
 import { DEMO_CUSTOMER_NAME } from "~/features/shop/lib/demo-auth-store";
 
 export function OrderHistoryHeader({ isCustomer }: { isCustomer: boolean }) {

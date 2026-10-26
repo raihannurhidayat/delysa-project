@@ -12,7 +12,7 @@ import {
   BreadcrumbSeparator,
 } from "~/components/ui/breadcrumb";
 import { Button, buttonVariants } from "~/components/ui/button";
-import { WHATSAPP_NUMBER } from "~/features/checkout/payment-methods";
+import { WHATSAPP_NUMBER } from "~/features/shop/lib/payment-methods";
 import { OrderCodeLookupForm } from "~/features/shop/components/orders/order-code-lookup-form";
 import { OrderDeliveryCard } from "~/features/shop/components/orders/order-delivery-card";
 import { OrderItemsCard } from "~/features/shop/components/orders/order-items-card";

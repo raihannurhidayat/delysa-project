@@ -2,12 +2,12 @@ import { render, screen, fireEvent, waitFor } from "@testing-library/react";
 import { FormProvider, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { describe, it, expect, vi } from "vitest";
-import { AlamatStep } from "./AlamatStep";
+import { AlamatStep } from "./alamat-step";
 import {
   checkoutFormSchema,
   DEFAULT_CHECKOUT_FORM,
   type CheckoutFormData,
-} from "../../schemas";
+} from "~/features/shop/schemas/checkout-schema";
 
 function Harness({ onNext }: { onNext?: () => void }) {
   const form = useForm<CheckoutFormData>({

@@ -1,6 +1,6 @@
 import { render, screen, fireEvent } from "@testing-library/react";
 import { describe, it, expect, vi } from "vitest";
-import { CheckoutStepper } from "./CheckoutStepper";
+import { CheckoutStepper } from "./checkout-stepper";
 
 describe("CheckoutStepper", () => {
   it("renders all 4 steps with labels", () => {

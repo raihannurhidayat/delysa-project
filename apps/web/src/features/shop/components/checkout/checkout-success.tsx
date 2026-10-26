@@ -17,13 +17,13 @@ import { toast } from "~/components/ui/toast";
 import { formatIDR } from "~/features/shop/lib/format";
 import { OrderStatusBadge } from "~/features/shop/components/orders/order-status-badge";
 import { PaymentProofUploader } from "~/features/shop/components/orders/payment-proof-uploader";
-import type { OrderResponse } from "../api/endpoints";
+import type { OrderResponse } from "~/features/shop/api/endpoints";
 import {
   getPaymentMethod,
   WHATSAPP_DISPLAY,
   WHATSAPP_NUMBER,
-} from "../payment-methods";
-import type { PaymentMethod } from "../types";
+} from "~/features/shop/lib/payment-methods";
+import type { PaymentMethod } from "~/features/shop/types";
 
 interface CheckoutSuccessProps {
   order: OrderResponse;

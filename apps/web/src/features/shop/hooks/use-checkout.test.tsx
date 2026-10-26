@@ -22,7 +22,7 @@ vi.mock("~/features/shop/hooks/use-mini-cart", () => ({
   useMiniCart: mockUseMiniCart,
 }));
 
-vi.mock("../api/endpoints", () => ({
+vi.mock("~/features/shop/api/endpoints", () => ({
   createOrder: mockCreateOrder,
 }));
 

@@ -3,7 +3,7 @@ import { fireEvent, render, screen, waitFor } from "@testing-library/react";
 
 const { mockUpload } = vi.hoisted(() => ({ mockUpload: vi.fn() }));
 
-vi.mock("~/features/checkout/api/endpoints", () => ({
+vi.mock("~/features/shop/api/endpoints", () => ({
   uploadPaymentProof: mockUpload,
 }));
 

@@ -1,4 +1,4 @@
-import { isPaymentMethod, type PaymentMethod } from "./types";
+import { isPaymentMethod, type PaymentMethod } from "~/features/shop/types";
 
 export const WHATSAPP_NUMBER = "6282116789558";
 export const WHATSAPP_DISPLAY = "082116789558";

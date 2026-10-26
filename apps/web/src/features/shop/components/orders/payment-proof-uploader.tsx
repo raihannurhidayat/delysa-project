@@ -6,12 +6,12 @@ import { cn } from "cn";
 import type { OrderStatus } from "@delysa/shared";
 import { Button } from "~/components/ui/button";
 import { toast } from "~/components/ui/toast";
-import { uploadPaymentProof } from "~/features/checkout/api/endpoints";
+import { uploadPaymentProof } from "~/features/shop/api/endpoints";
 import {
   getPaymentProofError,
   PAYMENT_PROOF_ACCEPT,
   formatFileSize,
-} from "~/features/checkout/lib/payment-proof";
+} from "~/features/shop/lib/payment-proof";
 
 export function PaymentProofUploader({
   orderId,
