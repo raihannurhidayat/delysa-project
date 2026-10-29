@@ -27,28 +27,28 @@ const ACTIONS = [
   },
 ] as const;
 
-export function AdminHomePage({ user }: { user: AuthUser }) {
+export function AdminDashboardPage({ user }: { user: AuthUser }) {
   const firstName = user.name.split(" ")[0] ?? user.name;
 
   return (
     <div className="space-y-4">
       <section className="rounded-2xl border border-[#E5E7EB] bg-white p-5 shadow-sm sm:p-6">
-        <p className="inline-flex items-center gap-1.5 rounded-full bg-[#F5F3FF] px-3 py-1 text-[11px] font-semibold text-[#6D28D9]">
+        <p className="inline-flex items-center gap-1.5 rounded-full bg-[#FFF3ED] px-3 py-1 text-[11px] font-semibold text-[#C2410C]">
           <ShieldCheck size={13} aria-hidden="true" />
-          Super admin
+          Admin
         </p>
         <h1 className="mt-3 text-2xl font-extrabold tracking-tight sm:text-3xl">
           Halo, {firstName}
         </h1>
         <p className="mt-1 max-w-xl text-sm leading-relaxed text-[#6B7280]">
-          Anda masuk sebagai admin. Pengelolaan pengguna dan toko akan tersedia
-          pada fase berikutnya.
+          Kelola operasional Delysa Florist dari satu tempat. Menu pengguna,
+          toko, dan pesanan akan tersedia bertahap.
         </p>
         <Link
           to="/"
           className={buttonVariants({
             className:
-              "mt-4 h-10 rounded-lg bg-[#111111] px-4 text-sm font-semibold text-white hover:bg-[#2A2A2A]",
+              "mt-4 h-11 rounded-lg bg-[#FF6B35] px-4 text-sm font-semibold text-white hover:bg-[#C2410C] sm:h-10",
           })}
         >
           Buka storefront
@@ -59,12 +59,13 @@ export function AdminHomePage({ user }: { user: AuthUser }) {
       <div className="grid gap-3 sm:grid-cols-3">
         {ACTIONS.map((action) => {
           const Icon = action.icon;
+
           return (
             <div
               key={action.title}
               className="rounded-2xl border border-[#E5E7EB] bg-white p-4 shadow-sm"
             >
-              <span className="flex size-9 items-center justify-center rounded-full bg-[#F5F3FF] text-[#6D28D9]">
+              <span className="flex size-9 items-center justify-center rounded-full bg-[#FFF3ED] text-[#FF6B35]">
                 <Icon size={17} aria-hidden="true" />
               </span>
               <div className="mt-3 flex items-center justify-between gap-2">

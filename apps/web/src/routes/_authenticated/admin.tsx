@@ -1,6 +1,6 @@
 import { createFileRoute, redirect } from "@tanstack/react-router";
 import { roleHome } from "~/features/auth/lib/role-home";
-import { AdminHomePage } from "~/features/dashboard/pages/admin-home-page";
+import { AdminDashboardPage } from "~/features/admin/pages/admin-dashboard-page";
 
 export const Route = createFileRoute("/_authenticated/admin")({
   beforeLoad: ({ context }) => {
@@ -17,5 +17,5 @@ export const Route = createFileRoute("/_authenticated/admin")({
 function AdminRoute() {
   const { user } = Route.useRouteContext();
 
-  return <AdminHomePage user={user} />;
+  return <AdminDashboardPage user={user} />;
 }
