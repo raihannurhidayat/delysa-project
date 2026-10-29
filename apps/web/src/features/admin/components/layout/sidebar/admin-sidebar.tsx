@@ -23,9 +23,11 @@ export function AdminSidebar({ user }: { user: AuthUser }) {
           to="/admin"
           className="flex min-w-0 flex-1 items-center gap-2.5 rounded-xl px-1 py-1 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sidebar-ring"
         >
-          <span className="flex size-9 shrink-0 items-center justify-center rounded-xl bg-sidebar-primary text-sidebar-primary-foreground">
-            <Flower2Icon className="size-5" aria-hidden="true" />
+          {/* Mengubah ukuran kontainer ikon menjadi size-8 dan menambahkan class untuk handle saat collapsed */}
+          <span className="flex aspect-square size-8 items-center justify-center rounded-lg bg-sidebar-primary text-sidebar-primary-foreground">
+            <Flower2Icon className="size-4" aria-hidden="true" />
           </span>
+
           <span className="grid min-w-0 group-data-[collapsible=icon]:hidden">
             <span className="truncate text-sm font-extrabold tracking-tight">
               DELYSA
