@@ -1,5 +1,5 @@
-import { useState, type ReactNode } from "react";
-import { Link, useNavigate } from "@tanstack/react-router";
+import type { ReactNode } from "react";
+import { Link } from "@tanstack/react-router";
 import {
   ArrowLeft,
   Flower2,
@@ -11,10 +11,8 @@ import {
 } from "lucide-react";
 import type { AuthUser } from "@delysa/shared";
 import { Button, buttonVariants } from "~/components/ui/button";
-import { authErrorMessage } from "~/features/auth/lib/auth-errors";
 import { roleHome, roleLabel } from "~/features/auth/lib/role-home";
-import { useLogout } from "~/features/auth/hooks/use-logout";
-import { ApiError } from "~/features/shop/api/http";
+import { useLogoutFlow } from "~/features/auth/hooks/use-logout-flow";
 
 export function AuthenticatedShell({
   user,
@@ -25,23 +23,8 @@ export function AuthenticatedShell({
 }) {
   const home = roleHome(user.role);
   const isCustomer = user.role === "customer";
-  const navigate = useNavigate();
-  const { logoutAsync, isPending } = useLogout();
-  const [logoutError, setLogoutError] = useState<string | null>(null);
-
-  const handleLogout = async () => {
-    setLogoutError(null);
-    try {
-      await logoutAsync();
-      void navigate({ to: "/sign-in", replace: true });
-    } catch (error) {
-      if (error instanceof ApiError && error.status === 401) {
-        void navigate({ to: "/sign-in", replace: true });
-        return;
-      }
-      setLogoutError(authErrorMessage(error, "login"));
-    }
-  };
+  const { logout: handleLogout, isPending, error: logoutError } =
+    useLogoutFlow();
 
   return (
     <div className="min-h-dvh bg-[#F8F9FA] text-[#1A1A1A]">

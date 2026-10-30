@@ -1,6 +1,6 @@
 import { ApiError } from "~/features/shop/api/http";
 
-export type AuthAction = "login" | "register";
+export type AuthAction = "login" | "register" | "logout";
 
 export function authErrorMessage(error: unknown, action: AuthAction): string {
   if (error instanceof ApiError) {
@@ -28,7 +28,9 @@ export function authErrorMessage(error: unknown, action: AuthAction): string {
 
   return action === "login"
     ? "Gagal masuk. Coba lagi."
-    : "Gagal membuat akun. Coba lagi.";
+    : action === "register"
+      ? "Gagal membuat akun. Coba lagi."
+      : "Gagal keluar. Coba lagi.";
 }
 
 export function firstFieldErrors(
