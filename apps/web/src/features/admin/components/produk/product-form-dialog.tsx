@@ -11,6 +11,12 @@ import {
   DialogHeader,
   DialogTitle,
 } from "~/components/ui/dialog";
+import {
+  Drawer,
+  DrawerContent,
+  DrawerDescription,
+  DrawerTitle,
+} from "~/components/ui/drawer";
 import { Field, FieldError, FieldLabel } from "~/components/ui/field";
 import { Input } from "~/components/ui/input";
 import {
@@ -20,6 +26,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "~/components/ui/select";
+import { useIsMobile } from "~/hooks/use-mobile";
 import {
   PRODUCT_CATEGORIES,
   type AdminProduct,
@@ -78,6 +85,7 @@ export function ProductFormDialog({
   product?: AdminProduct | null;
   onSubmit: (values: ProductFormValues) => void;
 }) {
+  const isMobile = useIsMobile();
   const isEdit = Boolean(product);
   const {
     register,
@@ -119,214 +127,232 @@ export function ProductFormDialog({
   const category = watch("category");
   const isPublished = watch("isPublished");
 
+  const title = isEdit ? "Edit Produk" : "Tambah Produk";
+  const description = isEdit
+    ? "Perbarui detail produk, termasuk stok dan threshold minimum."
+    : "Lengkapi detail produk untuk menambahkannya ke katalog.";
+
+  const form = (
+    <form
+      className="flex min-h-0 flex-1 flex-col gap-3"
+      onSubmit={handleSubmit((values) => onSubmit(values))}
+      noValidate
+    >
+      <Field data-invalid={errors.name ? "true" : undefined}>
+        <FieldLabel htmlFor="product-name">Nama Produk</FieldLabel>
+        <Input
+          id="product-name"
+          placeholder="cth. Buket Mawar Wisuda"
+          aria-invalid={errors.name ? "true" : undefined}
+          {...register("name")}
+        />
+        <FieldError errors={[errors.name]} />
+      </Field>
+
+      <div className="grid gap-3 md:grid-cols-2">
+        <Field data-invalid={errors.sku ? "true" : undefined}>
+          <FieldLabel htmlFor="product-sku">SKU</FieldLabel>
+          <Input
+            id="product-sku"
+            placeholder="cth. DF-BRKT-001"
+            aria-invalid={errors.sku ? "true" : undefined}
+            {...register("sku")}
+          />
+          <FieldError errors={[errors.sku]} />
+        </Field>
+
+        <Field data-invalid={errors.category ? "true" : undefined}>
+          <FieldLabel htmlFor="product-category">Kategori</FieldLabel>
+          <Select
+            value={category}
+            onValueChange={(value) => {
+              if (value) {
+                setValue("category", value as ProductFormValues["category"], {
+                  shouldValidate: true,
+                });
+              }
+            }}
+          >
+            <SelectTrigger
+              id="product-category"
+              aria-label="Kategori produk"
+              className="w-full rounded-lg border-[#E5E7EB] bg-white text-sm font-normal normal-case text-[#1A1A1A]"
+            >
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent alignItemWithTrigger={false} className="rounded-lg">
+              {PRODUCT_CATEGORIES.map((option) => (
+                <SelectItem
+                  key={option}
+                  value={option}
+                  className="rounded-md text-xs"
+                >
+                  {option}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+          <FieldError errors={[errors.category]} />
+        </Field>
+      </div>
+
+      <div className="grid gap-3 md:grid-cols-2">
+        <Field data-invalid={errors.price ? "true" : undefined}>
+          <FieldLabel htmlFor="product-price">Harga (Rp)</FieldLabel>
+          <Input
+            id="product-price"
+            type="number"
+            min={0}
+            step={1000}
+            aria-invalid={errors.price ? "true" : undefined}
+            {...register("price")}
+          />
+          <FieldError errors={[errors.price]} />
+        </Field>
+
+        <Field data-invalid={errors.stock ? "true" : undefined}>
+          <FieldLabel htmlFor="product-stock">Stok</FieldLabel>
+          <Input
+            id="product-stock"
+            type="number"
+            min={0}
+            aria-invalid={errors.stock ? "true" : undefined}
+            {...register("stock")}
+          />
+          <FieldError errors={[errors.stock]} />
+        </Field>
+      </div>
+
+      <div className="grid gap-3 md:grid-cols-2">
+        <Field data-invalid={errors.stockUnit ? "true" : undefined}>
+          <FieldLabel htmlFor="product-stock-unit">Satuan Stok</FieldLabel>
+          <Input
+            id="product-stock-unit"
+            placeholder="cth. Buket / Tangkai"
+            aria-invalid={errors.stockUnit ? "true" : undefined}
+            {...register("stockUnit")}
+          />
+          <FieldError errors={[errors.stockUnit]} />
+        </Field>
+
+        <Field data-invalid={errors.minThreshold ? "true" : undefined}>
+          <FieldLabel htmlFor="product-min-threshold">
+            Threshold Minimum
+          </FieldLabel>
+          <Input
+            id="product-min-threshold"
+            type="number"
+            min={0}
+            aria-invalid={errors.minThreshold ? "true" : undefined}
+            {...register("minThreshold")}
+          />
+          <FieldError errors={[errors.minThreshold]} />
+        </Field>
+      </div>
+
+      <div className="grid gap-3 md:grid-cols-2">
+        <Field data-invalid={errors.sales ? "true" : undefined}>
+          <FieldLabel htmlFor="product-sales">Jumlah Terjual</FieldLabel>
+          <Input
+            id="product-sales"
+            type="number"
+            min={0}
+            aria-invalid={errors.sales ? "true" : undefined}
+            {...register("sales")}
+          />
+          <FieldError errors={[errors.sales]} />
+        </Field>
+
+        <Field data-invalid={errors.rating ? "true" : undefined}>
+          <FieldLabel htmlFor="product-rating">Rating (0–5)</FieldLabel>
+          <Input
+            id="product-rating"
+            type="number"
+            min={0}
+            max={5}
+            step={0.1}
+            aria-invalid={errors.rating ? "true" : undefined}
+            {...register("rating")}
+          />
+          <FieldError errors={[errors.rating]} />
+        </Field>
+      </div>
+
+      <Field data-invalid={errors.imageUrl ? "true" : undefined}>
+        <FieldLabel htmlFor="product-image-url">
+          URL Gambar (opsional)
+        </FieldLabel>
+        <Input
+          id="product-image-url"
+          type="url"
+          placeholder="https://…"
+          aria-invalid={errors.imageUrl ? "true" : undefined}
+          {...register("imageUrl")}
+        />
+        <FieldError errors={[errors.imageUrl]} />
+      </Field>
+
+      <Field orientation="horizontal">
+        <input
+          id="product-is-published"
+          type="checkbox"
+          className="size-4 rounded border-[#D1D5DB]"
+          checked={isPublished}
+          {...register("isPublished")}
+        />
+        <FieldLabel
+          htmlFor="product-is-published"
+          className="text-sm font-medium"
+        >
+          Aktif di web (tayang publik)
+        </FieldLabel>
+      </Field>
+
+      <DialogFooter className="mt-auto flex-row gap-2">
+        <Button
+          type="button"
+          variant="outline"
+          onClick={() => onOpenChange(false)}
+          className="flex-1 rounded-lg sm:flex-none"
+        >
+          Batal
+        </Button>
+        <Button
+          type="submit"
+          className="flex-1 rounded-lg bg-[#FF6B35] text-white hover:bg-[#C2410C] sm:flex-none"
+        >
+          {isEdit ? "Simpan Perubahan" : "Tambah Produk"}
+        </Button>
+      </DialogFooter>
+    </form>
+  );
+
+  if (isMobile) {
+    return (
+      <Drawer open={open} onOpenChange={onOpenChange}>
+        <DrawerContent className="max-w-md border-l border-[#E5E7EB]">
+          <div className="flex min-h-0 flex-1 flex-col gap-3">
+            <div className="pr-10">
+              <DrawerTitle className="text-lg font-bold">{title}</DrawerTitle>
+              <DrawerDescription className="mt-1">
+                {description}
+              </DrawerDescription>
+            </div>
+            <div className="min-h-0 flex-1 overflow-y-auto pr-1">{form}</div>
+          </div>
+        </DrawerContent>
+      </Drawer>
+    );
+  }
+
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-h-[calc(100svh-2rem)] overflow-y-auto sm:max-w-lg">
+      <DialogContent className="flex max-h-[calc(100svh-3rem)] flex-col sm:max-w-3xl">
         <DialogHeader>
-          <DialogTitle>{isEdit ? "Edit Produk" : "Tambah Produk"}</DialogTitle>
-          <DialogDescription>
-            {isEdit
-              ? "Perbarui detail produk, termasuk stok dan threshold minimum."
-              : "Lengkapi detail produk untuk menambahkannya ke katalog."}
-          </DialogDescription>
+          <DialogTitle>{title}</DialogTitle>
+          <DialogDescription>{description}</DialogDescription>
         </DialogHeader>
-        <form
-          className="flex flex-col gap-4"
-          onSubmit={handleSubmit((values) => onSubmit(values))}
-          noValidate
-        >
-          <Field data-invalid={errors.name ? "true" : undefined}>
-            <FieldLabel htmlFor="product-name">Nama Produk</FieldLabel>
-            <Input
-              id="product-name"
-              placeholder="cth. Buket Mawar Wisuda"
-              aria-invalid={errors.name ? "true" : undefined}
-              {...register("name")}
-            />
-            <FieldError errors={[errors.name]} />
-          </Field>
-
-          <div className="grid gap-4 sm:grid-cols-2">
-            <Field data-invalid={errors.sku ? "true" : undefined}>
-              <FieldLabel htmlFor="product-sku">SKU</FieldLabel>
-              <Input
-                id="product-sku"
-                placeholder="cth. DF-BRKT-001"
-                aria-invalid={errors.sku ? "true" : undefined}
-                {...register("sku")}
-              />
-              <FieldError errors={[errors.sku]} />
-            </Field>
-
-            <Field data-invalid={errors.category ? "true" : undefined}>
-              <FieldLabel htmlFor="product-category">Kategori</FieldLabel>
-              <Select
-                value={category}
-                onValueChange={(value) => {
-                  if (value) {
-                    setValue(
-                      "category",
-                      value as ProductFormValues["category"],
-                      { shouldValidate: true },
-                    );
-                  }
-                }}
-              >
-                <SelectTrigger
-                  id="product-category"
-                  aria-label="Kategori produk"
-                  className="w-full rounded-lg border-[#E5E7EB] bg-white text-sm font-normal normal-case text-[#1A1A1A]"
-                >
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent
-                  alignItemWithTrigger={false}
-                  className="rounded-lg"
-                >
-                  {PRODUCT_CATEGORIES.map((option) => (
-                    <SelectItem
-                      key={option}
-                      value={option}
-                      className="rounded-md text-xs"
-                    >
-                      {option}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-              <FieldError errors={[errors.category]} />
-            </Field>
-          </div>
-
-          <div className="grid gap-4 sm:grid-cols-2">
-            <Field data-invalid={errors.price ? "true" : undefined}>
-              <FieldLabel htmlFor="product-price">Harga (Rp)</FieldLabel>
-              <Input
-                id="product-price"
-                type="number"
-                min={0}
-                step={1000}
-                aria-invalid={errors.price ? "true" : undefined}
-                {...register("price")}
-              />
-              <FieldError errors={[errors.price]} />
-            </Field>
-
-            <Field data-invalid={errors.stock ? "true" : undefined}>
-              <FieldLabel htmlFor="product-stock">Stok</FieldLabel>
-              <Input
-                id="product-stock"
-                type="number"
-                min={0}
-                aria-invalid={errors.stock ? "true" : undefined}
-                {...register("stock")}
-              />
-              <FieldError errors={[errors.stock]} />
-            </Field>
-          </div>
-
-          <div className="grid gap-4 sm:grid-cols-2">
-            <Field data-invalid={errors.stockUnit ? "true" : undefined}>
-              <FieldLabel htmlFor="product-stock-unit">Satuan Stok</FieldLabel>
-              <Input
-                id="product-stock-unit"
-                placeholder="cth. Buket / Tangkai"
-                aria-invalid={errors.stockUnit ? "true" : undefined}
-                {...register("stockUnit")}
-              />
-              <FieldError errors={[errors.stockUnit]} />
-            </Field>
-
-            <Field data-invalid={errors.minThreshold ? "true" : undefined}>
-              <FieldLabel htmlFor="product-min-threshold">
-                Threshold Minimum
-              </FieldLabel>
-              <Input
-                id="product-min-threshold"
-                type="number"
-                min={0}
-                aria-invalid={errors.minThreshold ? "true" : undefined}
-                {...register("minThreshold")}
-              />
-              <FieldError errors={[errors.minThreshold]} />
-            </Field>
-          </div>
-
-          <div className="grid gap-4 sm:grid-cols-2">
-            <Field data-invalid={errors.sales ? "true" : undefined}>
-              <FieldLabel htmlFor="product-sales">Jumlah Terjual</FieldLabel>
-              <Input
-                id="product-sales"
-                type="number"
-                min={0}
-                aria-invalid={errors.sales ? "true" : undefined}
-                {...register("sales")}
-              />
-              <FieldError errors={[errors.sales]} />
-            </Field>
-
-            <Field data-invalid={errors.rating ? "true" : undefined}>
-              <FieldLabel htmlFor="product-rating">Rating (0–5)</FieldLabel>
-              <Input
-                id="product-rating"
-                type="number"
-                min={0}
-                max={5}
-                step={0.1}
-                aria-invalid={errors.rating ? "true" : undefined}
-                {...register("rating")}
-              />
-              <FieldError errors={[errors.rating]} />
-            </Field>
-          </div>
-
-          <Field data-invalid={errors.imageUrl ? "true" : undefined}>
-            <FieldLabel htmlFor="product-image-url">
-              URL Gambar (opsional)
-            </FieldLabel>
-            <Input
-              id="product-image-url"
-              type="url"
-              placeholder="https://…"
-              aria-invalid={errors.imageUrl ? "true" : undefined}
-              {...register("imageUrl")}
-            />
-            <FieldError errors={[errors.imageUrl]} />
-          </Field>
-
-          <Field orientation="horizontal">
-            <input
-              id="product-is-published"
-              type="checkbox"
-              className="size-4 rounded border-[#D1D5DB]"
-              checked={isPublished}
-              {...register("isPublished")}
-            />
-            <FieldLabel
-              htmlFor="product-is-published"
-              className="text-sm font-medium"
-            >
-              Aktif di web (tayang publik)
-            </FieldLabel>
-          </Field>
-
-          <DialogFooter>
-            <Button
-              type="button"
-              variant="outline"
-              onClick={() => onOpenChange(false)}
-              className="rounded-lg"
-            >
-              Batal
-            </Button>
-            <Button
-              type="submit"
-              className="rounded-lg bg-[#FF6B35] text-white hover:bg-[#C2410C]"
-            >
-              {isEdit ? "Simpan Perubahan" : "Tambah Produk"}
-            </Button>
-          </DialogFooter>
-        </form>
+        {form}
       </DialogContent>
     </Dialog>
   );
