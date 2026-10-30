@@ -49,24 +49,43 @@ function DrawerOverlay({
 function DrawerContent({
   className,
   children,
+  side = "right",
   showCloseButton = true,
   ...props
 }: DrawerPrimitive.Popup.Props & {
+  side?: "top" | "right" | "bottom" | "left";
   showCloseButton?: boolean;
 }) {
+  const isBottom = side === "bottom";
+
   return (
     <DrawerPortal>
       <DrawerViewport>
         <DrawerOverlay />
         <DrawerPrimitive.Popup
           data-slot="drawer-content"
+          data-side={side}
           className={cn(
-            "absolute top-0 right-0 z-50 flex h-full w-full max-w-md flex-col bg-white text-sm shadow-xl outline-none duration-200 data-open:animate-in data-open:slide-in-from-right data-closed:animate-out data-closed:slide-out-to-right",
+            "z-50 flex flex-col bg-white text-sm shadow-xl outline-none duration-200",
+            isBottom
+              ? "absolute inset-x-0 bottom-0 max-h-[88dvh] w-full rounded-t-2xl border-t border-[#E5E7EB] data-open:animate-in data-open:slide-in-from-bottom data-closed:animate-out data-closed:slide-out-to-bottom"
+              : "absolute top-0 right-0 h-full w-full max-w-md data-open:animate-in data-open:slide-in-from-right data-closed:animate-out data-closed:slide-out-to-right",
             className,
           )}
           {...props}
         >
-          <DrawerPrimitive.Content className="flex h-full flex-col gap-4 p-6">
+          {isBottom && (
+            <div
+              aria-hidden="true"
+              className="mx-auto mt-2 h-1.5 w-10 shrink-0 rounded-full bg-[#D1D5DB]"
+            />
+          )}
+          <DrawerPrimitive.Content
+            className={cn(
+              "flex min-h-0 flex-1 flex-col gap-4 p-5",
+              isBottom && "pb-[max(1.25rem,env(safe-area-inset-bottom))] pt-4",
+            )}
+          >
             {children}
           </DrawerPrimitive.Content>
           {showCloseButton && (
@@ -75,7 +94,7 @@ function DrawerContent({
               render={
                 <Button
                   variant="ghost"
-                  className="absolute top-4 right-4 bg-secondary"
+                  className="absolute top-3 right-3 bg-secondary"
                   size="icon-sm"
                 />
               }

@@ -132,11 +132,7 @@ export function AdminProductsPage() {
 
   return (
     <div className="min-w-0 space-y-4">
-      <ProductsPageHeader
-        table={table}
-        onAdd={openCreate}
-        onExport={handleExport}
-      />
+      <ProductsPageHeader onAdd={openCreate} onExport={handleExport} />
 
       {showStatistics && <ProductsStatsCards products={products} />}
 
@@ -161,6 +157,7 @@ export function AdminProductsPage() {
 
         <div className="border-b border-[#E5E7EB] px-3 py-3 sm:px-4">
           <ProductsToolbar
+            table={table}
             filters={filters}
             onFiltersChange={handleFiltersChange}
             sorting={sorting}

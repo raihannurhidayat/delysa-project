@@ -70,7 +70,7 @@ export function ProductsStatsCards({ products }: { products: AdminProduct[] }) {
 
   return (
     <div
-      className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4"
+      className="grid min-w-0 grid-cols-1 gap-3 sm:grid-cols-2 xl:grid-cols-4"
       role="list"
       aria-label="Ringkasan katalog produk"
     >
