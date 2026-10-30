@@ -26,7 +26,11 @@ export function AdminShell({
         Lewati ke konten utama
       </a>
       <AdminSidebar user={user} />
-      <SidebarInset id="admin-main" tabIndex={-1} className="bg-[#F8F9FA]">
+      <SidebarInset
+        id="admin-main"
+        tabIndex={-1}
+        className="min-w-0 max-w-full overflow-x-clip bg-[#F8F9FA]"
+      >
         <header className="sticky top-0 z-10 flex h-14 items-center gap-3 border-b border-[#E5E7EB] bg-white/95 px-3 backdrop-blur sm:px-4">
           <SidebarTrigger
             aria-label="Buka atau tutup menu admin"
@@ -51,7 +55,7 @@ export function AdminShell({
             Lihat toko
           </Link>
         </header>
-        <div className="mx-auto w-full max-w-6xl flex-1 px-4 py-6 sm:px-6 lg:px-8">
+        <div className="mx-auto w-full min-w-0 max-w-6xl flex-1 px-4 py-6 sm:px-6 lg:px-8">
           {children}
         </div>
       </SidebarInset>

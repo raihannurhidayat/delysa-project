@@ -1,7 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { AdminDashboardPage } from "~/features/admin/pages/admin-dashboard-page";
 
-export const Route = createFileRoute("/_authenticated/admin/")({
+export const Route = createFileRoute("/_admin/admin/")({
   head: () => ({
     meta: [{ title: "Dasbor Admin — Delysa Florist" }],
   }),

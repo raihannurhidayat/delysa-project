@@ -11,6 +11,8 @@ export const MOCK_PRODUCTS: AdminProduct[] = [
     stock: 14,
     stockUnit: "Box",
     minThreshold: 5,
+    sales: 186,
+    rating: 4.9,
     imageUrl:
       "https://images.unsplash.com/photo-1561181286-d3fee7d55364?w=160&h=160&fit=crop",
     isPublished: true,
@@ -24,6 +26,8 @@ export const MOCK_PRODUCTS: AdminProduct[] = [
     stock: 3,
     stockUnit: "Buket",
     minThreshold: 5,
+    sales: 142,
+    rating: 4.8,
     imageUrl:
       "https://images.unsplash.com/photo-1508610048659-a06b669e3321?w=160&h=160&fit=crop",
     isPublished: true,
@@ -37,6 +41,8 @@ export const MOCK_PRODUCTS: AdminProduct[] = [
     stock: 0,
     stockUnit: "Stand",
     minThreshold: 2,
+    sales: 34,
+    rating: 4.7,
     isPublished: false,
   },
   {
@@ -48,6 +54,8 @@ export const MOCK_PRODUCTS: AdminProduct[] = [
     stock: 48,
     stockUnit: "Tangkai",
     minThreshold: 15,
+    sales: 512,
+    rating: 4.6,
     imageUrl:
       "https://images.unsplash.com/photo-1455659817273-f96807779a8a?w=160&h=160&fit=crop",
     isPublished: true,
@@ -61,6 +69,8 @@ export const MOCK_PRODUCTS: AdminProduct[] = [
     stock: 2,
     stockUnit: "Buket",
     minThreshold: 4,
+    sales: 58,
+    rating: 5,
     imageUrl:
       "https://images.unsplash.com/photo-1522673607200-164d1b6ce486?w=160&h=160&fit=crop",
     isPublished: true,
@@ -74,6 +84,8 @@ export const MOCK_PRODUCTS: AdminProduct[] = [
     stock: 0,
     stockUnit: "Box",
     minThreshold: 3,
+    sales: 41,
+    rating: 4.5,
     isPublished: false,
   },
   {
@@ -85,6 +97,8 @@ export const MOCK_PRODUCTS: AdminProduct[] = [
     stock: 19,
     stockUnit: "Buket",
     minThreshold: 6,
+    sales: 231,
+    rating: 4.8,
     imageUrl:
       "https://images.unsplash.com/photo-1487530811176-3780de880c2d?w=160&h=160&fit=crop",
     isPublished: true,
@@ -98,6 +112,8 @@ export const MOCK_PRODUCTS: AdminProduct[] = [
     stock: 4,
     stockUnit: "Stand",
     minThreshold: 2,
+    sales: 67,
+    rating: 4.7,
     isPublished: true,
   },
   {
@@ -109,6 +125,8 @@ export const MOCK_PRODUCTS: AdminProduct[] = [
     stock: 8,
     stockUnit: "Box",
     minThreshold: 3,
+    sales: 119,
+    rating: 4.9,
     isPublished: true,
   },
   {
@@ -120,6 +138,8 @@ export const MOCK_PRODUCTS: AdminProduct[] = [
     stock: 12,
     stockUnit: "Tangkai",
     minThreshold: 20,
+    sales: 348,
+    rating: 4.4,
     isPublished: true,
   },
   {
@@ -131,6 +151,8 @@ export const MOCK_PRODUCTS: AdminProduct[] = [
     stock: 7,
     stockUnit: "Buket",
     minThreshold: 5,
+    sales: 174,
+    rating: 4.8,
     imageUrl:
       "https://images.unsplash.com/photo-1470509037663-253afd7f0f51?w=160&h=160&fit=crop",
     isPublished: true,
@@ -144,6 +166,8 @@ export const MOCK_PRODUCTS: AdminProduct[] = [
     stock: 1,
     stockUnit: "Stand",
     minThreshold: 2,
+    sales: 23,
+    rating: 4.6,
     isPublished: false,
   },
 ];

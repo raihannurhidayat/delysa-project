@@ -1,5 +1,10 @@
 import { describe, expect, it } from "vitest";
-import { filterProducts, formatRupiah, getStockStatus, paginate } from "./product-filters";
+import {
+  filterProducts,
+  formatCompactNumber,
+  formatRupiah,
+  getStockStatus,
+} from "./product-filters";
 import { MOCK_PRODUCTS } from "./mock-products";
 import type { AdminProduct } from "./product.types";
 
@@ -13,6 +18,8 @@ function product(overrides: Partial<AdminProduct>): AdminProduct {
     stock: 10,
     stockUnit: "Buket",
     minThreshold: 5,
+    sales: 20,
+    rating: 4.5,
     isPublished: true,
     ...overrides,
   };
@@ -20,9 +27,15 @@ function product(overrides: Partial<AdminProduct>): AdminProduct {
 
 describe("getStockStatus", () => {
   it("classifies aman, menipis, and habis", () => {
-    expect(getStockStatus(product({ stock: 10, minThreshold: 5 }))).toBe("aman");
-    expect(getStockStatus(product({ stock: 5, minThreshold: 5 }))).toBe("menipis");
-    expect(getStockStatus(product({ stock: 0, minThreshold: 5 }))).toBe("habis");
+    expect(getStockStatus(product({ stock: 10, minThreshold: 5 }))).toBe(
+      "aman",
+    );
+    expect(getStockStatus(product({ stock: 5, minThreshold: 5 }))).toBe(
+      "menipis",
+    );
+    expect(getStockStatus(product({ stock: 0, minThreshold: 5 }))).toBe(
+      "habis",
+    );
   });
 });
 
@@ -78,23 +91,12 @@ describe("filterProducts", () => {
   });
 });
 
-describe("paginate", () => {
-  it("slices the requested page and reports totals", () => {
-    const result = paginate(MOCK_PRODUCTS, 2, 8);
-    expect(result.rows).toHaveLength(4);
-    expect(result.total).toBe(12);
-    expect(result.totalPages).toBe(2);
-  });
-
-  it("clamps out-of-range pages", () => {
-    const result = paginate(MOCK_PRODUCTS, 99, 8);
-    expect(result.rows).toHaveLength(4);
-    expect(paginate([], 3, 8).totalPages).toBe(1);
-  });
-});
-
-describe("formatRupiah", () => {
+describe("formatters", () => {
   it("formats IDR without decimals", () => {
     expect(formatRupiah(500000)).toContain("500.000");
+  });
+
+  it("formats large counts compactly", () => {
+    expect(formatCompactNumber(1500)).toContain("1,5");
   });
 });

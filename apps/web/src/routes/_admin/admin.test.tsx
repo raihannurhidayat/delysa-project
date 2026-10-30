@@ -11,8 +11,7 @@ vi.mock("@tanstack/react-router", async () => {
       options,
     }),
     redirect: vi.fn(),
-    Outlet: () =>
-      React.createElement("div", null, "Konten child route admin"),
+    Outlet: () => React.createElement("div", null, "Konten child route admin"),
   };
 });
 

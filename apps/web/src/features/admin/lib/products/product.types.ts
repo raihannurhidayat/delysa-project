@@ -9,6 +9,8 @@ export type AdminProduct = {
   stock: number;
   stockUnit: string;
   minThreshold: number;
+  sales: number;
+  rating: number;
   imageUrl?: string;
   isPublished: boolean;
 };
@@ -33,3 +35,7 @@ export const DEFAULT_PRODUCT_FILTERS: ProductFilters = {
   category: "all",
   stockStatus: "all",
 };
+
+export function getProductRevenue(product: AdminProduct): number {
+  return product.price * product.sales;
+}

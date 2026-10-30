@@ -20,7 +20,10 @@ import {
   SelectTrigger,
   SelectValue,
 } from "~/components/ui/select";
-import { PRODUCT_CATEGORIES, type AdminProduct } from "../lib/product.types";
+import {
+  PRODUCT_CATEGORIES,
+  type AdminProduct,
+} from "../../lib/products/product.types";
 
 const productFormSchema = z.object({
   name: z.string().min(2, "Nama minimal 2 karakter").max(100),
@@ -33,10 +36,12 @@ const productFormSchema = z.object({
   price: z.coerce.number().int().min(0, "Harga tidak boleh negatif"),
   stock: z.coerce.number().int().min(0, "Stok tidak boleh negatif"),
   stockUnit: z.string().min(1, "Satuan wajib diisi").max(20),
-  minThreshold: z.coerce
+  minThreshold: z.coerce.number().int().min(0, "Threshold tidak boleh negatif"),
+  sales: z.coerce.number().int().min(0, "Jumlah terjual tidak boleh negatif"),
+  rating: z.coerce
     .number()
-    .int()
-    .min(0, "Threshold tidak boleh negatif"),
+    .min(0, "Rating minimal 0")
+    .max(5, "Rating maksimal 5"),
   imageUrl: z
     .string()
     .url("URL gambar tidak valid")
@@ -56,6 +61,8 @@ const EMPTY_VALUES: ProductFormValues = {
   stock: 0,
   stockUnit: "Buket",
   minThreshold: 0,
+  sales: 0,
+  rating: 5,
   imageUrl: "",
   isPublished: true,
 };
@@ -99,6 +106,8 @@ export function ProductFormDialog({
         stock: product.stock,
         stockUnit: product.stockUnit,
         minThreshold: product.minThreshold,
+        sales: product.sales,
+        rating: product.rating,
         imageUrl: product.imageUrl ?? "",
         isPublished: product.isPublished,
       });
@@ -114,9 +123,7 @@ export function ProductFormDialog({
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="max-h-[calc(100svh-2rem)] overflow-y-auto sm:max-w-lg">
         <DialogHeader>
-          <DialogTitle>
-            {isEdit ? "Edit Produk" : "Tambah Produk"}
-          </DialogTitle>
+          <DialogTitle>{isEdit ? "Edit Produk" : "Tambah Produk"}</DialogTitle>
           <DialogDescription>
             {isEdit
               ? "Perbarui detail produk, termasuk stok dan threshold minimum."
@@ -157,9 +164,11 @@ export function ProductFormDialog({
                 value={category}
                 onValueChange={(value) => {
                   if (value) {
-                    setValue("category", value as ProductFormValues["category"], {
-                      shouldValidate: true,
-                    });
+                    setValue(
+                      "category",
+                      value as ProductFormValues["category"],
+                      { shouldValidate: true },
+                    );
                   }
                 }}
               >
@@ -170,7 +179,10 @@ export function ProductFormDialog({
                 >
                   <SelectValue />
                 </SelectTrigger>
-                <SelectContent alignItemWithTrigger={false} className="rounded-lg">
+                <SelectContent
+                  alignItemWithTrigger={false}
+                  className="rounded-lg"
+                >
                   {PRODUCT_CATEGORIES.map((option) => (
                     <SelectItem
                       key={option}
@@ -240,6 +252,34 @@ export function ProductFormDialog({
             </Field>
           </div>
 
+          <div className="grid gap-4 sm:grid-cols-2">
+            <Field data-invalid={errors.sales ? "true" : undefined}>
+              <FieldLabel htmlFor="product-sales">Jumlah Terjual</FieldLabel>
+              <Input
+                id="product-sales"
+                type="number"
+                min={0}
+                aria-invalid={errors.sales ? "true" : undefined}
+                {...register("sales")}
+              />
+              <FieldError errors={[errors.sales]} />
+            </Field>
+
+            <Field data-invalid={errors.rating ? "true" : undefined}>
+              <FieldLabel htmlFor="product-rating">Rating (0–5)</FieldLabel>
+              <Input
+                id="product-rating"
+                type="number"
+                min={0}
+                max={5}
+                step={0.1}
+                aria-invalid={errors.rating ? "true" : undefined}
+                {...register("rating")}
+              />
+              <FieldError errors={[errors.rating]} />
+            </Field>
+          </div>
+
           <Field data-invalid={errors.imageUrl ? "true" : undefined}>
             <FieldLabel htmlFor="product-image-url">
               URL Gambar (opsional)
@@ -262,7 +302,10 @@ export function ProductFormDialog({
               checked={isPublished}
               {...register("isPublished")}
             />
-            <FieldLabel htmlFor="product-is-published" className="text-sm font-medium">
+            <FieldLabel
+              htmlFor="product-is-published"
+              className="text-sm font-medium"
+            >
               Aktif di web (tayang publik)
             </FieldLabel>
           </Field>
@@ -276,7 +319,10 @@ export function ProductFormDialog({
             >
               Batal
             </Button>
-            <Button type="submit" className="rounded-lg bg-[#FF6B35] text-white hover:bg-[#C2410C]">
+            <Button
+              type="submit"
+              className="rounded-lg bg-[#FF6B35] text-white hover:bg-[#C2410C]"
+            >
               {isEdit ? "Simpan Perubahan" : "Tambah Produk"}
             </Button>
           </DialogFooter>
