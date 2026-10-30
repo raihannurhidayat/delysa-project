@@ -1,6 +1,5 @@
-import { createFileRoute, redirect } from "@tanstack/react-router";
+import { createFileRoute, Outlet, redirect } from "@tanstack/react-router";
 import { roleHome } from "~/features/auth/lib/role-home";
-import { AdminDashboardPage } from "~/features/admin/pages/admin-dashboard-page";
 
 export const Route = createFileRoute("/_authenticated/admin")({
   beforeLoad: ({ context }) => {
@@ -8,14 +7,9 @@ export const Route = createFileRoute("/_authenticated/admin")({
       throw redirect({ to: roleHome(context.user.role) });
     }
   },
-  head: () => ({
-    meta: [{ title: "Dasbor Admin — Delysa Florist" }],
-  }),
-  component: AdminRoute,
+  component: AdminLayoutRoute,
 });
 
-function AdminRoute() {
-  const { user } = Route.useRouteContext();
-
-  return <AdminDashboardPage user={user} />;
+function AdminLayoutRoute() {
+  return <Outlet />;
 }

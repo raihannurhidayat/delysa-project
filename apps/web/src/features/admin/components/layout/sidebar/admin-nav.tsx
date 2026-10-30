@@ -18,13 +18,13 @@ import {
 
 export type AdminNavItem = {
   title: string;
-  to?: "/admin";
+  to?: "/admin" | "/admin/produk";
   icon: LucideIcon;
 };
 
 export const ADMIN_NAV_ITEMS = [
   { title: "Dashboard", to: "/admin", icon: LayoutDashboardIcon },
-  { title: "Produk", icon: PackageIcon },
+  { title: "Produk", to: "/admin/produk", icon: PackageIcon },
   { title: "Pesanan", icon: ShoppingCartIcon },
   { title: "Stok", icon: BoxesIcon },
   { title: "Laporan", icon: PieChartIcon },

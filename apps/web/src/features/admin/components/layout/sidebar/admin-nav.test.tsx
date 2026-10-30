@@ -41,10 +41,26 @@ describe("AdminNav", () => {
     expect(dashboard).toHaveAttribute("href", "/admin");
     expect(dashboard).toHaveAttribute("aria-current", "page");
 
-    const products = screen.getByRole("button", { name: "Produk" });
-    expect(products).toBeDisabled();
-    expect(products).toHaveAttribute("aria-disabled", "true");
-    expect(screen.getAllByText("Segera")).toHaveLength(4);
+    const products = screen.getByRole("link", { name: "Produk" });
+    expect(products).toHaveAttribute("href", "/admin/produk");
+    expect(products).not.toHaveAttribute("aria-current");
+
+    const orders = screen.getByRole("button", { name: "Pesanan" });
+    expect(orders).toBeDisabled();
+    expect(orders).toHaveAttribute("aria-disabled", "true");
+    expect(screen.getAllByText("Segera")).toHaveLength(3);
+  });
+
+  it("marks the products link active on /admin/produk", () => {
+    mocks.pathname = "/admin/produk";
+    renderNav();
+
+    expect(
+      screen.getByRole("link", { name: "Produk" }),
+    ).toHaveAttribute("aria-current", "page");
+    expect(
+      screen.getByRole("link", { name: "Dashboard" }),
+    ).not.toHaveAttribute("aria-current");
   });
 
   it("does not mark the dashboard active on another path", () => {
