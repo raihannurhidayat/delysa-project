@@ -164,19 +164,22 @@ export function ProductsTable({
                     selected ? "bg-[#FFF7F2]" : "hover:bg-[#FFFBF8]",
                   )}
                 >
-                  {row.getAllCells().map((cell) => (
-                    <TableCell
-                      key={cell.id}
-                      className={cn(
-                        "px-2",
-                        RESPONSIVE_COLUMN_CLASS[cell.column.id] ?? "",
-                        cell.column.id === "select" && "pl-3",
-                        cell.column.id === "action" && "pr-3 text-right",
-                      )}
-                    >
-                      <table.FlexRender cell={cell} />
-                    </TableCell>
-                  ))}
+                  {row
+                    .getAllCells()
+                    .filter((cell) => cell.column.getIsVisible())
+                    .map((cell) => (
+                      <TableCell
+                        key={cell.id}
+                        className={cn(
+                          "px-2",
+                          RESPONSIVE_COLUMN_CLASS[cell.column.id] ?? "",
+                          cell.column.id === "select" && "pl-3",
+                          cell.column.id === "action" && "pr-3 text-right",
+                        )}
+                      >
+                        <table.FlexRender cell={cell} />
+                      </TableCell>
+                    ))}
                 </TableRow>
               );
             })}

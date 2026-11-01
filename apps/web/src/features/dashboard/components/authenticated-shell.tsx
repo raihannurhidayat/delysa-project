@@ -23,8 +23,11 @@ export function AuthenticatedShell({
 }) {
   const home = roleHome(user.role);
   const isCustomer = user.role === "customer";
-  const { logout: handleLogout, isPending, error: logoutError } =
-    useLogoutFlow();
+  const {
+    logout: handleLogout,
+    isPending,
+    error: logoutError,
+  } = useLogoutFlow();
 
   return (
     <div className="min-h-dvh bg-[#F8F9FA] text-[#1A1A1A]">

@@ -55,21 +55,22 @@ describe("AdminNav", () => {
     mocks.pathname = "/admin/produk";
     renderNav();
 
-    expect(
-      screen.getByRole("link", { name: "Produk" }),
-    ).toHaveAttribute("aria-current", "page");
-    expect(
-      screen.getByRole("link", { name: "Dashboard" }),
-    ).not.toHaveAttribute("aria-current");
+    expect(screen.getByRole("link", { name: "Produk" })).toHaveAttribute(
+      "aria-current",
+      "page",
+    );
+    expect(screen.getByRole("link", { name: "Dashboard" })).not.toHaveAttribute(
+      "aria-current",
+    );
   });
 
   it("does not mark the dashboard active on another path", () => {
     mocks.pathname = "/admin/users";
     renderNav();
 
-    expect(
-      screen.getByRole("link", { name: "Dashboard" }),
-    ).not.toHaveAttribute("aria-current");
+    expect(screen.getByRole("link", { name: "Dashboard" })).not.toHaveAttribute(
+      "aria-current",
+    );
   });
 
   it("renders a labelled navigation landmark", () => {

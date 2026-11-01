@@ -1,5 +1,9 @@
 import { getStockStatus } from "./product-filters";
-import { getProductRevenue, type AdminProduct } from "./product.types";
+import {
+  getProductPublicStatus,
+  getProductRevenue,
+  type AdminProduct,
+} from "./product.types";
 
 const CSV_HEADERS = [
   "Nama",
@@ -44,7 +48,7 @@ export function productsToCsv(products: AdminProduct[]): string {
       product.stockUnit,
       product.minThreshold,
       STOCK_LABEL[getStockStatus(product)],
-      product.isPublished ? "Aktif di Web" : "Draf",
+      getProductPublicStatus(product) === "live" ? "Live" : "Private",
       product.rating,
     ].map(escapeCsvCell),
   );

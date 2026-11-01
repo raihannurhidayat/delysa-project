@@ -27,7 +27,7 @@ describe("productsToCsv", () => {
     expect(row).toContain("Buket Uji");
     expect(row).toContain("1000000"); // 100000 × 10
     expect(row).toContain("Menipis");
-    expect(row).toContain("Aktif di Web");
+    expect(row).toContain("Live");
   });
 
   it("escapes commas, quotes, and newlines", () => {

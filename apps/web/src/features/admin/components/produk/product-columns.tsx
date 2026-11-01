@@ -12,8 +12,10 @@ import {
   formatRupiah,
 } from "../../lib/products/product-filters";
 import {
+  getProductPublicStatus,
   getProductRevenue,
   type AdminProduct,
+  type ProductPublicStatus,
   type ProductStockStatus,
 } from "../../lib/products/product.types";
 import { productTableFeatures } from "../../lib/products/product-table-config";
@@ -64,6 +66,26 @@ export function StockBadge({ product }: { product: AdminProduct }) {
   );
 }
 
+export function PublicStatusBadge({ status }: { status: ProductPublicStatus }) {
+  const isLive = status === "live";
+
+  return (
+    <Badge
+      className={
+        isLive
+          ? "border-transparent bg-[#DCFCE7] text-[#166534]"
+          : "border-transparent bg-[#F3F4F6] text-[#6B7280]"
+      }
+    >
+      <span
+        aria-hidden="true"
+        className={`size-1.5 rounded-full ${isLive ? "bg-[#16A34A]" : "bg-[#9CA3AF]"}`}
+      />
+      {isLive ? "Live" : "Private"}
+    </Badge>
+  );
+}
+
 export function createProductColumns({
   onEdit,
 }: {
@@ -105,9 +127,12 @@ export function createProductColumns({
           <div className="flex min-w-0 items-center gap-2.5">
             <ProductThumbnail product={product} />
             <div className="min-w-0">
-              <p className="max-w-[10rem] truncate text-xs font-bold text-[#1A1A1A] sm:max-w-[16rem] sm:text-sm">
-                {product.name}
-              </p>
+              <div className="flex min-w-0 items-center gap-2">
+                <p className="max-w-[10rem] truncate text-xs font-bold text-[#1A1A1A] sm:max-w-[16rem] sm:text-sm">
+                  {product.name}
+                </p>
+                <PublicStatusBadge status={getProductPublicStatus(product)} />
+              </div>
               <p className="text-[10px] font-medium text-[#6B7280] sm:text-[11px]">
                 SKU: {product.sku}
               </p>
@@ -189,20 +214,11 @@ export function createProductColumns({
         </span>
       ),
     }),
-    columnHelper.accessor("isPublished", {
-      header: "Publik",
+    columnHelper.accessor((row) => getProductPublicStatus(row), {
+      id: "isPublished",
+      header: "Status Publik",
       sortFn: sortFn_basic,
-      cell: (info) => (
-        <Badge
-          className={
-            info.getValue()
-              ? "border-transparent bg-[#DCFCE7] text-[#166534]"
-              : "border-transparent bg-[#F3F4F6] text-[#6B7280]"
-          }
-        >
-          {info.getValue() ? "Aktif di Web" : "Draf"}
-        </Badge>
-      ),
+      cell: (info) => <PublicStatusBadge status={info.getValue()} />,
     }),
     columnHelper.display({
       id: "action",

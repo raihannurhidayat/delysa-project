@@ -76,13 +76,15 @@ export function AdminProductsPage() {
     data: filteredProducts,
     initialState: {
       pagination: { pageIndex: 0, pageSize: PRODUCT_PAGE_SIZE },
+      columnVisibility: { revenue: false, status: false },
     },
   });
 
   const hasFilters =
     filters.search.trim() !== "" ||
     filters.category !== "all" ||
-    filters.stockStatus !== "all";
+    filters.stockStatus !== "all" ||
+    filters.publicStatus !== "all";
 
   function handleFiltersChange(next: ProductFilters) {
     setFilters(next);

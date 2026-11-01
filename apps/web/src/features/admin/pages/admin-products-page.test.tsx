@@ -56,6 +56,24 @@ describe("AdminProductsPage", () => {
     expect(firstDataRow()).toHaveTextContent("The Grand Monolith");
   });
 
+  it("renders publik status badges as Live or Private per product", () => {
+    renderPage();
+
+    expect(
+      screen.getByRole("row", { name: /The Grand Monolith/ }),
+    ).toHaveTextContent("Live");
+
+    expect(
+      screen.getByRole("row", { name: /Aura Botanical Grand Stand/ }),
+    ).toHaveTextContent("Private");
+  });
+
+  it("renders the publik status select in the toolbar", () => {
+    renderPage();
+
+    expect(screen.getByLabelText("Status Publik")).toBeInTheDocument();
+  });
+
   it("filters by search, resets pagination, and exports the filtered rows", () => {
     renderPage();
 
@@ -164,8 +182,29 @@ describe("AdminProductsPage", () => {
         screen.queryByRole("columnheader", { name: /Kategori/ }),
       ).not.toBeInTheDocument();
     });
+
+    // Konsistensi: kolom yang disembunyikan di header juga harus hilang dari baris data.
+    expect(
+      screen.getByRole("row", { name: /The Grand Monolith/ }),
+    ).not.toHaveTextContent("Bloom Box");
   });
 
+  it("hides revenue and stock status columns by default", () => {
+    renderPage();
+
+    // Kolom "Pendapatan" disembunyikan default.
+    expect(
+      screen.queryByRole("columnheader", { name: /Pendapatan/ }),
+    ).not.toBeInTheDocument();
+
+    // Kolom "Status Stok" disembunyikan default, sementara status publik tetap tampil.
+    expect(
+      screen.queryByRole("columnheader", { name: "Status" }),
+    ).not.toBeInTheDocument();
+    expect(
+      screen.getByRole("columnheader", { name: /Status Publik/ }),
+    ).toBeInTheDocument();
+  });
   it("adds a product through the create dialog", async () => {
     renderPage();
 
@@ -233,7 +272,7 @@ describe("AdminProductsPage", () => {
       const row = screen.getByRole("row", {
         name: /The Grand Monolith Peach & Ivory/,
       });
-      expect(within(row).getByText("Menipis")).toBeInTheDocument();
+      expect(within(row).getByText("2 Box")).toBeInTheDocument();
     });
   });
 });

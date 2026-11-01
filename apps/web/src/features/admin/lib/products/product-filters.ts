@@ -1,7 +1,9 @@
 import {
+  getProductPublicStatus,
   getProductRevenue,
   type AdminProduct,
   type ProductFilters,
+  type ProductPublicStatusFilter,
   type ProductStockStatus,
 } from "./product.types";
 
@@ -25,6 +27,12 @@ export function filterProducts(
     if (
       filters.stockStatus !== "all" &&
       getStockStatus(product) !== filters.stockStatus
+    ) {
+      return false;
+    }
+    if (
+      filters.publicStatus !== "all" &&
+      getProductPublicStatus(product) !== filters.publicStatus
     ) {
       return false;
     }
@@ -54,7 +62,9 @@ export function formatCompactNumber(value: number): string {
 
 /** Ringkasan angka untuk kartu statistik dan tab stok. */
 export function summarizeProducts(products: AdminProduct[]) {
-  const published = products.filter((product) => product.isPublished).length;
+  const published = products.filter(
+    (product) => getProductPublicStatus(product) === "live",
+  ).length;
   const lowStock = products.filter(
     (product) => getStockStatus(product) === "menipis",
   ).length;
