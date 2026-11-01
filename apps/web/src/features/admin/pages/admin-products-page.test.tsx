@@ -164,8 +164,12 @@ describe("AdminProductsPage", () => {
         screen.queryByRole("columnheader", { name: /Kategori/ }),
       ).not.toBeInTheDocument();
     });
-  });
 
+    // Konsistensi: kolom yang disembunyikan di header juga harus hilang dari baris data.
+    expect(
+      screen.getByRole("row", { name: /The Grand Monolith/ }),
+    ).not.toHaveTextContent("Bloom Box");
+  });
   it("adds a product through the create dialog", async () => {
     renderPage();
 
