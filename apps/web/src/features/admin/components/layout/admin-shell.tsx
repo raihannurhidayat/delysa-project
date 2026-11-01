@@ -47,8 +47,7 @@ export function AdminShell({
             className={buttonVariants({
               variant: "outline",
               size: "sm",
-              className:
-                "ml-auto h-11 rounded-lg text-xs font-semibold sm:h-9",
+              className: "ml-auto h-11 rounded-lg text-xs font-semibold sm:h-9",
             })}
           >
             <ArrowLeft size={14} aria-hidden="true" className="mr-1.5" />

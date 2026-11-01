@@ -12,15 +12,23 @@ export function useLogin() {
     mutationFn: (values: LoginFormValues): Promise<AuthUser> => login(values),
     onMutate: async (newValues) => {
       // Show loading state during mutation
-      await toast.add({ title: "Sedang memproses login", type: "loading", id:"login-toast" });
+      await toast.add({
+        title: "Sedang memproses login",
+        type: "loading",
+        id: "login-toast",
+      });
       return { email: newValues?.email };
     },
     onSuccess: (user) => {
       queryClient.setQueryData(sessionQueryKey, user);
-      toast.add({ title: "Login berhasil", type: "success", id:"login-toast" });
+      toast.add({
+        title: "Login berhasil",
+        type: "success",
+        id: "login-toast",
+      });
     },
     onError: (error) => {
-      toast.add({ title: "Login gagal", type: "error", id:"login-toast" });
+      toast.add({ title: "Login gagal", type: "error", id: "login-toast" });
     },
   });
 

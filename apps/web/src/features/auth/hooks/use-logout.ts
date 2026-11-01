@@ -14,12 +14,20 @@ export function useLogout() {
     mutationFn: logout,
     onMutate: async () => {
       // Show loading state during logout mutation
-      await toast.add({ title: "Sedang keluar", type: "loading", id: "logout-toast" });
+      await toast.add({
+        title: "Sedang keluar",
+        type: "loading",
+        id: "logout-toast",
+      });
     },
     onSuccess: () => {
       queryClient.setQueryData(sessionQueryKey, null);
       void router.invalidate();
-      toast.add({ title: "Logout berhasil", type: "success", id: "logout-toast" });
+      toast.add({
+        title: "Logout berhasil",
+        type: "success",
+        id: "logout-toast",
+      });
     },
     onError: (error) => {
       if (error instanceof ApiError && error.status === 401) {

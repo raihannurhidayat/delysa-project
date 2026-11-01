@@ -53,6 +53,11 @@ describe("useRegister", () => {
     });
 
     await waitFor(() => expect(result.current.isSuccess).toBe(true));
+    // 1st call: onMutate loading toast, 2nd call: onSuccess success toast
+    expect(mocks.add).toHaveBeenCalledWith({
+      title: "Sedang memproses registrasi",
+      type: "loading",
+    });
     expect(mocks.add).toHaveBeenCalledWith({
       title: "Registrasi berhasil",
       type: "success",

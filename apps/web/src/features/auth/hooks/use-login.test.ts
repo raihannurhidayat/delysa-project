@@ -52,6 +52,11 @@ describe("useLogin", () => {
     });
 
     await waitFor(() => expect(result.current.isSuccess).toBe(true));
+    // 1st call: onMutate loading toast, 2nd call: onSuccess success toast
+    expect(mocks.add).toHaveBeenCalledWith({
+      title: "Sedang memproses login",
+      type: "loading",
+    });
     expect(mocks.add).toHaveBeenCalledWith({
       title: "Login berhasil",
       type: "success",
