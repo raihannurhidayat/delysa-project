@@ -76,6 +76,7 @@ export function AdminProductsPage() {
     data: filteredProducts,
     initialState: {
       pagination: { pageIndex: 0, pageSize: PRODUCT_PAGE_SIZE },
+      columnVisibility: { revenue: false, status: false },
     },
   });
 

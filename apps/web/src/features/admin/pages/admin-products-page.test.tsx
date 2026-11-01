@@ -188,6 +188,23 @@ describe("AdminProductsPage", () => {
       screen.getByRole("row", { name: /The Grand Monolith/ }),
     ).not.toHaveTextContent("Bloom Box");
   });
+
+  it("hides revenue and stock status columns by default", () => {
+    renderPage();
+
+    // Kolom "Pendapatan" disembunyikan default.
+    expect(
+      screen.queryByRole("columnheader", { name: /Pendapatan/ }),
+    ).not.toBeInTheDocument();
+
+    // Kolom "Status Stok" disembunyikan default, sementara status publik tetap tampil.
+    expect(
+      screen.queryByRole("columnheader", { name: "Status" }),
+    ).not.toBeInTheDocument();
+    expect(
+      screen.getByRole("columnheader", { name: /Status Publik/ }),
+    ).toBeInTheDocument();
+  });
   it("adds a product through the create dialog", async () => {
     renderPage();
 
@@ -255,7 +272,7 @@ describe("AdminProductsPage", () => {
       const row = screen.getByRole("row", {
         name: /The Grand Monolith Peach & Ivory/,
       });
-      expect(within(row).getByText("Menipis")).toBeInTheDocument();
+      expect(within(row).getByText("2 Box")).toBeInTheDocument();
     });
   });
 });
