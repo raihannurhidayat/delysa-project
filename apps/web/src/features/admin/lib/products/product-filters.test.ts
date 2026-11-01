@@ -6,7 +6,7 @@ import {
   getStockStatus,
 } from "./product-filters";
 import { MOCK_PRODUCTS } from "./mock-products";
-import type { AdminProduct } from "./product.types";
+import { getProductPublicStatus, type AdminProduct } from "./product.types";
 
 function product(overrides: Partial<AdminProduct>): AdminProduct {
   return {
@@ -45,6 +45,7 @@ describe("filterProducts", () => {
       search: "df-brid",
       category: "all",
       stockStatus: "all",
+      publicStatus: "all",
     });
     expect(result).toHaveLength(1);
     expect(result[0]?.sku).toBe("DF-BRID-210");
@@ -55,6 +56,7 @@ describe("filterProducts", () => {
       search: "",
       category: "Standing Flower",
       stockStatus: "all",
+      publicStatus: "all",
     });
     expect(result).toHaveLength(3);
   });
@@ -64,6 +66,7 @@ describe("filterProducts", () => {
       search: "",
       category: "all",
       stockStatus: "habis",
+      publicStatus: "all",
     });
     expect(result).toHaveLength(2);
     expect(result.every((p) => p.stock === 0)).toBe(true);
@@ -74,6 +77,7 @@ describe("filterProducts", () => {
       search: "",
       category: "all",
       stockStatus: "menipis",
+      publicStatus: "all",
     });
     expect(result.length).toBeGreaterThan(0);
     expect(result.every((p) => p.stock > 0 && p.stock <= p.minThreshold)).toBe(
@@ -86,8 +90,44 @@ describe("filterProducts", () => {
       search: "   ",
       category: "all",
       stockStatus: "all",
+      publicStatus: "all",
     });
     expect(result).toHaveLength(MOCK_PRODUCTS.length);
+  });
+});
+
+describe("getProductPublicStatus", () => {
+  it("maps published products to live and unpublished to private", () => {
+    expect(getProductPublicStatus(product({ isPublished: true }))).toBe("live");
+    expect(getProductPublicStatus(product({ isPublished: false }))).toBe(
+      "private",
+    );
+  });
+});
+
+describe("filterProducts publik status", () => {
+  it("filters to live products only when publicStatus is live", () => {
+    const result = filterProducts(MOCK_PRODUCTS, {
+      search: "",
+      category: "all",
+      stockStatus: "all",
+      publicStatus: "live",
+    });
+
+    expect(result).toHaveLength(9);
+    expect(result.every((p) => p.isPublished)).toBe(true);
+  });
+
+  it("filters to private products only when publicStatus is private", () => {
+    const result = filterProducts(MOCK_PRODUCTS, {
+      search: "",
+      category: "all",
+      stockStatus: "all",
+      publicStatus: "private",
+    });
+
+    expect(result).toHaveLength(3);
+    expect(result.every((p) => !p.isPublished)).toBe(true);
   });
 });
 

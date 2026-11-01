@@ -56,6 +56,24 @@ describe("AdminProductsPage", () => {
     expect(firstDataRow()).toHaveTextContent("The Grand Monolith");
   });
 
+  it("renders publik status badges as Live or Private per product", () => {
+    renderPage();
+
+    expect(
+      screen.getByRole("row", { name: /The Grand Monolith/ }),
+    ).toHaveTextContent("Live");
+
+    expect(
+      screen.getByRole("row", { name: /Aura Botanical Grand Stand/ }),
+    ).toHaveTextContent("Private");
+  });
+
+  it("renders the publik status select in the toolbar", () => {
+    renderPage();
+
+    expect(screen.getByLabelText("Status Publik")).toBeInTheDocument();
+  });
+
   it("filters by search, resets pagination, and exports the filtered rows", () => {
     renderPage();
 

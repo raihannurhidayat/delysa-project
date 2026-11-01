@@ -82,7 +82,8 @@ export function AdminProductsPage() {
   const hasFilters =
     filters.search.trim() !== "" ||
     filters.category !== "all" ||
-    filters.stockStatus !== "all";
+    filters.stockStatus !== "all" ||
+    filters.publicStatus !== "all";
 
   function handleFiltersChange(next: ProductFilters) {
     setFilters(next);

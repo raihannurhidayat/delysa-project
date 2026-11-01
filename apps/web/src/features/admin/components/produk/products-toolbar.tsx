@@ -21,11 +21,20 @@ import {
   DropdownMenuTrigger,
 } from "~/components/ui/dropdown-menu";
 import { Input } from "~/components/ui/input";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "~/components/ui/select";
 import type { ProductTable } from "../../lib/products/product-table-config";
 import { TOGGLEABLE_COLUMN_LABELS } from "../../lib/products/product-table-config";
 import {
   PRODUCT_CATEGORIES,
+  PRODUCT_PUBLIC_STATUS_OPTIONS,
   type ProductFilters,
+  type ProductPublicStatusFilter,
 } from "../../lib/products/product.types";
 import {
   PRODUCT_SORT_OPTIONS,
@@ -81,6 +90,37 @@ export function ProductsToolbar({
       </div>
 
       <div className="flex flex-wrap items-center gap-2">
+        <Select
+          value={filters.publicStatus}
+          onValueChange={(value) => {
+            if (value) {
+              onFiltersChange({ ...filters, publicStatus: value });
+            }
+          }}
+        >
+          <SelectTrigger
+            id="product-public-status"
+            aria-label="Status Publik"
+            className="h-9 rounded-lg border-[#E5E7EB] bg-white px-3 text-xs font-semibold text-[#4B5563]"
+          >
+            <SelectValue />
+          </SelectTrigger>
+          <SelectContent className="rounded-xl">
+            <SelectItem value="all" className="rounded-lg text-xs">
+              Semua Status
+            </SelectItem>
+            {PRODUCT_PUBLIC_STATUS_OPTIONS.map((option) => (
+              <SelectItem
+                key={option.value}
+                value={option.value}
+                className="rounded-lg text-xs"
+              >
+                {option.label}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
+
         <DropdownMenu>
           <DropdownMenuTrigger
             render={
