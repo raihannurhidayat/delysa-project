@@ -71,7 +71,6 @@ function RootComponent() {
   return (
     <RootDocument>
       <Outlet />
-      <Toaster />
     </RootDocument>
   );
 }
@@ -85,7 +84,6 @@ function RootDocument({ children }: { children: React.ReactNode }) {
       </head>
       <body className="font-sans antialiased">
         {children}
-        <Toaster />
         {/*<TanStackRouterDevtools position="bottom-right" />*/}
         {/*<ReactQueryDevtools buttonPosition="bottom-left" />*/}
         <Scripts />
