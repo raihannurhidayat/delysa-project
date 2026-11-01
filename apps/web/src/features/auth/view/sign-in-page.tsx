@@ -9,7 +9,10 @@ export default function SignInPage() {
   const navigate = useNavigate();
 
   const handleSuccess = (user: AuthUser) => {
-    void navigate({ to: roleHome(user.role), replace: true });
+    // Berikan jeda 300ms agar toast "Login berhasil" terlihat sebelum navigasi
+    setTimeout(() => {
+      void navigate({ to: roleHome(user.role), replace: true });
+    }, 300);
   };
 
   return (

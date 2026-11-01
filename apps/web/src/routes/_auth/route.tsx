@@ -4,6 +4,7 @@ import {
   Outlet,
   redirect,
 } from "@tanstack/react-router";
+import { Toaster } from "~/components/ui/toast";
 import { sessionQueryOptions } from "~/features/auth/api/session";
 import { roleHome } from "~/features/auth/lib/role-home";
 
@@ -27,6 +28,7 @@ function AuthLayout() {
   return (
     <div>
       <Outlet />
+      <Toaster />
     </div>
   );
 }

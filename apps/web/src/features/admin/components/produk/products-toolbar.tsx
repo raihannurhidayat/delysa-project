@@ -46,6 +46,15 @@ import { cn } from "cn";
 
 export type TableDensity = "comfortable" | "compact";
 
+function getPublicStatusLabel(value: string): string {
+  if (value === "all") return "Semua Status";
+
+  return (
+    PRODUCT_PUBLIC_STATUS_OPTIONS.find((option) => option.value === value)
+      ?.label ?? "Semua Status"
+  );
+}
+
 export function ProductsToolbar({
   table,
   filters,
@@ -101,9 +110,9 @@ export function ProductsToolbar({
           <SelectTrigger
             id="product-public-status"
             aria-label="Status Publik"
-            className="h-9 rounded-lg border-[#E5E7EB] bg-white px-3 text-xs font-semibold text-[#4B5563]"
+            className="h-9 w-40 rounded-lg border-[#E5E7EB] bg-white px-3 text-xs font-semibold text-[#4B5563]"
           >
-            <SelectValue />
+            <SelectValue>{(value) => getPublicStatusLabel(value)}</SelectValue>
           </SelectTrigger>
           <SelectContent className="rounded-xl">
             <SelectItem value="all" className="rounded-lg text-xs">
