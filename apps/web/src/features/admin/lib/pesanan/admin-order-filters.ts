@@ -1,4 +1,4 @@
-import { ORDER_STATUSES } from "@delysa/shared";
+import { ORDER_STATUSES, type OrderStatus } from "@delysa/shared";
 import { ORDER_TABS } from "~/features/shop/lib/order-filters";
 import type { OrderTab } from "~/features/shop/types";
 import type {
@@ -69,7 +69,7 @@ function matchesPeriod(
 function matchesStatus(order: AdminOrderView, statusTab: OrderTab): boolean {
   const tab = ORDER_TABS.find((entry) => entry.value === statusTab);
   if (!tab) return true;
-  return tab.statuses.includes(order.status);
+  return (tab.statuses as readonly OrderStatus[]).includes(order.status);
 }
 
 export function filterAdminOrders(

@@ -63,9 +63,10 @@ describe("useAdminOrderActions", () => {
     const encoded = order("pending_verification");
     const { result } = renderHook(() => useAdminOrderActions());
 
-    updateOrderStatus.mockReturnValue(
-      { ...encoded, status: "paid" } as AdminOrderView,
-    );
+    updateOrderStatus.mockReturnValue({
+      ...encoded,
+      status: "paid",
+    } as AdminOrderView);
 
     expect(result.current.applyAction(encoded, "verify")).toEqual(
       expect.objectContaining({ status: "paid" }),

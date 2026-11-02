@@ -1,10 +1,8 @@
 import { fireEvent, render, screen } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
 import { AdminOrderToolbar } from "./admin-order-toolbar";
-import {
-  DEFAULT_ADMIN_ORDER_FILTERS,
-  type AdminOrderFilters,
-} from "../../lib/pesanan/admin-order-filters";
+import { DEFAULT_ADMIN_ORDER_FILTERS } from "../../lib/pesanan/admin-order-filters";
+import type { AdminOrderFilters } from "../../lib/pesanan/admin-order.types";
 
 function setup(filters: AdminOrderFilters) {
   const onChange = vi.fn<(next: AdminOrderFilters) => void>();
@@ -27,7 +25,9 @@ describe("AdminOrderToolbar", () => {
     setup(DEFAULT_ADMIN_ORDER_FILTERS);
 
     expect(
-      screen.getByPlaceholderText("Cari no. order, produk, atau nama pelanggan…"),
+      screen.getByPlaceholderText(
+        "Cari no. order, produk, atau nama pelanggan…",
+      ),
     ).toBeInTheDocument();
     expect(screen.getByText("Menampilkan 7 pesanan")).toBeInTheDocument();
     expect(screen.getByRole("button", { name: /Reset/ })).toBeInTheDocument();
@@ -43,7 +43,9 @@ describe("AdminOrderToolbar", () => {
     const { onChange } = setup(DEFAULT_ADMIN_ORDER_FILTERS);
 
     fireEvent.change(
-      screen.getByPlaceholderText("Cari no. order, produk, atau nama pelanggan…"),
+      screen.getByPlaceholderText(
+        "Cari no. order, produk, atau nama pelanggan…",
+      ),
       { target: { value: "DLF-2026" } },
     );
 

@@ -12,7 +12,10 @@ import type { AdminOrderView } from "../lib/pesanan/admin-order.types";
  * Mengembalikan record terbaru, atau `null` bila aksi ilegal/tidak ditemukan.
  */
 export function useAdminOrderActions(): {
-  applyAction(order: AdminOrderView, actionId: AdminOrderActionId): OrderRecord | null;
+  applyAction(
+    order: AdminOrderView,
+    actionId: AdminOrderActionId,
+  ): OrderRecord | null;
 } {
   function applyAction(
     order: AdminOrderView,

@@ -30,7 +30,9 @@ describe("AdminOrderManualDialog", () => {
     fireEvent.click(screen.getByRole("button", { name: "Simpan Pesanan" }));
 
     await waitFor(() => {
-      expect(screen.getByText("Nama produk minimal 2 karakter")).toBeInTheDocument();
+      expect(
+        screen.getByText("Nama produk minimal 2 karakter"),
+      ).toBeInTheDocument();
     });
   });
 

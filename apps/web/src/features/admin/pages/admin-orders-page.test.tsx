@@ -94,9 +94,7 @@ describe("AdminOrdersPage", () => {
         level: 1,
       }),
     ).toBeInTheDocument();
-    expect(
-      screen.getByText("Menunggu Verifikasi Resi"),
-    ).toBeInTheDocument();
+    expect(screen.getByText("Menunggu Verifikasi Resi")).toBeInTheDocument();
     const tabs = screen.getAllByRole("tab");
     expect(tabs).toHaveLength(8);
     expect(
@@ -110,7 +108,9 @@ describe("AdminOrdersPage", () => {
     render(<AdminOrdersPage />);
 
     fireEvent.change(
-      screen.getByPlaceholderText("Cari no. order, produk, atau nama pelanggan…"),
+      screen.getByPlaceholderText(
+        "Cari no. order, produk, atau nama pelanggan…",
+      ),
       { target: { value: "Pelanggan 2" } },
     );
 
@@ -168,12 +168,16 @@ describe("AdminOrdersPage", () => {
   it("opens the manual order dialog and saves a new order", async () => {
     render(<AdminOrdersPage />);
 
-    fireEvent.click(screen.getByRole("button", { name: "Buat Pesanan Manual" }));
+    fireEvent.click(
+      screen.getByRole("button", { name: "Buat Pesanan Manual" }),
+    );
 
     fireEvent.change(screen.getByLabelText("Nama Produk"), {
       target: { value: "Buket Mawar Wisuda" },
     });
-    fireEvent.change(screen.getByLabelText("Jumlah"), { target: { value: "1" } });
+    fireEvent.change(screen.getByLabelText("Jumlah"), {
+      target: { value: "1" },
+    });
     fireEvent.change(screen.getByLabelText("Harga (Rp)"), {
       target: { value: "370000" },
     });
@@ -202,8 +206,6 @@ describe("AdminOrdersPage", () => {
   it("renders the mock footnote", () => {
     render(<AdminOrdersPage />);
 
-    expect(
-      screen.getByText(/label contoh/i),
-    ).toBeInTheDocument();
+    expect(screen.getByText(/label contoh/i)).toBeInTheDocument();
   });
 });

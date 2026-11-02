@@ -6,9 +6,7 @@ import type { OrderRecord } from "~/features/shop/types";
 import type { AdminOrderView } from "../../lib/pesanan/admin-order.types";
 
 function buildRecord(): OrderRecord {
-  const createdAt = new Date(
-    new Date().getTime() - 20 * 60_000,
-  ).toISOString();
+  const createdAt = new Date(new Date().getTime() - 20 * 60_000).toISOString();
 
   return {
     id: 7,
@@ -56,7 +54,11 @@ function buildRecord(): OrderRecord {
       steps: [],
     },
     timeline: [
-      { status: "pending_payment", at: createdAt, note: "Pesanan dibuat oleh admin" },
+      {
+        status: "pending_payment",
+        at: createdAt,
+        note: "Pesanan dibuat oleh admin",
+      },
       { status: "pending_verification", at: createdAt, note: "Verifikasi" },
       { status: "paid", at: createdAt },
       { status: "processing", at: createdAt },
@@ -108,8 +110,6 @@ describe("AdminOrderDetailDrawer", () => {
       />,
     );
 
-    expect(
-      screen.getByText("Tidak ada pesanan dipilih"),
-    ).toBeInTheDocument();
+    expect(screen.getByText("Tidak ada pesanan dipilih")).toBeInTheDocument();
   });
 });

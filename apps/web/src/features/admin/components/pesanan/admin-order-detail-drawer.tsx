@@ -104,10 +104,7 @@ export function AdminOrderDetailDrawer({
             </section>
 
             <OrderItemsCard order={order} />
-            <OrderPaymentCard
-              order={order}
-              onStatusChange={() => {}}
-            />
+            <OrderPaymentCard order={order} onStatusChange={() => {}} />
             <OrderStatusTimeline
               events={order.timeline}
               status={order.status}

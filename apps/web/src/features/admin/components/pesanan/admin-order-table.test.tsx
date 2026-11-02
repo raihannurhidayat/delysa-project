@@ -103,7 +103,7 @@ function TableHarness({
     );
   }
 
-  return <Rows /> as unknown as ReactNode;
+  return (<Rows />) as unknown as ReactNode;
 }
 
 describe("AdminOrderTable", () => {
@@ -139,7 +139,9 @@ describe("AdminOrderTable", () => {
     );
 
     expect(screen.getByText("Tidak ada hasil yang cocok")).toBeInTheDocument();
-    expect(screen.getByRole("button", { name: "Reset filter" })).toBeInTheDocument();
+    expect(
+      screen.getByRole("button", { name: "Reset filter" }),
+    ).toBeInTheDocument();
   });
 
   it("shows the empty-store empty state without reset button", () => {
@@ -183,11 +185,12 @@ describe("AdminOrderRejectDialog", () => {
     fireEvent.change(screen.getByLabelText("Alasan penolakan"), {
       target: { value: "  Bukti transfer tidak sesuai jumlah  " },
     });
-    fireEvent.click(
-      screen.getByRole("button", { name: "Tolak Pesanan" }),
-    );
+    fireEvent.click(screen.getByRole("button", { name: "Tolak Pesanan" }));
 
-    expect(onSubmit).toHaveBeenCalledWith(order.code, "Bukti transfer tidak sesuai jumlah");
+    expect(onSubmit).toHaveBeenCalledWith(
+      order.code,
+      "Bukti transfer tidak sesuai jumlah",
+    );
     expect(onOpenChange).toHaveBeenCalledWith(false);
   });
 
@@ -198,9 +201,7 @@ describe("AdminOrderRejectDialog", () => {
     fireEvent.change(screen.getByLabelText("Alasan penolakan"), {
       target: { value: "oke" },
     });
-    fireEvent.click(
-      screen.getByRole("button", { name: "Tolak Pesanan" }),
-    );
+    fireEvent.click(screen.getByRole("button", { name: "Tolak Pesanan" }));
 
     await waitFor(() => {
       expect(screen.getByRole("alert")).toBeInTheDocument();

@@ -39,9 +39,7 @@ export function AdminOrderTable({
       {totalRows === 0 ? (
         <div className="flex flex-col items-center gap-2 px-4 py-12 text-center">
           <p className="text-sm font-bold text-[#1A1A1A]">
-            {hasFilters
-              ? "Tidak ada hasil yang cocok"
-              : "Belum ada pesanan"}
+            {hasFilters ? "Tidak ada hasil yang cocok" : "Belum ada pesanan"}
           </p>
           <p className="max-w-sm text-xs leading-relaxed text-[#6B7280]">
             {hasFilters
@@ -129,20 +127,18 @@ export function AdminOrderTable({
                 key={row.id}
                 className="border-b border-[#F1F2F4] transition-colors hover:bg-[#FFFBF8]"
               >
-                {row
-                  .getAllCells()
-                  .map((cell) => (
-                    <TableCell
-                      key={cell.id}
-                      className={cn(
-                        "px-2 align-top",
-                        RESPONSIVE_COLUMN_CLASS[cell.column.id] ?? "",
-                        cell.column.id === "action" && "pr-3 text-right",
-                      )}
-                    >
-                      <table.FlexRender cell={cell} />
-                    </TableCell>
-                  ))}
+                {row.getAllCells().map((cell) => (
+                  <TableCell
+                    key={cell.id}
+                    className={cn(
+                      "px-2 align-top",
+                      RESPONSIVE_COLUMN_CLASS[cell.column.id] ?? "",
+                      cell.column.id === "action" && "pr-3 text-right",
+                    )}
+                  >
+                    <table.FlexRender cell={cell} />
+                  </TableCell>
+                ))}
               </TableRow>
             ))}
           </TableBody>

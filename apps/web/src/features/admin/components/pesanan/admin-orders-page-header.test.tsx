@@ -44,9 +44,7 @@ describe("AdminOrderStatsCards", () => {
       />,
     );
 
-    expect(
-      screen.getByText("Menunggu Verifikasi Resi"),
-    ).toBeInTheDocument();
+    expect(screen.getByText("Menunggu Verifikasi Resi")).toBeInTheDocument();
     expect(screen.getByText("Sedang Dirangkai Hari Ini")).toBeInTheDocument();
     expect(screen.getByText("Dalam Pengantaran")).toBeInTheDocument();
     expect(screen.getByText("3")).toBeInTheDocument();

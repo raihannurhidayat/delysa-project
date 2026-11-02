@@ -43,7 +43,10 @@ export function AdminOrderStatsCards({
       title: "Sedang Dirangkai Hari Ini",
       count: assembly,
       icon: Flower2Icon,
-      chip: { label: "Atelier Queue", className: "bg-[#FFF3ED] text-[#C2410C]" },
+      chip: {
+        label: "Atelier Queue",
+        className: "bg-[#FFF3ED] text-[#C2410C]",
+      },
       note: "Sedang dikerjakan meja florist",
     },
     {
@@ -74,7 +77,10 @@ export function AdminOrderStatsCards({
               <card.icon size={18} />
             </span>
             <Badge
-              className={cn("border-transparent text-[10px]", card.chip.className)}
+              className={cn(
+                "border-transparent text-[10px]",
+                card.chip.className,
+              )}
             >
               {card.chip.label}
             </Badge>
@@ -86,9 +92,7 @@ export function AdminOrderStatsCards({
             {card.title}
           </p>
           <p className="mt-1 text-xs text-[#6B7280]">{card.note}</p>
-          <span className="sr-only">
-            Tampilkan tab {card.title}
-          </span>
+          <span className="sr-only">Tampilkan tab {card.title}</span>
         </button>
       ))}
     </div>

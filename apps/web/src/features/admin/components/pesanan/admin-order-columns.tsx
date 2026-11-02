@@ -171,7 +171,6 @@ export function createAdminOrderColumns({
       id: "action",
       header: () => <span className="sr-only">Aksi</span>,
       enableSorting: false,
-      enableHiding: false,
       cell: ({ row }) => {
         const order = row.original;
 

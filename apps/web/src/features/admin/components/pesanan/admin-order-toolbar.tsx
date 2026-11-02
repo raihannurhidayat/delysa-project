@@ -8,10 +8,8 @@ import {
   SelectTrigger,
   SelectValue,
 } from "~/components/ui/select";
-import {
-  DEFAULT_ADMIN_ORDER_FILTERS,
-  type AdminOrderFilters,
-} from "../../lib/pesanan/admin-order-filters";
+import type { AdminOrderFilters } from "../../lib/pesanan/admin-order.types";
+import { DEFAULT_ADMIN_ORDER_FILTERS } from "../../lib/pesanan/admin-order-filters";
 
 const PERIOD_OPTIONS: { value: AdminOrderFilters["period"]; label: string }[] =
   [
@@ -61,7 +59,10 @@ export function AdminOrderToolbar({
           value={filters.period}
           onValueChange={(value) => {
             if (value) {
-              onChange({ ...filters, period: value as AdminOrderFilters["period"] });
+              onChange({
+                ...filters,
+                period: value as AdminOrderFilters["period"],
+              });
             }
           }}
         >
@@ -72,8 +73,8 @@ export function AdminOrderToolbar({
           >
             <SelectValue>
               {(value) =>
-                PERIOD_OPTIONS.find((option) => option.value === value)?.label ??
-                PERIOD_OPTIONS[0].label
+                PERIOD_OPTIONS.find((option) => option.value === value)
+                  ?.label ?? PERIOD_OPTIONS[0].label
               }
             </SelectValue>
           </SelectTrigger>
@@ -94,7 +95,10 @@ export function AdminOrderToolbar({
           value={filters.batch}
           onValueChange={(value) => {
             if (value) {
-              onChange({ ...filters, batch: value as AdminOrderFilters["batch"] });
+              onChange({
+                ...filters,
+                batch: value as AdminOrderFilters["batch"],
+              });
             }
           }}
         >
@@ -128,7 +132,10 @@ export function AdminOrderToolbar({
           variant="outline"
           size="sm"
           onClick={onReset}
-          disabled={JSON.stringify(filters) === JSON.stringify(DEFAULT_ADMIN_ORDER_FILTERS)}
+          disabled={
+            JSON.stringify(filters) ===
+            JSON.stringify(DEFAULT_ADMIN_ORDER_FILTERS)
+          }
           className="h-9 gap-1.5 rounded-lg border-[#E5E7EB] px-3 text-xs font-semibold text-[#4B5563]"
         >
           <RotateCcwIcon size={13} aria-hidden="true" />

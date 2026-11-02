@@ -18,9 +18,7 @@ import {
   filterAdminOrders,
   summarizeAdminOrders,
 } from "../lib/pesanan/admin-order-filters";
-import {
-  DEFAULT_ADMIN_ORDER_FILTERS,
-} from "../lib/pesanan/admin-order-filters";
+import { DEFAULT_ADMIN_ORDER_FILTERS } from "../lib/pesanan/admin-order-filters";
 import type { AdminOrderFilters } from "../lib/pesanan/admin-order.types";
 import type { AdminOrderActionId } from "../lib/pesanan/admin-order-transition";
 import {
@@ -142,9 +140,7 @@ export function AdminOrdersPage() {
 
   return (
     <div className="min-w-0 space-y-4">
-      <AdminOrdersPageHeader
-        onCreateManual={() => setManualOpen(true)}
-      />
+      <AdminOrdersPageHeader onCreateManual={() => setManualOpen(true)} />
 
       <AdminOrderStatsCards
         verification={summary.verification}

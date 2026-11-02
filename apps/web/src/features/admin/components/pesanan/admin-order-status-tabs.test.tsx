@@ -18,11 +18,7 @@ const COUNTS: Record<OrderTab, number> = {
 describe("AdminOrderStatusTabs", () => {
   it("renders all eight tabs with labels and counts", () => {
     render(
-      <AdminOrderStatusTabs
-        value="all"
-        counts={COUNTS}
-        onChange={() => {}}
-      />,
+      <AdminOrderStatusTabs value="all" counts={COUNTS} onChange={() => {}} />,
     );
 
     const tablist = screen.getByRole("tablist");
@@ -30,8 +26,9 @@ describe("AdminOrderStatusTabs", () => {
     expect(tabs).toHaveLength(8);
 
     expect(tablist).toBeInTheDocument();
-    expect(screen.getByText(ADMIN_TAB_LABELS.pending_verification))
-      .toBeInTheDocument();
+    expect(
+      screen.getByText(ADMIN_TAB_LABELS.pending_verification),
+    ).toBeInTheDocument();
     expect(screen.getByText(ADMIN_TAB_LABELS.closed)).toBeInTheDocument();
     expect(screen.getByText("16")).toBeInTheDocument();
     expect(screen.getByText("5")).toBeInTheDocument();
@@ -49,9 +46,10 @@ describe("AdminOrderStatusTabs", () => {
     expect(
       screen.getByRole("tab", { name: /Sedang Dirangkai/ }),
     ).toHaveAttribute("aria-selected", "true");
-    expect(
-      screen.getByRole("tab", { name: /Semua/ }),
-    ).toHaveAttribute("aria-selected", "false");
+    expect(screen.getByRole("tab", { name: /Semua/ })).toHaveAttribute(
+      "aria-selected",
+      "false",
+    );
   });
 
   it("calls onChange with the selected tab", () => {
