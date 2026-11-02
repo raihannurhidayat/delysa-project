@@ -1,4 +1,4 @@
-import { fireEvent, render, screen } from "@testing-library/react";
+import { fireEvent, render, screen, waitFor } from "@testing-library/react";
 import { useTable } from "@tanstack/react-table";
 import { describe, expect, it, vi } from "vitest";
 import type { ReactNode } from "react";
@@ -139,7 +139,7 @@ describe("AdminOrderTable", () => {
     );
 
     expect(screen.getByText("Tidak ada hasil yang cocok")).toBeInTheDocument();
-    fireEvent.click(screen.getByRole("button", { name: "Reset filter" }));
+    expect(screen.getByRole("button", { name: "Reset filter" })).toBeInTheDocument();
   });
 
   it("shows the empty-store empty state without reset button", () => {
@@ -191,7 +191,7 @@ describe("AdminOrderRejectDialog", () => {
     expect(onOpenChange).toHaveBeenCalledWith(false);
   });
 
-  it("rejects a reason shorter than 5 characters", () => {
+  it("rejects a reason shorter than 5 characters", async () => {
     const onSubmit = vi.fn<(code: string, reason: string) => void>();
     renderDialog(onSubmit);
 
@@ -202,6 +202,9 @@ describe("AdminOrderRejectDialog", () => {
       screen.getByRole("button", { name: "Tolak Pesanan" }),
     );
 
+    await waitFor(() => {
+      expect(screen.getByRole("alert")).toBeInTheDocument();
+    });
     expect(onSubmit).not.toHaveBeenCalled();
     expect(screen.getByRole("alert")).toHaveTextContent(
       "Alasan minimal 5 karakter",

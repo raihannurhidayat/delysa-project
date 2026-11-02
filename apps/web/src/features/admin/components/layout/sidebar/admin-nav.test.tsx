@@ -45,10 +45,24 @@ describe("AdminNav", () => {
     expect(products).toHaveAttribute("href", "/admin/produk");
     expect(products).not.toHaveAttribute("aria-current");
 
-    const orders = screen.getByRole("button", { name: "Pesanan" });
-    expect(orders).toBeDisabled();
-    expect(orders).toHaveAttribute("aria-disabled", "true");
-    expect(screen.getAllByText("Segera")).toHaveLength(3);
+    const orders = screen.getByRole("link", { name: "Pesanan" });
+    expect(orders).toHaveAttribute("href", "/admin/pesanan");
+    expect(orders).not.toHaveAttribute("aria-current");
+
+    expect(screen.getAllByText("Segera")).toHaveLength(2);
+  });
+
+  it("marks the orders link active on /admin/pesanan", () => {
+    mocks.pathname = "/admin/pesanan";
+    renderNav();
+
+    expect(screen.getByRole("link", { name: "Pesanan" })).toHaveAttribute(
+      "aria-current",
+      "page",
+    );
+    expect(screen.getByRole("link", { name: "Produk" })).not.toHaveAttribute(
+      "aria-current",
+    );
   });
 
   it("marks the products link active on /admin/produk", () => {

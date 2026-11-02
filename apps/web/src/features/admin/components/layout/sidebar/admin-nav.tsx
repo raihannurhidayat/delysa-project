@@ -18,14 +18,14 @@ import {
 
 export type AdminNavItem = {
   title: string;
-  to?: "/admin" | "/admin/produk";
+  to?: "/admin" | "/admin/produk" | "/admin/pesanan";
   icon: LucideIcon;
 };
 
 export const ADMIN_NAV_ITEMS = [
   { title: "Dashboard", to: "/admin", icon: LayoutDashboardIcon },
   { title: "Produk", to: "/admin/produk", icon: PackageIcon },
-  { title: "Pesanan", icon: ShoppingCartIcon },
+  { title: "Pesanan", to: "/admin/pesanan", icon: ShoppingCartIcon },
   { title: "Stok", icon: BoxesIcon },
   { title: "Laporan", icon: PieChartIcon },
 ] satisfies readonly AdminNavItem[];
