@@ -143,11 +143,10 @@ function renderColumns(orders: AdminOrderView[]) {
 }
 
 describe("createAdminOrderColumns", () => {
-  it("renders the seven columns for a fixture order", () => {
+  it("renders the six columns for a fixture order", () => {
     renderColumns([view(nonBatchCode("DLF-20261102-0001"))]);
 
     expect(screen.getByText("DLF-20261102-0001")).toBeInTheDocument();
-    expect(screen.getByText("Amelia Lestari")).toBeInTheDocument();
     expect(screen.getByText(/Monolith Peach/)).toBeInTheDocument();
     expect(screen.getByText("BCA")).toBeInTheDocument();
     expect(screen.getByText(/Transfer Manual/)).toBeInTheDocument();

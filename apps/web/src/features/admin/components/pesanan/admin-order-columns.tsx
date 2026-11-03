@@ -72,39 +72,22 @@ export function createAdminOrderColumns({
       header: "Order",
       sortFn: sortFn_alphanumeric,
       cell: ({ row }) => (
-        <div className="min-w-0 space-y-1">
+        <div className="min-w-0 space-y-0.5">
           <button
             type="button"
-            onClick={() => onView(row.original)}
-            className="max-w-full truncate font-mono text-xs font-bold text-[#111111] transition-colors hover:text-[#C2410C] hover:underline"
+            onClick={(e) => {
+              e.stopPropagation();
+              onView(row.original);
+            }}
+            className="block max-w-full truncate font-mono text-xs font-bold text-[#111111] transition-colors hover:text-[#C2410C] hover:underline"
+            title={row.original.code}
           >
             {row.original.code}
           </button>
-          <p className="text-[11px] font-medium text-[#6B7280]">
+          <p className="truncate text-[10px] text-[#6B7280]">
             {formatOrderShortDate(row.original.createdAt)} WIB
           </p>
           <BatchChip order={row.original} />
-        </div>
-      ),
-    }),
-    columnHelper.accessor((row) => row.recipientName, {
-      id: "recipient",
-      header: "Pelanggan",
-      sortFn: sortFn_alphanumeric,
-      cell: ({ row }) => (
-        <div className="min-w-0 space-y-0.5">
-          <p className="truncate text-xs font-semibold text-[#1A1A1A] sm:text-sm">
-            {row.original.recipientName}
-          </p>
-          <p className="font-mono text-[11px] text-[#6B7280]">
-            {row.original.recipientPhone}
-          </p>
-          <p
-            className="max-w-[14rem] truncate text-[11px] text-[#9CA3AF]"
-            title={row.original.shippingAddress}
-          >
-            {shortAddress(row.original.shippingAddress)}
-          </p>
         </div>
       ),
     }),
@@ -114,11 +97,11 @@ export function createAdminOrderColumns({
       sortFn: sortFn_basic,
       cell: ({ row }) => (
         <div className="min-w-0 space-y-0.5">
-          <p className="text-xs font-bold text-[#1A1A1A] sm:text-sm">
+          <p className="text-xs font-bold text-[#1A1A1A]">
             {formatIDR(row.original.totals.grandTotal)}
           </p>
           <p
-            className="max-w-[14rem] truncate text-[11px] text-[#6B7280]"
+            className="truncate text-[10px] text-[#6B7280]"
             title={summarizeItems(row.original.items)}
           >
             {summarizeItems(row.original.items)}
@@ -139,9 +122,11 @@ export function createAdminOrderColumns({
 
         return (
           <div className="min-w-0 space-y-0.5">
-            <p className="text-xs font-semibold text-[#111827]">{methodName}</p>
-            <p className="text-[11px] text-[#6B7280]">
-              {subLabel === methodName ? "Pembayaran Instan" : subLabel}
+            <p className="truncate text-xs font-semibold text-[#111827]">
+              {methodName}
+            </p>
+            <p className="truncate text-[10px] text-[#6B7280]">
+              {subLabel === methodName ? "Instan" : subLabel}
             </p>
           </div>
         );
@@ -152,18 +137,21 @@ export function createAdminOrderColumns({
       header: "Umur",
       sortFn: sortFn_alphanumeric,
       cell: ({ row }) => (
-        <div className="min-w-0 space-y-1">
-          <p className="text-xs font-medium text-[#374151]">
+        <div className="min-w-0 space-y-0.5">
+          <p className="truncate text-xs font-medium text-[#374151]">
             {formatRelativeAge(new Date(), row.original.createdAt)}
           </p>
           <div className="flex flex-wrap gap-1">
             {row.original.workbench ? (
-              <span className="inline-flex items-center rounded-md bg-[#F3F4F6] px-1.5 py-0.5 text-[10px] font-medium text-[#4B5563]">
+              <span className="truncate max-w-full rounded bg-[#F3F4F6] px-1.5 py-0.2 text-[9px] font-medium text-[#4B5563]">
                 {row.original.workbench}
               </span>
             ) : null}
             {row.original.courierLabel ? (
-              <span className="inline-flex items-center rounded-md bg-[#ECFDF5] px-1.5 py-0.5 text-[10px] font-medium text-[#047857]">
+              <span
+                className="truncate max-w-full rounded bg-[#ECFDF5] px-1.5 py-0.2 text-[9px] font-medium text-[#047857]"
+                title={row.original.courierLabel}
+              >
                 {row.original.courierLabel}
               </span>
             ) : null}
@@ -176,8 +164,11 @@ export function createAdminOrderColumns({
       header: "Status",
       sortFn: sortFn_alphanumeric,
       cell: ({ row }) => (
-        <div className="flex flex-col items-start gap-1">
-          <OrderStatusBadge status={row.original.status} />
+        <div className="flex min-w-0 flex-col items-start gap-1">
+          <OrderStatusBadge
+            status={row.original.status}
+            className="max-w-full truncate px-2 py-0.5 text-[10px]"
+          />
           <PriorityChip order={row.original} />
         </div>
       ),
@@ -197,43 +188,55 @@ export function createAdminOrderColumns({
         );
 
         return (
-          <div className="flex min-w-[130px] flex-col items-end gap-1.5">
+          <div
+            onClick={(e) => e.stopPropagation()}
+            className="flex w-full min-w-0 flex-col items-end gap-1"
+          >
             {primaryActions.map((action) => (
               <Button
                 key={action.id}
                 type="button"
                 size="sm"
-                onClick={() => onAction(order, action.id)}
-                className="h-7 w-full rounded-lg bg-[#111827] px-2.5 text-xs font-semibold text-white shadow-xs transition-all hover:bg-[#27272a] active:scale-[0.98]"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  onAction(order, action.id);
+                }}
+                className="h-6 w-full rounded-md bg-[#111827] px-1.5 text-[11px] font-semibold text-white shadow-2xs transition-all hover:bg-[#27272a] active:scale-[0.98]"
               >
-                {action.label}
+                <span className="truncate">{action.label}</span>
               </Button>
             ))}
-            <div className="flex w-full items-center justify-end gap-1.5">
+            <div className="flex w-full items-center justify-end gap-1">
               {destructiveActions.map((action) => (
                 <Button
                   key={action.id}
                   type="button"
                   size="sm"
                   variant="destructive"
-                  onClick={() => onReject(order)}
-                  className="h-7 flex-1 rounded-lg px-2 text-xs font-semibold shadow-xs"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    onReject(order);
+                  }}
+                  className="h-6 flex-1 rounded-md px-1 text-[11px] font-semibold shadow-2xs"
                 >
-                  {action.label}
+                  <span className="truncate">{action.label}</span>
                 </Button>
               ))}
               <Button
                 type="button"
                 variant="outline"
                 size="sm"
-                onClick={() => onView(order)}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  onView(order);
+                }}
                 className={cn(
-                  "h-7 rounded-lg px-2.5 text-xs font-semibold text-[#4B5563] transition-colors hover:bg-[#F3F4F6] hover:text-[#111827]",
+                  "h-6 rounded-md px-1 text-[11px] font-semibold text-[#4B5563] transition-colors hover:bg-[#F3F4F6] hover:text-[#111827]",
                   destructiveActions.length > 0
                     ? "flex-1"
                     : primaryActions.length > 0
                       ? "w-full"
-                      : "w-auto min-w-[76px]",
+                      : "w-full",
                 )}
               >
                 Lihat

@@ -158,6 +158,25 @@ describe("AdminOrderTable", () => {
     expect(screen.getByText("Belum ada pesanan")).toBeInTheDocument();
     expect(screen.queryByText("Reset filter")).not.toBeInTheDocument();
   });
+
+  it("clicking a table row calls onView with the order", () => {
+    const onView = vi.fn();
+    const orders = [buildView(0)];
+    render(
+      <TableHarness
+        orders={orders}
+        hasFilters={false}
+        onReset={() => {}}
+        onView={onView}
+        onReject={() => {}}
+      />,
+    );
+
+    fireEvent.click(screen.getByText(orders[0].code));
+    expect(onView).toHaveBeenCalledWith(
+      expect.objectContaining({ code: orders[0].code }),
+    );
+  });
 });
 
 describe("AdminOrderRejectDialog", () => {

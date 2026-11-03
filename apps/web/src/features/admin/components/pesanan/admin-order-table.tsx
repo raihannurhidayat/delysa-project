@@ -17,7 +17,7 @@ import {
 import type { AdminOrderTable } from "../../lib/pesanan/admin-order-table-config";
 import type { AdminOrderView } from "../../lib/pesanan/admin-order.types";
 
-/** Kolom sekunder disembunyikan progresif agar tabel tetap proporsional di layar sempit. */
+/** Kolom sekunder disembunyikan progresif di layar sempit agar tetap proporsional. */
 const RESPONSIVE_COLUMN_CLASS: Record<string, string> = {
   payment: "hidden lg:table-cell",
   age: "hidden md:table-cell",
@@ -26,32 +26,28 @@ const RESPONSIVE_COLUMN_CLASS: Record<string, string> = {
 
 const COLUMN_STYLES: Record<string, { th: string; td: string }> = {
   code: {
-    th: "w-[170px] min-w-[155px] pl-4",
-    td: "w-[170px] min-w-[155px] pl-4",
-  },
-  recipient: {
-    th: "w-[210px] min-w-[190px]",
-    td: "w-[210px] min-w-[190px]",
+    th: "w-[24%] sm:w-[20%] pl-3 sm:pl-4",
+    td: "w-[24%] sm:w-[20%] pl-3 sm:pl-4",
   },
   total: {
-    th: "w-[185px] min-w-[165px]",
-    td: "w-[185px] min-w-[165px]",
+    th: "w-[26%] sm:w-[24%]",
+    td: "w-[26%] sm:w-[24%]",
   },
   payment: {
-    th: "w-[145px] min-w-[130px]",
-    td: "w-[145px] min-w-[130px]",
+    th: "w-[15%] sm:w-[14%]",
+    td: "w-[15%] sm:w-[14%]",
   },
   age: {
-    th: "w-[125px] min-w-[115px]",
-    td: "w-[125px] min-w-[115px]",
+    th: "w-[13%] sm:w-[13%]",
+    td: "w-[13%] sm:w-[13%]",
   },
   status: {
-    th: "w-[180px] min-w-[160px]",
-    td: "w-[180px] min-w-[160px]",
+    th: "w-[20%] sm:w-[15%]",
+    td: "w-[20%] sm:w-[15%]",
   },
   action: {
-    th: "w-[165px] min-w-[150px] pr-4 text-right",
-    td: "w-[165px] min-w-[150px] pr-4 text-right",
+    th: "w-[17%] sm:w-[14%] pr-3 sm:pr-4 text-right",
+    td: "w-[17%] sm:w-[14%] pr-3 sm:pr-4 text-right",
   },
 };
 
@@ -71,7 +67,7 @@ export function AdminOrderTable({
   const totalRows = table.getPrePaginatedRowModel().rows.length;
 
   return (
-    <div className="min-w-0">
+    <div className="min-w-0 [&_[data-slot=table-container]]:overflow-x-hidden">
       {totalRows === 0 ? (
         <div className="flex flex-col items-center gap-2 px-4 py-16 text-center">
           <div className="flex size-12 items-center justify-center rounded-full bg-[#FFF3ED] text-[#C2410C]">
@@ -97,7 +93,7 @@ export function AdminOrderTable({
           )}
         </div>
       ) : (
-        <Table className="w-full min-w-[720px] text-xs sm:text-sm lg:min-w-[1080px]">
+        <Table className="w-full table-fixed text-xs">
           <TableHeader className="bg-[#F9FAFB]">
             {table.getHeaderGroups().map((headerGroup) => (
               <tr key={headerGroup.id} className="border-b border-[#E5E7EB]">
@@ -120,7 +116,7 @@ export function AdminOrderTable({
                             : undefined
                       }
                       className={cn(
-                        "h-11 px-3 text-[11px] font-bold tracking-wider text-[#6B7280] uppercase select-none",
+                        "h-10 px-2 text-[11px] font-bold tracking-wider text-[#6B7280] uppercase select-none",
                         style?.th,
                         responsiveClass,
                       )}
@@ -165,7 +161,8 @@ export function AdminOrderTable({
             {table.getRowModel().rows.map((row) => (
               <TableRow
                 key={row.id}
-                className="border-b border-[#F1F2F4] transition-colors hover:bg-[#FFFBF8]"
+                onClick={() => onView(row.original)}
+                className="group cursor-pointer border-b border-[#F1F2F4] transition-colors hover:bg-[#FFF8F4] active:bg-[#FFEEDB]"
               >
                 {row.getAllCells().map((cell) => {
                   const style = COLUMN_STYLES[cell.column.id];
@@ -173,7 +170,7 @@ export function AdminOrderTable({
                     <TableCell
                       key={cell.id}
                       className={cn(
-                        "px-3 py-3.5 align-middle",
+                        "px-2 py-3 align-middle",
                         style?.td,
                         RESPONSIVE_COLUMN_CLASS[cell.column.id] ?? "",
                       )}
