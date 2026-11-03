@@ -67,31 +67,39 @@ export function AdminOrderStatsCards({
           type="button"
           onClick={() => onSelect(card.id)}
           data-queue={card.id}
-          className="rounded-3xl bg-white p-5 text-left shadow-md ring-1 ring-foreground/5 transition-colors hover:ring-[#FF6B35]/40 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#FF6B35]/40"
+          className="flex h-full flex-col gap-4 rounded-3xl bg-white p-5 text-left shadow-md ring-1 ring-foreground/5 transition-colors hover:ring-[#FF6B35]/40 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#FF6B35]/40"
         >
+          {/* Header: ikon + angka di kiri, badge di kanan */}
           <div className="flex items-center justify-between gap-2">
-            <span
-              aria-hidden="true"
-              className="flex size-10 shrink-0 items-center justify-center rounded-2xl bg-[#FFF3ED] text-[#FF6B35]"
-            >
-              <card.icon size={18} />
-            </span>
+            <div className="flex items-center gap-3">
+              <span
+                aria-hidden="true"
+                className="flex size-10 shrink-0 items-center justify-center rounded-2xl bg-[#FFF3ED] text-[#FF6B35]"
+              >
+                <card.icon size={18} />
+              </span>
+              <p className="text-2xl font-extrabold leading-none tracking-tight tabular-nums text-[#111111]">
+                {card.count}
+              </p>
+            </div>
             <Badge
               className={cn(
-                "border-transparent text-[10px]",
+                "shrink-0 whitespace-nowrap border-transparent text-[10px]",
                 card.chip.className,
               )}
             >
               {card.chip.label}
             </Badge>
           </div>
-          <p className="mt-3 text-2xl font-extrabold tracking-tight text-[#111111]">
-            {card.count}
-          </p>
-          <p className="mt-0.5 text-sm font-semibold text-[#1A1A1A]">
-            {card.title}
-          </p>
-          <p className="mt-1 text-xs text-[#6B7280]">{card.note}</p>
+
+          {/* Konten: judul + keterangan */}
+          <div className="min-w-0 space-y-1">
+            <p className="text-sm font-semibold text-[#1A1A1A]">{card.title}</p>
+            <p className="text-xs leading-relaxed text-[#6B7280]">
+              {card.note}
+            </p>
+          </div>
+
           <span className="sr-only">Tampilkan tab {card.title}</span>
         </button>
       ))}
