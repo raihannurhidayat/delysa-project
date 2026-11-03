@@ -17,6 +17,7 @@ import {
   summarizeItems,
 } from "../../lib/pesanan/admin-order-format";
 import { adminOrderTableFeatures } from "../../lib/pesanan/admin-order-table-config";
+import { cn } from "cn";
 
 const columnHelper = createColumnHelper<
   typeof adminOrderTableFeatures,
@@ -34,11 +35,12 @@ function PriorityChip({ order }: { order: AdminOrderView }) {
 
   return (
     <Badge
-      className={
+      className={cn(
+        "rounded-full border-0 px-2 py-0.5 text-[10px] font-semibold",
         isPrioritas
-          ? "border-transparent bg-[#FEE2E2] text-[#B91C1C]"
-          : "border-transparent bg-[#F3F4F6] text-[#6B7280]"
-      }
+          ? "bg-[#FEE2E2] text-[#B91C1C]"
+          : "bg-[#F3F4F6] text-[#6B7280]",
+      )}
     >
       {isPrioritas ? "Prioritas" : "SLA Normal"}
     </Badge>
@@ -49,7 +51,7 @@ function BatchChip({ order }: { order: AdminOrderView }) {
   if (order.batch !== "unsil") return null;
 
   return (
-    <Badge className="border-transparent bg-[#FFF3ED] text-[#C2410C]">
+    <Badge className="inline-flex items-center gap-1 rounded-full border border-[#FED7AA] bg-[#FFF3ED] px-2 py-0.5 text-[10px] font-semibold text-[#C2410C]">
       Wisuda UNSIL
     </Badge>
   );
@@ -74,11 +76,11 @@ export function createAdminOrderColumns({
           <button
             type="button"
             onClick={() => onView(row.original)}
-            className="max-w-full truncate font-mono text-xs font-bold text-[#111111] underline-offset-2 hover:underline"
+            className="max-w-full truncate font-mono text-xs font-bold text-[#111111] transition-colors hover:text-[#C2410C] hover:underline"
           >
             {row.original.code}
           </button>
-          <p className="text-[10px] font-medium text-[#6B7280]">
+          <p className="text-[11px] font-medium text-[#6B7280]">
             {formatOrderShortDate(row.original.createdAt)} WIB
           </p>
           <BatchChip order={row.original} />
@@ -90,14 +92,17 @@ export function createAdminOrderColumns({
       header: "Pelanggan",
       sortFn: sortFn_alphanumeric,
       cell: ({ row }) => (
-        <div className="min-w-0">
+        <div className="min-w-0 space-y-0.5">
           <p className="truncate text-xs font-semibold text-[#1A1A1A] sm:text-sm">
             {row.original.recipientName}
           </p>
-          <p className="text-[11px] text-[#6B7280]">
+          <p className="font-mono text-[11px] text-[#6B7280]">
             {row.original.recipientPhone}
           </p>
-          <p className="max-w-[14rem] truncate text-[10px] text-[#9CA3AF]">
+          <p
+            className="max-w-[14rem] truncate text-[11px] text-[#9CA3AF]"
+            title={row.original.shippingAddress}
+          >
             {shortAddress(row.original.shippingAddress)}
           </p>
         </div>
@@ -108,11 +113,14 @@ export function createAdminOrderColumns({
       header: "Item & Total",
       sortFn: sortFn_basic,
       cell: ({ row }) => (
-        <div className="min-w-0">
-          <p className="text-xs font-bold text-[#1A1A1A]">
+        <div className="min-w-0 space-y-0.5">
+          <p className="text-xs font-bold text-[#1A1A1A] sm:text-sm">
             {formatIDR(row.original.totals.grandTotal)}
           </p>
-          <p className="max-w-[12rem] truncate text-[11px] text-[#6B7280]">
+          <p
+            className="max-w-[14rem] truncate text-[11px] text-[#6B7280]"
+            title={summarizeItems(row.original.items)}
+          >
             {summarizeItems(row.original.items)}
           </p>
         </div>
@@ -122,17 +130,22 @@ export function createAdminOrderColumns({
       id: "payment",
       header: "Metode",
       sortFn: sortFn_alphanumeric,
-      cell: ({ row }) => (
-        <div className="min-w-0">
-          <p className="text-xs font-semibold text-[#1A1A1A]">
-            {row.original.payment.bank?.name ??
-              (row.original.payment.methodId === "qris" ? "QRIS" : "Invoice")}
-          </p>
-          <p className="text-[11px] text-[#6B7280]">
-            {PAYMENT_KIND_LABEL[row.original.paymentKind]}
-          </p>
-        </div>
-      ),
+      cell: ({ row }) => {
+        const bankName = row.original.payment.bank?.name;
+        const methodName =
+          bankName ??
+          (row.original.payment.methodId === "qris" ? "QRIS" : "Invoice");
+        const subLabel = PAYMENT_KIND_LABEL[row.original.paymentKind];
+
+        return (
+          <div className="min-w-0 space-y-0.5">
+            <p className="text-xs font-semibold text-[#111827]">{methodName}</p>
+            <p className="text-[11px] text-[#6B7280]">
+              {subLabel === methodName ? "Pembayaran Instan" : subLabel}
+            </p>
+          </div>
+        );
+      },
     }),
     columnHelper.accessor((row) => row.createdAt, {
       id: "age",
@@ -143,16 +156,18 @@ export function createAdminOrderColumns({
           <p className="text-xs font-medium text-[#374151]">
             {formatRelativeAge(new Date(), row.original.createdAt)}
           </p>
-          {row.original.workbench ? (
-            <p className="text-[10px] text-[#6B7280]">
-              {row.original.workbench}
-            </p>
-          ) : null}
-          {row.original.courierLabel ? (
-            <p className="text-[10px] text-[#6B7280]">
-              {row.original.courierLabel}
-            </p>
-          ) : null}
+          <div className="flex flex-wrap gap-1">
+            {row.original.workbench ? (
+              <span className="inline-flex items-center rounded-md bg-[#F3F4F6] px-1.5 py-0.5 text-[10px] font-medium text-[#4B5563]">
+                {row.original.workbench}
+              </span>
+            ) : null}
+            {row.original.courierLabel ? (
+              <span className="inline-flex items-center rounded-md bg-[#ECFDF5] px-1.5 py-0.5 text-[10px] font-medium text-[#047857]">
+                {row.original.courierLabel}
+              </span>
+            ) : null}
+          </div>
         </div>
       ),
     }),
@@ -169,40 +184,61 @@ export function createAdminOrderColumns({
     }),
     columnHelper.display({
       id: "action",
-      header: () => <span className="sr-only">Aksi</span>,
+      header: () => <span className="block pr-1 text-right">Aksi</span>,
       enableSorting: false,
       cell: ({ row }) => {
         const order = row.original;
+        const actions = getAdminOrderActions(order.status);
+        const primaryActions = actions.filter(
+          (a) => a.variant !== "destructive",
+        );
+        const destructiveActions = actions.filter(
+          (a) => a.variant === "destructive",
+        );
 
         return (
-          <div className="flex flex-col items-stretch gap-1.5">
-            {getAdminOrderActions(order.status).map((action) => (
+          <div className="flex min-w-[130px] flex-col items-end gap-1.5">
+            {primaryActions.map((action) => (
               <Button
                 key={action.id}
                 type="button"
                 size="sm"
-                variant={
-                  action.variant === "destructive" ? "destructive" : "default"
-                }
-                onClick={() =>
-                  action.variant === "destructive"
-                    ? onReject(order)
-                    : onAction(order, action.id)
-                }
-                className="h-8 rounded-lg px-2.5 text-xs font-semibold"
+                onClick={() => onAction(order, action.id)}
+                className="h-7 w-full rounded-lg bg-[#111827] px-2.5 text-xs font-semibold text-white shadow-xs transition-all hover:bg-[#27272a] active:scale-[0.98]"
               >
                 {action.label}
               </Button>
             ))}
-            <Button
-              type="button"
-              variant="outline"
-              size="sm"
-              onClick={() => onView(order)}
-              className="h-8 gap-1 rounded-lg px-2.5 text-xs font-semibold text-[#6B7280]"
-            >
-              Lihat
-            </Button>
+            <div className="flex w-full items-center justify-end gap-1.5">
+              {destructiveActions.map((action) => (
+                <Button
+                  key={action.id}
+                  type="button"
+                  size="sm"
+                  variant="destructive"
+                  onClick={() => onReject(order)}
+                  className="h-7 flex-1 rounded-lg px-2 text-xs font-semibold shadow-xs"
+                >
+                  {action.label}
+                </Button>
+              ))}
+              <Button
+                type="button"
+                variant="outline"
+                size="sm"
+                onClick={() => onView(order)}
+                className={cn(
+                  "h-7 rounded-lg px-2.5 text-xs font-semibold text-[#4B5563] transition-colors hover:bg-[#F3F4F6] hover:text-[#111827]",
+                  destructiveActions.length > 0
+                    ? "flex-1"
+                    : primaryActions.length > 0
+                      ? "w-full"
+                      : "w-auto min-w-[76px]",
+                )}
+              >
+                Lihat
+              </Button>
+            </div>
           </div>
         );
       },

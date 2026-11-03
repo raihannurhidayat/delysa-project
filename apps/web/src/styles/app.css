@@ -9,6 +9,14 @@
 
 @custom-variant dark (&:is(.dark *));
 
+/** Scroll tersembunyi namun tetap bisa di-scroll (wheel / trackpad / keyboard). */
+@utility scrollbar-none {
+  scrollbar-width: none;
+  &::-webkit-scrollbar {
+    display: none;
+  }
+}
+
 @layer base {
   *,
   ::after,
