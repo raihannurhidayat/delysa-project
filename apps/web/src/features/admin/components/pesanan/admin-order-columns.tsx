@@ -3,8 +3,10 @@ import {
   sortFn_alphanumeric,
   sortFn_basic,
 } from "@tanstack/react-table";
+import { ArrowUpRightIcon } from "lucide-react";
 import { Badge } from "~/components/ui/badge";
 import { Button } from "~/components/ui/button";
+import { Link } from "@tanstack/react-router";
 import { formatIDR } from "~/features/shop/lib/format";
 import { formatOrderShortDate } from "~/features/shop/lib/order-format";
 import { OrderStatusBadge } from "~/features/shop/components/orders/order-status-badge";
@@ -192,6 +194,16 @@ export function createAdminOrderColumns({
             onClick={(e) => e.stopPropagation()}
             className="flex w-full min-w-0 flex-col items-end gap-1"
           >
+            <div className="flex w-full items-center justify-end">
+              <Link
+                to="/admin/pesanan/$orderId"
+                params={{ orderId: order.code }}
+                aria-label={`Lihat detail penuh ${order.code}`}
+                className="inline-flex size-6 shrink-0 items-center justify-center rounded-md border border-[#E5E7EB] bg-white text-[#4B5563] transition-colors hover:bg-[#F3F4F6] hover:text-[#111827]"
+              >
+                <ArrowUpRightIcon size={12} aria-hidden="true" />
+              </Link>
+            </div>
             {primaryActions.map((action) => (
               <Button
                 key={action.id}

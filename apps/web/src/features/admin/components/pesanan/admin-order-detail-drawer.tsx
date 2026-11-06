@@ -1,5 +1,6 @@
 import { CalendarIcon, MapPinIcon, PhoneIcon } from "lucide-react";
 import { Badge } from "~/components/ui/badge";
+import { Link } from "@tanstack/react-router";
 import {
   Drawer,
   DrawerContent,
@@ -79,6 +80,13 @@ export function AdminOrderDetailDrawer({
                   className="size-7 text-[#6B7280] hover:text-[#111111]"
                 />
                 <OrderStatusBadge status={order.status} />
+                <Link
+                  to="/admin/pesanan/$orderId"
+                  params={{ orderId: order.code }}
+                  className="inline-flex h-8 shrink-0 items-center justify-center rounded-full border border-[#E5E7EB] bg-white px-3 text-xs font-semibold text-[#4B5563] shadow-sm transition-colors hover:bg-[#F3F4F6] hover:text-[#111827]"
+                >
+                  Buka halaman detail
+                </Link>
               </div>
               <DrawerDescription className="mt-1 flex items-center gap-1.5 text-xs text-[#6B7280]">
                 <CalendarIcon

@@ -10,6 +10,27 @@ import { enrichAdminOrder } from "../../lib/pesanan/admin-order-enrichment";
 import type { AdminOrderActionId } from "../../lib/pesanan/admin-order-transition";
 import type { AdminOrderView } from "../../lib/pesanan/admin-order.types";
 
+vi.mock("@tanstack/react-router", () => ({
+  Link: ({
+    children,
+    to,
+    params,
+    ...rest
+  }: {
+    children: ReactNode;
+    to: string;
+    params?: { orderId?: string };
+  } & Record<string, unknown>) => (
+    <a
+      {...rest}
+      data-link-to={to}
+      href={params?.orderId ? `/admin/pesanan/${params.orderId}` : undefined}
+    >
+      {children}
+    </a>
+  ),
+}));
+
 function buildView(index: number): AdminOrderView {
   const createdAt = new Date(
     new Date().getTime() - (index + 1) * 18 * 60_000,

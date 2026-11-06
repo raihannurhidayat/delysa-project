@@ -5,6 +5,29 @@ import { enrichAdminOrder } from "../../lib/pesanan/admin-order-enrichment";
 import type { OrderRecord } from "~/features/shop/types";
 import type { AdminOrderView } from "../../lib/pesanan/admin-order.types";
 
+const mocks = vi.hoisted(() => ({}));
+
+vi.mock("@tanstack/react-router", () => ({
+  Link: ({
+    children,
+    to,
+    params,
+    ...rest
+  }: {
+    children: React.ReactNode;
+    to: string;
+    params?: { orderId?: string };
+  } & Record<string, unknown>) => (
+    <a
+      {...rest}
+      data-link-to={to}
+      href={params?.orderId ? `/admin/pesanan/${params.orderId}` : undefined}
+    >
+      {children}
+    </a>
+  ),
+}));
+
 function buildRecord(): OrderRecord {
   const createdAt = new Date(new Date().getTime() - 20 * 60_000).toISOString();
 
@@ -99,6 +122,19 @@ describe("AdminOrderDetailDrawer", () => {
     );
 
     expect(screen.getByText(/^Meja Florist [1-3]$/)).toBeInTheDocument();
+  });
+
+  it("renders a link to open the full order detail page from the drawer header", () => {
+    render(
+      <AdminOrderDetailDrawer
+        order={view()}
+        open={true}
+        onOpenChange={() => {}}
+      />,
+    );
+
+    const link = screen.getByRole("link", { name: "Buka halaman detail" });
+    expect(link).toHaveAttribute("href", "/admin/pesanan/DLF-20261102-7777");
   });
 
   it("renders without any selected order without crashing", () => {

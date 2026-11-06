@@ -1,5 +1,6 @@
 import { fireEvent, render, screen, waitFor } from "@testing-library/react";
 import { beforeEach, describe, expect, it, vi } from "vitest";
+import type { ReactNode } from "react";
 import { AdminOrdersPage } from "./admin-orders-page";
 import { enrichAdminOrder } from "../lib/pesanan/admin-order-enrichment";
 import type { OrderRecord } from "~/features/shop/types";
@@ -16,6 +17,27 @@ vi.mock("../hooks/use-admin-orders", () => ({
 vi.mock("~/features/shop/lib/order-store", () => ({
   updateOrderStatus,
   saveOrder,
+}));
+
+vi.mock("@tanstack/react-router", () => ({
+  Link: ({
+    children,
+    to,
+    params,
+    ...rest
+  }: {
+    children: ReactNode;
+    to: string;
+    params?: { orderId?: string };
+  } & Record<string, unknown>) => (
+    <a
+      {...rest}
+      data-link-to={to}
+      href={params?.orderId ? `/admin/pesanan/${params.orderId}` : undefined}
+    >
+      {children}
+    </a>
+  ),
 }));
 
 function rawRecord(index: number): OrderRecord {

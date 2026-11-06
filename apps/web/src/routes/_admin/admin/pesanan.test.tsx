@@ -1,5 +1,4 @@
 import type { ComponentType } from "react";
-import { render, screen } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
 import { Route } from "./pesanan";
 
@@ -16,6 +15,7 @@ vi.mock("@tanstack/react-router", async () => {
       mocks.redirect(options);
       throw new Error("REDIRECT");
     },
+    Outlet: () => <div data-testid="outlet" />,
   };
 });
 
@@ -26,7 +26,7 @@ type RouteShape = {
   };
 };
 
-describe("admin orders route guard", () => {
+describe("admin pesanan layout route guard", () => {
   it("lets an admin through the beforeLoad guard", () => {
     const route = Route as unknown as RouteShape;
 
@@ -49,23 +49,5 @@ describe("admin orders route guard", () => {
     expect(mocks.redirect).toHaveBeenCalledWith(
       expect.objectContaining({ to: "/akun" }),
     );
-  });
-});
-
-describe("admin orders route component", () => {
-  it("exposes the page component and meta title", () => {
-    const route = Route as unknown as RouteShape;
-
-    expect(route.options.component).toBeTypeOf("function");
-
-    const head = (
-      Route as unknown as {
-        options: {
-          head: () => { meta: { title: string }[] };
-        };
-      }
-    ).options.head();
-
-    expect(head.meta[0]?.title).toBe("Pesanan — Admin Delysa Florist");
   });
 });

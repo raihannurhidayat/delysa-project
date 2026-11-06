@@ -1,6 +1,7 @@
 import { fireEvent, render, screen } from "@testing-library/react";
 import { useTable } from "@tanstack/react-table";
 import { describe, expect, it, vi } from "vitest";
+import { Link } from "@tanstack/react-router";
 import type { OrderRecord } from "~/features/shop/types";
 import { createAdminOrderColumns } from "./admin-order-columns";
 import { adminOrderTableFeatures } from "../../lib/pesanan/admin-order-table-config";
@@ -10,6 +11,27 @@ import {
 } from "../../lib/pesanan/admin-order-enrichment";
 import type { AdminOrderActionId } from "../../lib/pesanan/admin-order-transition";
 import type { AdminOrderView } from "../../lib/pesanan/admin-order.types";
+
+vi.mock("@tanstack/react-router", () => ({
+  Link: ({
+    children,
+    to,
+    params,
+    ...rest
+  }: {
+    children: React.ReactNode;
+    to: string;
+    params?: { orderId?: string };
+  } & Record<string, unknown>) => (
+    <a
+      {...rest}
+      data-link-to={to}
+      href={params?.orderId ? `/admin/pesanan/${params.orderId}` : undefined}
+    >
+      {children}
+    </a>
+  ),
+}));
 
 const NOW = new Date();
 const PAST = new Date(NOW.getTime() - 18 * 60_000).toISOString();
@@ -232,6 +254,16 @@ describe("createAdminOrderColumns", () => {
     expect(onView).toHaveBeenCalledWith(
       expect.objectContaining({ code: "DLF-20261102-0001" }),
     );
+  });
+
+  it("renders a detail link icon per row that navigates to the order detail route", () => {
+    renderColumns([view("DLF-20261102-0001")]);
+
+    expect(
+      screen.getByRole("link", {
+        name: "Lihat detail penuh DLF-20261102-0001",
+      }),
+    ).toHaveAttribute("href", "/admin/pesanan/DLF-20261102-0001");
   });
 
   it("shows forward actions for processing orders, no reject", () => {
