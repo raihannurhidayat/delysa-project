@@ -24,30 +24,35 @@ const RESPONSIVE_COLUMN_CLASS: Record<string, string> = {
   total: "hidden sm:table-cell",
 };
 
+/** Lebar kolom dengan table-fixed agar tabel selalu muat dalam kartu (total 100%). */
 const COLUMN_STYLES: Record<string, { th: string; td: string }> = {
   code: {
-    th: "w-[24%] sm:w-[20%] pl-3 sm:pl-4",
-    td: "w-[24%] sm:w-[20%] pl-3 sm:pl-4",
+    th: "w-[13%] sm:w-[16%] pl-3 sm:pl-4",
+    td: "w-[13%] sm:w-[16%] pl-3 sm:pl-4",
+  },
+  recipient: {
+    th: "w-[20%] sm:w-[24%] pl-3 sm:pl-4",
+    td: "w-[20%] sm:w-[24%] pl-3 sm:pl-4",
   },
   total: {
-    th: "w-[26%] sm:w-[24%]",
-    td: "w-[26%] sm:w-[24%]",
+    th: "w-[15%] sm:w-[20%]",
+    td: "w-[15%] sm:w-[20%]",
   },
   payment: {
-    th: "w-[15%] sm:w-[14%]",
-    td: "w-[15%] sm:w-[14%]",
+    th: "w-[11%] sm:w-[15%]",
+    td: "w-[11%] sm:w-[15%]",
   },
   age: {
-    th: "w-[13%] sm:w-[13%]",
-    td: "w-[13%] sm:w-[13%]",
+    th: "w-[9%] sm:w-[11%]",
+    td: "w-[9%] sm:w-[11%]",
   },
   status: {
-    th: "w-[20%] sm:w-[15%]",
-    td: "w-[20%] sm:w-[15%]",
+    th: "w-[14%] sm:w-[20%]",
+    td: "w-[14%] sm:w-[20%]",
   },
   action: {
-    th: "w-[17%] sm:w-[14%] pr-3 sm:pr-4 text-right",
-    td: "w-[17%] sm:w-[14%] pr-3 sm:pr-4 text-right",
+    th: "w-[18%] sm:w-[20%] pr-3 sm:pr-4 text-right",
+    td: "w-[18%] sm:w-[20%] pr-3 sm:pr-4 text-right",
   },
 };
 
@@ -67,7 +72,7 @@ export function AdminOrderTable({
   const totalRows = table.getPrePaginatedRowModel().rows.length;
 
   return (
-    <div className="min-w-0 [&_[data-slot=table-container]]:overflow-x-hidden">
+    <div className="min-w-0 [&_[data-slot=table-container]]:scrollbar-none">
       {totalRows === 0 ? (
         <div className="flex flex-col items-center gap-2 px-4 py-16 text-center">
           <div className="flex size-12 items-center justify-center rounded-full bg-[#FFF3ED] text-[#C2410C]">
