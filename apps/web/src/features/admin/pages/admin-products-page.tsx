@@ -33,12 +33,14 @@ import { MOCK_PRODUCTS } from "../lib/products/mock-products";
 export type AdminProductsPageProps = {
   initialProducts?: AdminProduct[];
   onAddProduct?: () => void;
+  onEditProduct?: (product: AdminProduct) => void;
   onProductsChange?: (products: AdminProduct[]) => void;
 };
 
 export function AdminProductsPage({
   initialProducts = MOCK_PRODUCTS,
   onAddProduct,
+  onEditProduct,
   onProductsChange,
 }: AdminProductsPageProps = {}) {
   const [products, setProductsState] =
@@ -76,10 +78,17 @@ export function AdminProductsPage({
     setDialogOpen(true);
   }, [onAddProduct]);
 
-  const openEdit = useCallback((product: AdminProduct) => {
-    setEditingProduct(product);
-    setDialogOpen(true);
-  }, []);
+  const openEdit = useCallback(
+    (product: AdminProduct) => {
+      if (onEditProduct) {
+        onEditProduct(product);
+        return;
+      }
+      setEditingProduct(product);
+      setDialogOpen(true);
+    },
+    [onEditProduct],
+  );
 
   const columns = useMemo(
     () => createProductColumns({ onEdit: openEdit }),

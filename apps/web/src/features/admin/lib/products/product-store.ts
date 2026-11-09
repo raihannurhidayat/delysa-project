@@ -14,6 +14,19 @@ export function getAdminProducts(): AdminProduct[] {
   return adminProductsStore;
 }
 
+export function getAdminProductById(
+  idOrSku: number | string,
+): AdminProduct | undefined {
+  const numericId =
+    typeof idOrSku === "number" ? idOrSku : Number.parseInt(idOrSku, 10);
+  return adminProductsStore.find(
+    (item) =>
+      item.id === numericId ||
+      item.sku.toLowerCase() === String(idOrSku).toLowerCase() ||
+      item.slug?.toLowerCase() === String(idOrSku).toLowerCase(),
+  );
+}
+
 export function setAdminProducts(
   updater: AdminProduct[] | ((current: AdminProduct[]) => AdminProduct[]),
 ): AdminProduct[] {
@@ -35,6 +48,26 @@ export function addAdminProduct(
   adminProductsStore = [created, ...adminProductsStore];
   notifyListeners();
   return created;
+}
+
+export function updateAdminProduct(
+  id: number,
+  updates: Partial<Omit<AdminProduct, "id">>,
+): AdminProduct | undefined {
+  let updatedItem: AdminProduct | undefined;
+  adminProductsStore = adminProductsStore.map((item) => {
+    if (item.id !== id) return item;
+    updatedItem = {
+      ...item,
+      ...updates,
+      id: item.id,
+    };
+    return updatedItem;
+  });
+  if (updatedItem) {
+    notifyListeners();
+  }
+  return updatedItem;
 }
 
 export function resetAdminProducts(): AdminProduct[] {

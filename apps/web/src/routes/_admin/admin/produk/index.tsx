@@ -20,6 +20,12 @@ function AdminProductsRoute() {
       initialProducts={getAdminProducts()}
       onProductsChange={setAdminProducts}
       onAddProduct={() => void navigate({ to: "/admin/produk/tambah" })}
+      onEditProduct={(product) =>
+        void navigate({
+          to: "/admin/produk/$productId",
+          params: { productId: String(product.id) },
+        })
+      }
     />
   );
 }
