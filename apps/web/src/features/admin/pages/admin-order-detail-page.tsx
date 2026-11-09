@@ -4,6 +4,7 @@ import {
   CalendarClock,
   CheckCircle2,
   ClipboardCheck,
+  Clock,
   Copy,
   CreditCard,
   FileCheck2,
@@ -332,7 +333,7 @@ export function AdminOrderDetailPage() {
         {/* Card 2: Lokasi & Jadwal Antar */}
         <section className="flex flex-col justify-between rounded-2xl border border-[#E5E7EB] bg-white p-4 shadow-xs sm:p-5">
           <div>
-            <div className="flex items-center justify-between gap-2">
+            <div className="flex items-center justify-between gap-2 border-b border-[#F3F4F6] pb-3">
               <div className="flex items-center gap-1.5 text-[11px] font-bold tracking-wider text-[#FF6B35] uppercase">
                 <MapPin size={13} aria-hidden="true" />
                 <span>Lokasi &amp; Jadwal Antar</span>
@@ -340,36 +341,52 @@ export function AdminOrderDetailPage() {
               <Truck size={14} className="text-[#9CA3AF]" aria-hidden="true" />
             </div>
 
-            <div className="mt-3 space-y-3">
-              <div className="rounded-xl border border-[#F3F4F6] bg-[#F9FAFB] p-3">
-                <p className="text-[10px] font-semibold tracking-wider text-[#9CA3AF] uppercase">
-                  Titik Tujuan Pengantaran
-                </p>
-                <p className="mt-1 text-sm font-bold text-[#1A1A1A]">
-                  {primaryLocation}
-                </p>
-                <p className="mt-0.5 text-[11px] text-[#6B7280]">
-                  {secondaryLocation}
-                </p>
+            <div className="mt-3.5 space-y-2.5">
+              {/* Row 1: Titik Tujuan Pengantaran */}
+              <div className="flex items-start gap-3 rounded-xl border border-[#F3F4F6] bg-[#F9FAFB] p-3">
+                <div className="flex size-8 shrink-0 items-center justify-center rounded-lg bg-[#FFF3ED] text-[#FF6B35]">
+                  <MapPin size={16} aria-hidden="true" />
+                </div>
+                <div className="min-w-0 flex-1">
+                  <p className="text-[10px] font-semibold tracking-wider text-[#9CA3AF] uppercase">
+                    Titik Tujuan Pengantaran
+                  </p>
+                  <p className="mt-0.5 text-sm font-bold text-[#1A1A1A]">
+                    {primaryLocation}
+                  </p>
+                  <p className="mt-0.5 text-[11px] text-[#6B7280]">
+                    {secondaryLocation}
+                  </p>
+                </div>
               </div>
 
-              <div className="grid grid-cols-2 gap-2.5">
-                <div className="rounded-xl border border-[#F3F4F6] bg-[#F9FAFB] p-2.5">
+              {/* Row 2: Kurir Pengantaran */}
+              <div className="flex items-center gap-3 rounded-xl border border-[#F3F4F6] bg-[#F9FAFB] p-3">
+                <div className="flex size-8 shrink-0 items-center justify-center rounded-lg bg-[#EFF6FF] text-[#2563EB]">
+                  <Truck size={16} aria-hidden="true" />
+                </div>
+                <div className="min-w-0 flex-1">
                   <p className="text-[10px] font-semibold tracking-wider text-[#9CA3AF] uppercase">
-                    Kurir
+                    Kurir Pengantaran
                   </p>
-                  <p className="mt-1 text-xs font-semibold leading-snug text-[#374151]">
+                  <p className="mt-0.5 text-xs font-semibold text-[#1A1A1A]">
                     {order.courierLabel ??
                       order.courier ??
                       "Kurir Atelier Internal Tasikmalaya"}
                   </p>
                 </div>
+              </div>
 
-                <div className="rounded-xl border border-[#F3F4F6] bg-[#F9FAFB] p-2.5">
+              {/* Row 3: Estimasi Waktu */}
+              <div className="flex items-center gap-3 rounded-xl border border-[#F3F4F6] bg-[#F9FAFB] p-3">
+                <div className="flex size-8 shrink-0 items-center justify-center rounded-lg bg-[#F0FDF4] text-[#16A34A]">
+                  <Clock size={16} aria-hidden="true" />
+                </div>
+                <div className="min-w-0 flex-1">
                   <p className="text-[10px] font-semibold tracking-wider text-[#9CA3AF] uppercase">
-                    Estimasi
+                    Estimasi Waktu
                   </p>
-                  <p className="mt-1 text-xs font-semibold leading-snug text-[#374151]">
+                  <p className="mt-0.5 text-xs font-semibold text-[#1A1A1A]">
                     {formatRelativeAge(new Date(), order.createdAt)} sejak
                     dipesan
                   </p>
