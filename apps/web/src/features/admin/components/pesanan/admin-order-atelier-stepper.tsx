@@ -1,16 +1,18 @@
+import { Check } from "lucide-react";
 import { Badge } from "~/components/ui/badge";
 import { cn } from "cn";
 
 type AtelierStep = {
   label: string;
+  caption: string;
   status: "pending" | "active" | "done";
 };
 
-const STEPS: AtelierStep[] = [
-  { label: "Menunggu Verifikasi", status: "pending" },
-  { label: "Sedang Dikerjakan", status: "pending" },
-  { label: "Dalam Pengantaran", status: "pending" },
-  { label: "Selesai Terkirim", status: "pending" },
+const STEPS: Omit<AtelierStep, "status">[] = [
+  { label: "Menunggu Verifikasi", caption: "Validasi mutasi & bukti bayar" },
+  { label: "Sedang Dikerjakan", caption: "Perangkaian di meja florist" },
+  { label: "Dalam Pengantaran", caption: "Pengiriman oleh kurir atelier" },
+  { label: "Selesai Terkirim", caption: "Pesanan diterima pelanggan" },
 ];
 
 /**
@@ -19,7 +21,7 @@ const STEPS: AtelierStep[] = [
  */
 export function AdminOrderAtelierStepper({ status }: { status: string }) {
   const activeIndex = atelierStepIndex(status);
-  const steps = STEPS.map((step, index) => ({
+  const steps: AtelierStep[] = STEPS.map((step, index) => ({
     ...step,
     status:
       index < activeIndex
@@ -30,43 +32,84 @@ export function AdminOrderAtelierStepper({ status }: { status: string }) {
   }));
 
   return (
-    <div className="flex w-full flex-col gap-2">
-      <div className="flex items-center gap-1.5 text-[11px] font-bold tracking-wider text-[#FF6B35] uppercase">
-        <span>Status Pemenuhan Atelier</span>
-      </div>
-      <div className="flex flex-col gap-1.5">
-        {steps.map((step, index) => (
-          <div
-            key={step.label}
-            className={cn("flex items-center gap-2", index > 0 && "pl-8")}
-          >
-            {index > 0 && (
-              <div className="h-[1px] flex-1 bg-[#E5E7EB]" aria-hidden="true" />
-            )}
+    <ol
+      className="mt-3 grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-4"
+      aria-label="Tahapan pemenuhan atelier"
+    >
+      {steps.map((step, index) => (
+        <li
+          key={step.label}
+          className={cn(
+            "relative flex flex-col justify-between rounded-xl border p-3.5 transition-colors",
+            step.status === "active"
+              ? "border-[#FF6B35]/40 bg-[#FFFBF8] shadow-xs"
+              : step.status === "done"
+                ? "border-emerald-200 bg-emerald-50/40"
+                : "border-[#E5E7EB] bg-[#F9FAFB]/60",
+          )}
+        >
+          <div className="flex items-center justify-between gap-2">
+            <span
+              aria-hidden="true"
+              className={cn(
+                "flex size-6 shrink-0 items-center justify-center rounded-full text-xs font-bold ring-1 transition-colors",
+                step.status === "done"
+                  ? "bg-emerald-600 text-white ring-emerald-600"
+                  : step.status === "active"
+                    ? "bg-[#FF6B35] text-white ring-[#FF6B35]"
+                    : "bg-white text-[#9CA3AF] ring-[#E5E7EB]",
+              )}
+            >
+              {step.status === "done" ? <Check size={13} /> : index + 1}
+            </span>
+
+            <span
+              className={cn(
+                "text-[10px] font-bold uppercase tracking-wider",
+                step.status === "done"
+                  ? "text-emerald-700"
+                  : step.status === "active"
+                    ? "text-[#C2410C]"
+                    : "text-[#9CA3AF]",
+              )}
+            >
+              {step.status === "done"
+                ? "Selesai"
+                : step.status === "active"
+                  ? "Tahap Aktif"
+                  : "Menunggu"}
+            </span>
+          </div>
+
+          <div className="mt-2.5">
             <Badge
               className={cn(
-                "size-5 shrink-0 rounded-full text-[10px] font-bold",
+                "h-auto rounded-lg px-2.5 py-1 text-xs font-semibold ring-1",
                 step.status === "done"
                   ? "bg-emerald-100 text-emerald-700 ring-emerald-200"
                   : step.status === "active"
-                    ? "bg-[#FFF3ED] text-[#C2410C] ring-[#FF6B35]/20"
+                    ? "bg-[#FFF3ED] text-[#C2410C] ring-[#FF6B35]/30"
                     : "bg-[#F3F4F6] text-[#6B7280] ring-[#E5E7EB]",
               )}
             >
               {step.label}
             </Badge>
+            <p className="mt-1 text-[11px] leading-relaxed text-[#6B7280]">
+              {step.caption}
+            </p>
           </div>
-        ))}
-      </div>
-    </div>
+        </li>
+      ))}
+    </ol>
   );
 }
 
-function atelierStepIndex(status: string): number {
+export function atelierStepIndex(status: string): number {
   switch (status) {
     case "pending_payment":
     case "pending_verification":
       return 0;
+    case "paid":
     case "processing":
       return 1;
     case "shipped":
