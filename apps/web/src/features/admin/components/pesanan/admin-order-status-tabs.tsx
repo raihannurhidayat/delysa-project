@@ -21,7 +21,7 @@ export function AdminOrderStatusTabs({
       <Tabs value={value} onValueChange={(next) => onChange(next as OrderTab)}>
         <TabsList
           aria-label="Filter status pesanan"
-          className="flex w-full overflow-x-auto scrollbar-none items-center gap-1.5 border-b-0 sm:gap-2"
+          className="flex w-full flex-wrap items-center gap-1.5 border-b-0 sm:gap-2"
         >
           {ORDER_TABS.map((tab) => {
             const isActive = value === tab.value;
