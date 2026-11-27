@@ -22,7 +22,10 @@ import { OrderStatusSummary } from "~/features/shop/components/orders/order-stat
 import { useSession } from "~/features/auth/hooks/use-session";
 import { useMiniCart } from "~/features/shop/hooks/use-mini-cart";
 import { useOrder } from "~/features/shop/hooks/use-orders";
-import { updateOrderStatus } from "~/features/shop/lib/order-store";
+import {
+  syncOrderFromApi,
+  updateOrderStatus,
+} from "~/features/shop/lib/order-store";
 import { useNavigate } from "@tanstack/react-router";
 
 export function OrderStatusPage({
@@ -39,7 +42,10 @@ export function OrderStatusPage({
   const { add } = useMiniCart();
   const navigate = useNavigate();
 
-  useEffect(() => setMounted(true), []);
+  useEffect(() => {
+    setMounted(true);
+    void syncOrderFromApi(code);
+  }, [code]);
 
   const breadcrumb = (
     <Breadcrumb>
@@ -108,7 +114,9 @@ export function OrderStatusPage({
         status === "pending_verification"
           ? "Bukti pembayaran diunggah"
           : undefined,
+      syncToApi: false,
     });
+    void syncOrderFromApi(order.code);
   };
 
   const handleReorder = () => {

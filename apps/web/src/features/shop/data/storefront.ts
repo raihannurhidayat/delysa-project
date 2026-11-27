@@ -47,7 +47,8 @@ export const STOREFRONT_CATEGORIES: StorefrontCategory[] = [
     id: "c-mawar",
     name: "Buket Mawar",
     catalogCategory: "Mawar",
-    tagline: "Mawar segar & satin untuk ulang tahun, anniversary, dan kasih sayang.",
+    tagline:
+      "Mawar segar & satin untuk ulang tahun, anniversary, dan kasih sayang.",
     image: img("photo-1533616688419-b7a585564566", 400),
     count: 4,
   },
@@ -71,7 +72,8 @@ export const STOREFRONT_CATEGORIES: StorefrontCategory[] = [
     id: "c-anggrek",
     name: "Anggrek & Pot",
     catalogCategory: "Anggrek",
-    tagline: "Anggrek bulan segar dan tanaman pot elegan untuk hadiah tahan lama.",
+    tagline:
+      "Anggrek bulan segar dan tanaman pot elegan untuk hadiah tahan lama.",
     image: img("photo-1457089328109-e5d9bd499191", 400),
     count: 4,
   },
@@ -79,7 +81,8 @@ export const STOREFRONT_CATEGORIES: StorefrontCategory[] = [
     id: "c-meja",
     name: "Bunga Meja",
     catalogCategory: "Meja",
-    tagline: "Rangkaian vas meja & bunga artifisial untuk ruang tamu atau kantor.",
+    tagline:
+      "Rangkaian vas meja & bunga artifisial untuk ruang tamu atau kantor.",
     image: img("photo-1561181286-d3fee7d55342", 400),
     count: 4,
   },
@@ -87,7 +90,8 @@ export const STOREFRONT_CATEGORIES: StorefrontCategory[] = [
     id: "c-artificial",
     name: "Bunga Palsu & Dome",
     catalogCategory: "Kado",
-    tagline: "Rangkaian awet dan bebas layu untuk kenang-kenangan jangka panjang.",
+    tagline:
+      "Rangkaian awet dan bebas layu untuk kenang-kenangan jangka panjang.",
     image: img("photo-1591886960571-74d43a9d4166", 400),
     count: 4,
   },
@@ -95,7 +99,8 @@ export const STOREFRONT_CATEGORIES: StorefrontCategory[] = [
     id: "c-semua",
     name: "Semua Produk",
     catalogCategory: undefined,
-    tagline: "Jelajahi seluruh rangkaian buket dan karangan bunga Delysa Florist.",
+    tagline:
+      "Jelajahi seluruh rangkaian buket dan karangan bunga Delysa Florist.",
     image: img("photo-1490750967868-88aa4486c946", 400),
     count: 24,
   },
@@ -113,7 +118,8 @@ export const STOREFRONT_FAQS: Faq[] = [
       "Pembayaran dilakukan non-COD via Transfer Bank BCA (054-082-9912 a.n. Kartinah) atau QRIS. Setelah transfer, langsung unggah bukti bayar di halaman Status Pesanan agar admin segera memverifikasi.",
   },
   {
-    question: "Apakah bisa pesan kustom buket jajanan, buket uang, atau papan bunga?",
+    question:
+      "Apakah bisa pesan kustom buket jajanan, buket uang, atau papan bunga?",
     answer:
       "Bisa! Tulis detail warna kertas wrapping, isi jajanan/nominal buket uang, atau kalimat ucapan pada kolom catatan saat checkout, atau konsultasi langsung melalui WhatsApp 0822-6622-9917.",
   },

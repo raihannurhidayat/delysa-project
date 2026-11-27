@@ -1,4 +1,10 @@
 import type { OrderStatus } from "@delysa/shared";
+import {
+  fetchOrderByCodeApi,
+  fetchOrdersApi,
+  updateAdminOrderStatusApi,
+} from "~/features/shop/api/endpoints";
+import { isMockMode } from "~/features/shop/api/http";
 import type { OrderRecord } from "~/features/shop/types";
 import { createDemoOrders } from "~/features/shop/data/orders";
 import {
@@ -9,6 +15,7 @@ import {
 
 let storeState: OrderState | null = null;
 let initialized = false;
+let syncingOrders = false;
 const listeners = new Set<() => void>();
 
 export const EMPTY_ORDER_STATE: OrderState = { orders: [] };
@@ -17,13 +24,34 @@ function notify() {
   listeners.forEach((listener) => listener());
 }
 
+function broadcastRealtime(topic: "orders" | "products") {
+  if (
+    typeof window === "undefined" ||
+    typeof BroadcastChannel === "undefined"
+  ) {
+    return;
+  }
+  try {
+    const channel = new BroadcastChannel("delysa-realtime");
+    channel.postMessage({ topic, at: Date.now() });
+    channel.close();
+  } catch {
+    // ignore unsupported contexts
+  }
+}
+
 function hydrate() {
   if (initialized) return;
   initialized = true;
   if (typeof window === "undefined") return;
   const stored = loadOrderState();
-  storeState = stored ?? { orders: createDemoOrders() };
-  if (!stored) saveOrderState(storeState);
+  if (isMockMode()) {
+    storeState = stored ?? { orders: createDemoOrders() };
+    if (!stored) saveOrderState(storeState);
+    return;
+  }
+  storeState = stored ?? EMPTY_ORDER_STATE;
+  void refreshOrdersFromApi();
 }
 
 function persist(state: OrderState) {
@@ -58,6 +86,37 @@ export function subscribeOrders(listener: () => void): () => void {
   return () => listeners.delete(listener);
 }
 
+export async function refreshOrdersFromApi(): Promise<void> {
+  if (typeof window === "undefined" || isMockMode() || syncingOrders) return;
+  syncingOrders = true;
+  try {
+    const localCodes = (storeState?.orders ?? []).map((o) =>
+      normalizeOrderCode(o.code),
+    );
+    const remoteOrders = await fetchOrdersApi(localCodes);
+    storeState = { orders: remoteOrders };
+    persist(storeState);
+    notify();
+  } catch {
+    // Pertahankan snapshot terakhir saat offline/API tidak terjangkau.
+  } finally {
+    syncingOrders = false;
+  }
+}
+
+export async function syncOrderFromApi(
+  code: string,
+): Promise<OrderRecord | null> {
+  if (typeof window === "undefined" || isMockMode()) return null;
+  try {
+    const remote = await fetchOrderByCodeApi(code);
+    saveOrder(remote);
+    return remote;
+  } catch {
+    return null;
+  }
+}
+
 export function saveOrder(order: OrderRecord): void {
   if (!initialized && typeof window !== "undefined") hydrate();
   const current = storeState ?? EMPTY_ORDER_STATE;
@@ -74,12 +133,13 @@ export function saveOrder(order: OrderRecord): void {
   storeState = { orders };
   persist(storeState);
   notify();
+  broadcastRealtime("orders");
 }
 
 export function updateOrderStatus(
   code: string,
   status: OrderStatus,
-  event?: { note?: string; at?: string },
+  event?: { note?: string; at?: string; syncToApi?: boolean },
 ): OrderRecord | null {
   if (!initialized && typeof window !== "undefined") hydrate();
   const current = storeState ?? EMPTY_ORDER_STATE;
@@ -108,5 +168,21 @@ export function updateOrderStatus(
   storeState = { orders };
   persist(storeState);
   notify();
+
+  if (!isMockMode() && event?.syncToApi !== false) {
+    void updateAdminOrderStatusApi(normalized, {
+      status,
+      note: event?.note,
+    })
+      .then((serverOrder) => {
+        saveOrder(serverOrder);
+      })
+      .catch(() => {
+        void refreshOrdersFromApi();
+      });
+  } else {
+    broadcastRealtime("orders");
+  }
+
   return updated;
 }

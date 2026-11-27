@@ -219,6 +219,8 @@ export type OrderRecord = {
   items: MiniCartLine[];
   totals: CartTotals;
   payment: OrderPaymentSnapshot;
+  paymentProofUrl?: string | null;
+  paymentProofName?: string | null;
   timeline: OrderTimelineEvent[];
   courier?: string;
   trackingNumber?: string;

@@ -36,5 +36,7 @@ class DatabaseSeeder extends Seeder
 
             $user->forceFill(['role' => $account['role']])->save();
         }
+
+        $this->call(ProductSeeder::class);
     }
 }

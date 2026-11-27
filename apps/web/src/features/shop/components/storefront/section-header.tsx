@@ -3,7 +3,10 @@ import { Link } from "@tanstack/react-router";
 type SectionHeaderLink =
   | {
       to: "/katalog";
-      search?: { category?: string; sort?: "termurah" | "termahal" | "terbaru" };
+      search?: {
+        category?: string;
+        sort?: "termurah" | "termahal" | "terbaru";
+      };
     }
   | { to: "/new-arrivals" | "/best-sellers" | "/categories" | "/promo" };
 

@@ -7,9 +7,10 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 
 import { createOrder, type OrderResponse } from "~/features/shop/api/endpoints";
 import { ApiError } from "~/features/shop/api/http";
-import { orderQueries } from "~/features/shop/api/query-keys";
+import { orderQueries, productQueries } from "~/features/shop/api/query-keys";
 import { buildOrderRecord } from "~/features/shop/lib/order-record";
 import { saveOrder } from "~/features/shop/lib/order-store";
+import type { OrderRecord } from "~/features/shop/types";
 import { useMiniCart } from "~/features/shop/hooks/use-mini-cart";
 import {
   checkoutFormSchema,
@@ -251,6 +252,18 @@ export function useCheckout({ step }: { step: CheckoutStep }) {
         recipientPhone: formData.recipientPhone,
         shippingAddress: formData.shippingAddress,
         customNote: formData.customNote || undefined,
+        paymentMethod:
+          formData.paymentMethod === "qris" ? "qris" : "bca_transfer",
+        couponCode: coupon?.code,
+        items: lines.map((line) => ({
+          slug: line.slug,
+          name: line.name,
+          price: line.price,
+          qty: line.qty,
+          variantLabel:
+            [line.sizeLabel, line.wrapLabel].filter(Boolean).join(" / ") ||
+            undefined,
+        })),
         idempotencyKey,
       });
     } catch (err) {
@@ -258,21 +271,28 @@ export function useCheckout({ step }: { step: CheckoutStep }) {
     }
 
     try {
-      saveOrder(buildOrderRecord({ order, form: formData, lines, totals }));
+      const record: OrderRecord =
+        order.items && order.totals && order.payment && order.timeline
+          ? (order as OrderRecord)
+          : buildOrderRecord({ order, form: formData, lines, totals });
+      saveOrder(record);
     } catch {
-      // Order sudah dibuat; kegagalan menyimpan riwayat demo tidak menggagalkan checkout.
+      // Order sudah dibuat; kegagalan menyimpan riwayat lokal tidak menggagalkan checkout.
     }
 
+    void queryClient.invalidateQueries({ queryKey: productQueries.all });
     clearDraft(guestToken);
     clearCart();
 
     return { order, paymentMethod: formData.paymentMethod };
   }, [
     clearCart,
+    coupon?.code,
     createOrderMutation,
     getValues,
     guestToken,
     lines,
+    queryClient,
     step,
     totals,
   ]);

@@ -33,8 +33,8 @@ export function AdminOrderStatusTabs({
                 className={cn(
                   "-mb-0 inline-flex items-center gap-1.5 rounded-full border px-3 py-1.5 text-xs font-semibold transition-all",
                   isActive
-                    ? "border-[#FF6B35] bg-[#FFF3ED] text-[#C2410C] shadow-xs"
-                    : "border-[#E5E7EB] bg-white text-[#4B5563] hover:border-[#FF6B35]/40 hover:bg-[#FFFBF8] hover:text-[#C2410C]",
+                    ? "border-[#BE185D] bg-[#FDF2F8] text-[#9D174D] shadow-xs"
+                    : "border-[#E5E7EB] bg-white text-[#4B5563] hover:border-[#BE185D]/40 hover:bg-[#FDF2F8] hover:text-[#9D174D]",
                 )}
               >
                 <span>{ADMIN_TAB_LABELS[tab.value]}</span>
@@ -43,7 +43,7 @@ export function AdminOrderStatusTabs({
                   className={cn(
                     "inline-flex min-w-5 items-center justify-center rounded-full px-1.5 py-0.5 text-[10px] font-bold transition-colors",
                     isActive
-                      ? "bg-[#FF6B35] text-white"
+                      ? "bg-[#BE185D] text-white"
                       : "bg-[#F3F4F6] text-[#6B7280]",
                   )}
                 >

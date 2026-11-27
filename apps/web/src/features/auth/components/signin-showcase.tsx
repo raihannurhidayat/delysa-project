@@ -35,8 +35,8 @@ export function SigninShowcase({ imageSrc, imageAlt }: SigninShowcaseProps) {
           <span aria-hidden="true" className="font-bold text-amber-500">
             ★★★★★
           </span>{" "}
-          <span className="font-semibold text-[#1C1917]">4.9 / 5</span> ·
-          Buket Wisuda, Jajanan, Uang &amp; Papan Bunga
+          <span className="font-semibold text-[#1C1917]">4.9 / 5</span> · Buket
+          Wisuda, Jajanan, Uang &amp; Papan Bunga
         </p>
       </div>
 

@@ -49,7 +49,11 @@ describe("AdminNav", () => {
     expect(orders).toHaveAttribute("href", "/admin/pesanan");
     expect(orders).not.toHaveAttribute("aria-current");
 
-    expect(screen.getAllByText("Segera")).toHaveLength(2);
+    const reports = screen.getByRole("link", { name: "Laporan" });
+    expect(reports).toHaveAttribute("href", "/admin/laporan");
+    expect(reports).not.toHaveAttribute("aria-current");
+
+    expect(screen.getAllByText("Segera")).toHaveLength(1);
   });
 
   it("marks the orders link active on /admin/pesanan", () => {

@@ -9,7 +9,7 @@ export function AdminOrdersPageHeader({
   return (
     <div className="flex flex-col gap-3 lg:flex-row lg:items-start lg:justify-between">
       <div className="min-w-0">
-        <p className="text-[11px] font-semibold tracking-[0.16em] text-[#FF6B35] uppercase">
+        <p className="text-[11px] font-semibold tracking-[0.16em] text-[#BE185D] uppercase">
           Back-Office · Orders
         </p>
         <h1 className="mt-1 text-2xl font-extrabold tracking-tight sm:text-3xl">
@@ -26,7 +26,7 @@ export function AdminOrdersPageHeader({
           type="button"
           size="sm"
           onClick={onCreateManual}
-          className="h-9 gap-1.5 rounded-lg bg-[#FF6B35] px-3.5 text-xs font-bold text-white hover:bg-[#E85B27]"
+          className="h-9 gap-1.5 rounded-lg bg-[#BE185D] px-3.5 text-xs font-bold text-white hover:bg-[#E85B27]"
         >
           <PlusIcon size={15} aria-hidden="true" />
           Buat Pesanan Manual

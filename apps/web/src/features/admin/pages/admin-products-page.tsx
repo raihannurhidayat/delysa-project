@@ -1,5 +1,14 @@
-import { useCallback, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { useTable, type SortingState } from "@tanstack/react-table";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "~/components/ui/dialog";
+import { Button } from "~/components/ui/button";
 import { ProductsPageHeader } from "../components/produk/products-page-header";
 import { ProductsPagination } from "../components/produk/products-pagination";
 import { ProductsStatsCards } from "../components/produk/products-stats-cards";
@@ -34,6 +43,7 @@ export type AdminProductsPageProps = {
   initialProducts?: AdminProduct[];
   onAddProduct?: () => void;
   onEditProduct?: (product: AdminProduct) => void;
+  onDeleteProduct?: (product: AdminProduct) => void;
   onProductsChange?: (products: AdminProduct[]) => void;
 };
 
@@ -41,10 +51,15 @@ export function AdminProductsPage({
   initialProducts = MOCK_PRODUCTS,
   onAddProduct,
   onEditProduct,
+  onDeleteProduct,
   onProductsChange,
 }: AdminProductsPageProps = {}) {
   const [products, setProductsState] =
     useState<AdminProduct[]>(initialProducts);
+
+  useEffect(() => {
+    setProductsState(initialProducts);
+  }, [initialProducts]);
 
   const setProducts = useCallback(
     (
@@ -66,6 +81,9 @@ export function AdminProductsPage({
   const [showStatistics, setShowStatistics] = useState(true);
   const [dialogOpen, setDialogOpen] = useState(false);
   const [editingProduct, setEditingProduct] = useState<AdminProduct | null>(
+    null,
+  );
+  const [deletingProduct, setDeletingProduct] = useState<AdminProduct | null>(
     null,
   );
 
@@ -90,9 +108,29 @@ export function AdminProductsPage({
     [onEditProduct],
   );
 
+  const requestDelete = useCallback((product: AdminProduct) => {
+    setDeletingProduct(product);
+  }, []);
+
+  const confirmDelete = useCallback(() => {
+    if (!deletingProduct) return;
+    if (onDeleteProduct) {
+      onDeleteProduct(deletingProduct);
+    } else {
+      setProducts((current) =>
+        current.filter((item) => item.id !== deletingProduct.id),
+      );
+    }
+    setDeletingProduct(null);
+  }, [deletingProduct, onDeleteProduct, setProducts]);
+
   const columns = useMemo(
-    () => createProductColumns({ onEdit: openEdit }),
-    [openEdit],
+    () =>
+      createProductColumns({
+        onEdit: openEdit,
+        onDelete: onDeleteProduct ? requestDelete : undefined,
+      }),
+    [openEdit, onDeleteProduct, requestDelete],
   );
   const filteredProducts = useMemo(
     () => filterProducts(products, filters),
@@ -228,6 +266,43 @@ export function AdminProductsPage({
         product={editingProduct}
         onSubmit={handleSubmit}
       />
+
+      <Dialog
+        open={deletingProduct !== null}
+        onOpenChange={(open) => {
+          if (!open) setDeletingProduct(null);
+        }}
+      >
+        <DialogContent className="max-w-md rounded-2xl">
+          <DialogHeader>
+            <DialogTitle>Hapus produk dari katalog?</DialogTitle>
+            <DialogDescription>
+              Produk{" "}
+              <strong className="text-[#1C1917]">
+                {deletingProduct?.name}
+              </strong>{" "}
+              ({deletingProduct?.sku}) akan dihapus permanen dari database
+              Delysa Florist.
+            </DialogDescription>
+          </DialogHeader>
+          <DialogFooter className="gap-2">
+            <Button
+              type="button"
+              variant="outline"
+              onClick={() => setDeletingProduct(null)}
+            >
+              Batal
+            </Button>
+            <Button
+              type="button"
+              onClick={confirmDelete}
+              className="bg-red-600 text-white hover:bg-red-700"
+            >
+              Ya, Hapus Produk
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }

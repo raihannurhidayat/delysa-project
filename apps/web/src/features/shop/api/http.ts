@@ -156,7 +156,7 @@ async function toApiError(
 }
 
 async function requestJson<T>(
-  method: "GET" | "POST",
+  method: "GET" | "POST" | "PATCH" | "DELETE",
   path: string,
   body: unknown,
   signal: AbortSignal | undefined,
@@ -231,4 +231,19 @@ export async function apiUpload<T>(
   signal?: AbortSignal,
 ): Promise<T> {
   return requestJson<T>("POST", path, formData, signal, true);
+}
+
+export async function apiPatch<T>(
+  path: string,
+  body: unknown,
+  signal?: AbortSignal,
+): Promise<T> {
+  return requestJson<T>("PATCH", path, body, signal, true);
+}
+
+export async function apiDelete<T = void>(
+  path: string,
+  signal?: AbortSignal,
+): Promise<T> {
+  return requestJson<T>("DELETE", path, undefined, signal, true);
 }

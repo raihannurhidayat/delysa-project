@@ -18,7 +18,7 @@ import {
 
 export type AdminNavItem = {
   title: string;
-  to?: "/admin" | "/admin/produk" | "/admin/pesanan";
+  to?: "/admin" | "/admin/produk" | "/admin/pesanan" | "/admin/laporan";
   icon: LucideIcon;
 };
 
@@ -26,8 +26,8 @@ export const ADMIN_NAV_ITEMS = [
   { title: "Dashboard", to: "/admin", icon: LayoutDashboardIcon },
   { title: "Produk", to: "/admin/produk", icon: PackageIcon },
   { title: "Pesanan", to: "/admin/pesanan", icon: ShoppingCartIcon },
+  { title: "Laporan", to: "/admin/laporan", icon: PieChartIcon },
   { title: "Stok", icon: BoxesIcon },
-  { title: "Laporan", icon: PieChartIcon },
 ] satisfies readonly AdminNavItem[];
 
 export function AdminNav() {

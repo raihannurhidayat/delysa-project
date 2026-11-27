@@ -96,8 +96,42 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        /** List katalog (Fase 2 hoạch định — stub Fase 0) */
+        /** List katalog produk publik dengan filter & pagination */
         get: operations["listProducts"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/products/{slug}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Detail produk publik berdasarkan slug */
+        get: operations["getProductBySlug"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/realtime/events": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Ambil cursor event real-time produk & pesanan sejak ID terakhir */
+        get: operations["listRealtimeEvents"];
         put?: never;
         post?: never;
         delete?: never;
@@ -113,7 +147,8 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        get?: never;
+        /** Daftar pesanan pelanggan atau admin */
+        get: operations["listOrders"];
         put?: never;
         /** Create new order (checkout submit) */
         post: operations["createOrder"];
@@ -383,6 +418,9 @@ export interface operations {
             query?: {
                 search?: string;
                 category?: string;
+                minPrice?: number;
+                maxPrice?: number;
+                sort?: "termurah" | "termahal" | "terbaru";
                 page?: number;
             };
             header?: never;
@@ -399,6 +437,96 @@ export interface operations {
                 content: {
                     "application/json": {
                         data: components["schemas"]["Product"][];
+                        items?: components["schemas"]["Product"][];
+                        total?: number;
+                        page?: number;
+                        counts?: {
+                            [key: string]: number;
+                        };
+                    };
+                };
+            };
+        };
+    };
+    getProductBySlug: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                slug: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Product"];
+                };
+            };
+            /** @description Not found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+        };
+    };
+    listRealtimeEvents: {
+        parameters: {
+            query?: {
+                since?: number;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        latestId: number;
+                        events: {
+                            id?: number;
+                            topic?: string;
+                            at?: string;
+                        }[];
+                    };
+                };
+            };
+        };
+    };
+    listOrders: {
+        parameters: {
+            query?: {
+                codes?: string;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: components["schemas"]["OrderResponse"][];
                     };
                 };
             };

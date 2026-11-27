@@ -53,7 +53,7 @@ function BatchChip({ order }: { order: AdminOrderView }) {
   if (order.batch !== "unsil") return null;
 
   return (
-    <Badge className="inline-flex items-center gap-1 rounded-full border border-[#FED7AA] bg-[#FFF3ED] px-2 py-0.5 text-[10px] font-semibold text-[#C2410C]">
+    <Badge className="inline-flex items-center gap-1 rounded-full border border-[#FED7AA] bg-[#FDF2F8] px-2 py-0.5 text-[10px] font-semibold text-[#9D174D]">
       Wisuda UNSIL
     </Badge>
   );
@@ -81,7 +81,7 @@ export function createAdminOrderColumns({
               e.stopPropagation();
               onView(row.original);
             }}
-            className="block max-w-full truncate font-mono text-xs font-bold text-[#111111] transition-colors hover:text-[#C2410C] hover:underline"
+            className="block max-w-full truncate font-mono text-xs font-bold text-[#111111] transition-colors hover:text-[#9D174D] hover:underline"
             title={row.original.code}
           >
             {row.original.code}

@@ -27,7 +27,7 @@ function buildChips(order: AdminOrderView): DetailChip[] {
   if (order.batch === "unsil") {
     chips.push({
       label: "Wisuda UNSIL",
-      className: "border-[#FED7AA] bg-[#FFF3ED] text-[#C2410C]",
+      className: "border-[#FED7AA] bg-[#FDF2F8] text-[#9D174D]",
     });
   }
   if (order.slaBreached) {
@@ -118,7 +118,7 @@ export function AdminOrderDetailDrawer({
             <div className="flex-1 space-y-4 overflow-y-auto pr-1 pt-4">
               {/* Card Penerima & Alamat */}
               <section className="rounded-2xl border border-[#E5E7EB] bg-white p-4 shadow-sm sm:p-5">
-                <div className="flex items-center gap-1.5 text-[11px] font-bold tracking-wider text-[#FF6B35] uppercase">
+                <div className="flex items-center gap-1.5 text-[11px] font-bold tracking-wider text-[#BE185D] uppercase">
                   <MapPinIcon size={13} aria-hidden="true" />
                   <span>Penerima &amp; Pengiriman</span>
                 </div>

@@ -36,11 +36,23 @@ export type RegisterInput = z.infer<typeof registerSchema>;
 export type LoginInput = z.infer<typeof loginSchema>;
 export type AuthUser = z.infer<typeof authUserSchema>;
 
+export const orderCreateItemSchema = z.object({
+  productId: z.union([z.number().int(), z.string()]).optional(),
+  slug: z.string().max(160).optional(),
+  name: z.string().max(180).optional(),
+  price: z.number().int().min(0).optional(),
+  qty: z.number().int().min(1).max(99),
+  variantLabel: z.string().max(120).optional(),
+});
+
 export const orderCreateSchema = z.object({
   recipientName: z.string().min(2).max(100),
   recipientPhone: z.string().min(9).max(20),
   shippingAddress: z.string().min(10).max(500),
   customNote: z.string().max(500).optional(),
+  paymentMethod: z.enum(["bca_transfer", "qris"]).optional(),
+  couponCode: z.string().max(40).optional(),
+  items: z.array(orderCreateItemSchema).min(1).max(50).optional(),
   idempotencyKey: z.string().uuid(),
 });
 

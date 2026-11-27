@@ -1,6 +1,8 @@
 import {
+  useEffect,
   useRef,
   useState,
+  useSyncExternalStore,
   type ChangeEvent,
   type FormEvent,
   type KeyboardEvent,
@@ -44,8 +46,11 @@ import { formatRupiah, getStockStatus } from "../lib/products/product-filters";
 import {
   generateProductSku,
   getAdminProductById,
+  getAdminProducts,
   getDefaultStockUnit,
+  refreshAdminProductsFromApi,
   slugifyProductName,
+  subscribeAdminProducts,
   updateAdminProduct,
 } from "../lib/products/product-store";
 import {
@@ -113,7 +118,7 @@ function AtelierSwitch({
       aria-checked={checked}
       aria-label={ariaLabel}
       onClick={() => onCheckedChange(!checked)}
-      className={`relative inline-flex h-6 w-11 shrink-0 cursor-pointer items-center rounded-full transition-colors focus-visible:ring-2 focus-visible:ring-[#FF6B35] focus-visible:outline-none ${
+      className={`relative inline-flex h-6 w-11 shrink-0 cursor-pointer items-center rounded-full transition-colors focus-visible:ring-2 focus-visible:ring-[#BE185D] focus-visible:outline-none ${
         checked ? activeBg : "bg-[#D1D5DB]"
       }`}
     >
@@ -139,12 +144,23 @@ export function AdminProductEditPage({
   onSuccess,
   onCancel,
 }: AdminProductEditPageProps = {}) {
+  useSyncExternalStore(
+    subscribeAdminProducts,
+    getAdminProducts,
+    getAdminProducts,
+  );
+  useEffect(() => {
+    if (!initialProduct) {
+      void refreshAdminProductsFromApi();
+    }
+  }, [initialProduct, productId]);
+
   const resolvedProduct = initialProduct ?? getAdminProductById(productId);
 
   if (!resolvedProduct) {
     return (
       <div className="mx-auto max-w-3xl rounded-2xl border border-[#E5E7EB] bg-white p-8 text-center shadow-xs">
-        <div className="mx-auto mb-3 flex size-12 items-center justify-center rounded-2xl bg-[#FFF3ED] text-[#FF6B35]">
+        <div className="mx-auto mb-3 flex size-12 items-center justify-center rounded-2xl bg-[#FDF2F8] text-[#BE185D]">
           <Package className="size-6" aria-hidden="true" />
         </div>
         <h1 className="font-heading text-xl font-bold text-[#111827]">
@@ -217,6 +233,7 @@ function AdminProductEditForm({
   const [tagInput, setTagInput] = useState("");
 
   const [imageUrl, setImageUrl] = useState(initialImageUrl);
+  const [imageFile, setImageFile] = useState<File | null>(null);
   const [imageFileName, setImageFileName] = useState(
     `${slugifyProductName(product.name) || "produk"}-cover.jpg`,
   );
@@ -343,6 +360,7 @@ function AdminProductEditForm({
   function handleFileChange(event: ChangeEvent<HTMLInputElement>) {
     const file = event.target.files?.[0];
     if (!file) return;
+    setImageFile(file);
     const sizeInMb = (file.size / (1024 * 1024)).toFixed(1);
     const ext = file.name.split(".").pop()?.toUpperCase() ?? "JPG";
     setImageFileName(file.name);
@@ -356,6 +374,7 @@ function AdminProductEditForm({
   }
 
   function handleClearImage() {
+    setImageFile(null);
     setImageUrl("");
     setImageFileName("Belum ada foto dipilih");
     setImageMeta("0 MB • Pilih atau unggah foto baru");
@@ -373,21 +392,25 @@ function AdminProductEditForm({
     const publishedState = mode === "draft" ? false : isActive;
     setIsActive(publishedState);
 
-    const updated = updateAdminProduct(product.id, {
-      name: trimmedName,
-      sku: trimmedSku.toUpperCase(),
-      slug: slug.trim() || slugifyProductName(trimmedName),
-      category,
-      price: Math.round(numericPrice),
-      stock: Math.round(numericStock),
-      stockUnit: stockUnit.trim() || "Buket",
-      minThreshold: Math.round(numericThreshold),
-      imageUrl: imageUrl.trim() || undefined,
-      isPublished: publishedState,
-      isCustomizable,
-      description: trimmedDescription,
-      botanicalTags,
-    }) ?? {
+    const updated = updateAdminProduct(
+      product.id,
+      {
+        name: trimmedName,
+        sku: trimmedSku.toUpperCase(),
+        slug: slug.trim() || slugifyProductName(trimmedName),
+        category,
+        price: Math.round(numericPrice),
+        stock: Math.round(numericStock),
+        stockUnit: stockUnit.trim() || "Buket",
+        minThreshold: Math.round(numericThreshold),
+        imageUrl: imageUrl.trim() || undefined,
+        isPublished: publishedState,
+        isCustomizable,
+        description: trimmedDescription,
+        botanicalTags,
+      },
+      imageFile,
+    ) ?? {
       ...product,
       name: trimmedName,
       sku: trimmedSku.toUpperCase(),
@@ -454,7 +477,7 @@ function AdminProductEditForm({
         <Link
           to="/admin/produk"
           onClick={() => onCancel?.()}
-          className="inline-flex items-center gap-1.5 text-xs font-semibold text-[#111827] transition-colors hover:text-[#FF6B35]"
+          className="inline-flex items-center gap-1.5 text-xs font-semibold text-[#111827] transition-colors hover:text-[#BE185D]"
         >
           <ArrowLeft className="size-3.5" aria-hidden="true" />
           Kembali ke Katalog Produk
@@ -522,12 +545,12 @@ function AdminProductEditForm({
         className="grid grid-cols-1 gap-4 rounded-2xl border border-[#E5E7EB] bg-white p-4 shadow-xs lg:grid-cols-12 lg:items-center"
       >
         <div className="flex items-start gap-3.5 lg:col-span-7 lg:items-center">
-          <div className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-[#111827] text-[#FF6B35]">
+          <div className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-[#111827] text-[#BE185D]">
             <Sparkles className="size-5" aria-hidden="true" />
           </div>
           <div className="min-w-0 flex-1 space-y-0.5">
             <div className="flex flex-wrap items-center gap-1.5 text-[11px] font-bold tracking-wider uppercase">
-              <span className="text-[#FF6B35]">
+              <span className="text-[#BE185D]">
                 MODE PEMBARUAN KATALOG ATELIER
               </span>
               <span className="text-[#D1D5DB]">•</span>
@@ -722,7 +745,7 @@ function AdminProductEditForm({
                 <button
                   type="button"
                   onClick={() => setSku(generateProductSku(name, category))}
-                  className="text-[11px] font-medium text-[#FF6B35] hover:underline"
+                  className="text-[11px] font-medium text-[#BE185D] hover:underline"
                 >
                   Generate SKU
                 </button>
@@ -835,7 +858,7 @@ function AdminProductEditForm({
           {/* Quick Restock Controls */}
           <div className="flex flex-wrap items-center gap-1.5">
             <span className="mr-1 inline-flex items-center gap-1 text-xs font-semibold text-[#6B7280]">
-              <TrendingUp className="size-3.5 text-[#FF6B35]" />
+              <TrendingUp className="size-3.5 text-[#BE185D]" />
               Penyesuaian Cepat Stok:
             </span>
             <button
@@ -939,7 +962,7 @@ function AdminProductEditForm({
                 Unit
               </span>
             </div>
-            <p className="text-xs leading-relaxed font-medium text-[#FF6B35]">
+            <p className="text-xs leading-relaxed font-medium text-[#BE185D]">
               Sistem memicu alert Low-Stock jika stok ≤ nilai ini (default: 5).
             </p>
           </div>
@@ -1112,7 +1135,7 @@ function AdminProductEditForm({
               <button
                 type="button"
                 onClick={() => setShowUrlInput((prev) => !prev)}
-                className="text-xs font-semibold text-[#FF6B35] hover:underline"
+                className="text-xs font-semibold text-[#BE185D] hover:underline"
               >
                 {showUrlInput ? "Tutup URL" : "Ubah URL"}
               </button>
@@ -1139,7 +1162,7 @@ function AdminProductEditForm({
               role="button"
               tabIndex={0}
               aria-label="Unggah foto produk baru dari komputer"
-              className="flex cursor-pointer flex-col items-center justify-center rounded-xl border border-dashed border-[#D1D5DB] bg-[#F9FAFB] px-4 py-5 text-center transition-colors hover:border-[#FF6B35] hover:bg-[#FFF7F3]"
+              className="flex cursor-pointer flex-col items-center justify-center rounded-xl border border-dashed border-[#D1D5DB] bg-[#F9FAFB] px-4 py-5 text-center transition-colors hover:border-[#BE185D] hover:bg-[#FFF7F3]"
             >
               <div className="mb-2 flex size-9 items-center justify-center rounded-full border border-[#E5E7EB] bg-white text-[#374151] shadow-2xs">
                 <CloudUpload className="size-4" aria-hidden="true" />
@@ -1195,7 +1218,7 @@ function AdminProductEditForm({
                 <div className="absolute inset-x-3 top-3 flex items-center justify-between gap-2">
                   <span className="inline-flex items-center gap-1 rounded-md bg-black/75 px-2.5 py-1 text-[10px] font-bold tracking-wider text-white uppercase backdrop-blur-xs">
                     <Star
-                      className="size-3 fill-[#FF6B35] text-[#FF6B35]"
+                      className="size-3 fill-[#BE185D] text-[#BE185D]"
                       aria-hidden="true"
                     />
                     FOTO UTAMA / COVER

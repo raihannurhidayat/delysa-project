@@ -1,4 +1,4 @@
-import { PencilIcon, StarIcon } from "lucide-react";
+import { PencilIcon, StarIcon, Trash2Icon } from "lucide-react";
 import {
   createColumnHelper,
   sortFn_alphanumeric,
@@ -88,8 +88,10 @@ export function PublicStatusBadge({ status }: { status: ProductPublicStatus }) {
 
 export function createProductColumns({
   onEdit,
+  onDelete,
 }: {
   onEdit: (p: AdminProduct) => void;
+  onDelete?: (p: AdminProduct) => void;
 }) {
   return columnHelper.columns([
     columnHelper.display({
@@ -226,17 +228,31 @@ export function createProductColumns({
       enableSorting: false,
       enableHiding: false,
       cell: ({ row }) => (
-        <Button
-          type="button"
-          variant="ghost"
-          size="sm"
-          onClick={() => onEdit(row.original)}
-          aria-label={`Edit produk ${row.original.name}`}
-          className="h-8 gap-1 rounded-lg px-2 text-xs font-semibold text-[#57534E] hover:bg-[#FDF2F8] hover:text-[#9D174D]"
-        >
-          <PencilIcon size={13} aria-hidden="true" />
-          <span className="hidden sm:inline">Edit</span>
-        </Button>
+        <div className="flex items-center justify-end gap-1">
+          <Button
+            type="button"
+            variant="ghost"
+            size="sm"
+            onClick={() => onEdit(row.original)}
+            aria-label={`Edit produk ${row.original.name}`}
+            className="h-8 gap-1 rounded-lg px-2 text-xs font-semibold text-[#57534E] hover:bg-[#FDF2F8] hover:text-[#9D174D]"
+          >
+            <PencilIcon size={13} aria-hidden="true" />
+            <span className="hidden sm:inline">Edit</span>
+          </Button>
+          {onDelete ? (
+            <Button
+              type="button"
+              variant="ghost"
+              size="icon-sm"
+              onClick={() => onDelete(row.original)}
+              aria-label={`Hapus produk ${row.original.name}`}
+              className="size-8 rounded-lg text-[#57534E] hover:bg-red-50 hover:text-red-700"
+            >
+              <Trash2Icon size={14} aria-hidden="true" />
+            </Button>
+          ) : null}
+        </div>
       ),
     }),
   ]);

@@ -130,6 +130,8 @@ export function OrderPaymentCard({
         <PaymentProofUploader
           orderId={order.id}
           status={order.status}
+          proofUrl={order.paymentProofUrl}
+          proofName={order.paymentProofName}
           onStatusChange={onStatusChange}
           description={
             isQris

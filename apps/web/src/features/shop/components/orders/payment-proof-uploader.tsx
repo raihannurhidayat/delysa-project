@@ -16,12 +16,16 @@ import {
 export function PaymentProofUploader({
   orderId,
   status,
+  proofUrl,
+  proofName,
   onStatusChange,
   description = "Unggah bukti pembayaran agar pesanan segera diverifikasi.",
   className,
 }: {
   orderId: number;
   status: OrderStatus;
+  proofUrl?: string | null;
+  proofName?: string | null;
   onStatusChange?: (status: OrderStatus) => void;
   description?: string;
   className?: string;
@@ -138,9 +142,26 @@ export function PaymentProofUploader({
                 Bukti pembayaran diterima
               </p>
               <p className="mt-0.5 break-all text-[11px] text-[#4B5563] sm:text-xs">
-                {uploadedFile?.name ?? "Bukti pembayaran"}
+                {uploadedFile?.name ?? proofName ?? "Bukti pembayaran"}
                 {uploadedFile ? ` · ${formatFileSize(uploadedFile.size)}` : ""}
               </p>
+              {proofUrl ? (
+                <div className="mt-2 space-y-1.5">
+                  <img
+                    src={proofUrl}
+                    alt="Bukti pembayaran tersimpan"
+                    className="max-h-36 rounded-lg bg-white object-contain ring-1 ring-emerald-200"
+                  />
+                  <a
+                    href={proofUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-block text-[11px] font-semibold text-[#9D174D] underline underline-offset-2 hover:text-[#BE185D]"
+                  >
+                    Lihat gambar penuh
+                  </a>
+                </div>
+              ) : null}
               <p className="mt-1 text-[10px] leading-relaxed text-emerald-700 sm:text-[11px]">
                 Menunggu verifikasi admin.
               </p>

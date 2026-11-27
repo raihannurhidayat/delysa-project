@@ -120,10 +120,17 @@ paths:
   /products:
     get:
       operationId: listProducts
-      summary: List katalog (Fase 2 hoạch định — stub Fase 0)
+      summary: List katalog produk publik dengan filter & pagination
       parameters:
         - { name: search, in: query, schema: { type: string } }
         - { name: category, in: query, schema: { type: string } }
+        - { name: minPrice, in: query, schema: { type: integer } }
+        - { name: maxPrice, in: query, schema: { type: integer } }
+        - {
+            name: sort,
+            in: query,
+            schema: { type: string, enum: [termurah, termahal, terbaru] },
+          }
         - { name: page, in: query, schema: { type: integer, default: 1 } }
       responses:
         "200":
@@ -137,7 +144,78 @@ paths:
                   data:
                     type: array
                     items: { $ref: "#/components/schemas/Product" }
+                  items:
+                    type: array
+                    items: { $ref: "#/components/schemas/Product" }
+                  total: { type: integer }
+                  page: { type: integer }
+                  counts:
+                    type: object
+                    additionalProperties: { type: integer }
+  /products/{slug}:
+    get:
+      operationId: getProductBySlug
+      summary: Detail produk publik berdasarkan slug
+      parameters:
+        - name: slug
+          in: path
+          required: true
+          schema: { type: string }
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Product"
+        "404":
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+  /realtime/events:
+    get:
+      operationId: listRealtimeEvents
+      summary: Ambil cursor event real-time produk & pesanan sejak ID terakhir
+      parameters:
+        - { name: since, in: query, schema: { type: integer, default: 0 } }
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [latestId, events]
+                properties:
+                  latestId: { type: integer }
+                  events:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id: { type: integer }
+                        topic: { type: string }
+                        at: { type: string }
   /orders:
+    get:
+      operationId: listOrders
+      summary: Daftar pesanan pelanggan atau admin
+      parameters:
+        - { name: codes, in: query, schema: { type: string } }
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [data]
+                properties:
+                  data:
+                    type: array
+                    items: { $ref: "#/components/schemas/OrderResponse" }
     post:
       operationId: createOrder
       summary: Create new order (checkout submit)

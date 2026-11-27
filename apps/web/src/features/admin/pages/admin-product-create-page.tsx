@@ -80,7 +80,7 @@ function AtelierSwitch({
       aria-checked={checked}
       aria-label={ariaLabel}
       onClick={() => onCheckedChange(!checked)}
-      className={`relative inline-flex h-6 w-11 shrink-0 cursor-pointer items-center rounded-full transition-colors focus-visible:ring-2 focus-visible:ring-[#FF6B35] focus-visible:outline-none ${
+      className={`relative inline-flex h-6 w-11 shrink-0 cursor-pointer items-center rounded-full transition-colors focus-visible:ring-2 focus-visible:ring-[#BE185D] focus-visible:outline-none ${
         checked ? activeBg : "bg-[#D1D5DB]"
       }`}
     >
@@ -128,6 +128,7 @@ export function AdminProductCreatePage({
   const [tagInput, setTagInput] = useState("");
 
   const [imageUrl, setImageUrl] = useState(DEFAULT_COVER_IMAGE);
+  const [imageFile, setImageFile] = useState<File | null>(null);
   const [imageFileName, setImageFileName] = useState(
     "monolith-peach-ivory-01.jpg",
   );
@@ -230,6 +231,7 @@ export function AdminProductCreatePage({
   function handleFileChange(event: ChangeEvent<HTMLInputElement>) {
     const file = event.target.files?.[0];
     if (!file) return;
+    setImageFile(file);
     const sizeInMb = (file.size / (1024 * 1024)).toFixed(1);
     const ext = file.name.split(".").pop()?.toUpperCase() ?? "JPG";
     setImageFileName(file.name);
@@ -243,12 +245,14 @@ export function AdminProductCreatePage({
   }
 
   function handleClearImage() {
+    setImageFile(null);
     setImageUrl("");
     setImageFileName("Belum ada foto dipilih");
     setImageMeta("0 MB • Pilih atau unggah foto baru");
   }
 
   function handleRestoreDefaultImage() {
+    setImageFile(null);
     setImageUrl(DEFAULT_COVER_IMAGE);
     setImageFileName("monolith-peach-ivory-01.jpg");
     setImageMeta("1.4 MB • JPG (2400 × 2400)");
@@ -264,23 +268,26 @@ export function AdminProductCreatePage({
     }
 
     const publishedState = mode === "draft" ? false : isActive;
-    const created = addAdminProduct({
-      name: trimmedName,
-      sku: trimmedSku.toUpperCase(),
-      slug: slug.trim() || slugifyProductName(trimmedName),
-      category,
-      price: Math.round(numericPrice),
-      stock: Math.round(numericStock),
-      stockUnit: stockUnit.trim() || "Buket",
-      minThreshold: Math.round(numericThreshold),
-      sales: 0,
-      rating: 5.0,
-      imageUrl: imageUrl.trim() || undefined,
-      isPublished: publishedState,
-      isCustomizable,
-      description: trimmedDescription,
-      botanicalTags,
-    });
+    const created = addAdminProduct(
+      {
+        name: trimmedName,
+        sku: trimmedSku.toUpperCase(),
+        slug: slug.trim() || slugifyProductName(trimmedName),
+        category,
+        price: Math.round(numericPrice),
+        stock: Math.round(numericStock),
+        stockUnit: stockUnit.trim() || "Buket",
+        minThreshold: Math.round(numericThreshold),
+        sales: 0,
+        rating: 5.0,
+        imageUrl: imageUrl.trim() || undefined,
+        isPublished: publishedState,
+        isCustomizable,
+        description: trimmedDescription,
+        botanicalTags,
+      },
+      imageFile,
+    );
 
     setFeedbackMessage(
       mode === "draft"
@@ -330,7 +337,7 @@ export function AdminProductCreatePage({
         <Link
           to="/admin/produk"
           onClick={() => onCancel?.()}
-          className="inline-flex items-center gap-1.5 text-xs font-semibold text-[#111827] transition-colors hover:text-[#FF6B35]"
+          className="inline-flex items-center gap-1.5 text-xs font-semibold text-[#111827] transition-colors hover:text-[#BE185D]"
         >
           <ArrowLeft className="size-3.5" aria-hidden="true" />
           Kembali ke Katalog Produk
@@ -353,12 +360,12 @@ export function AdminProductCreatePage({
         aria-label="Filosofi Dreamineering Atelier"
         className="flex items-start gap-3.5 rounded-2xl border border-[#E5E7EB] bg-white p-4 shadow-xs sm:items-center"
       >
-        <div className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-[#111827] text-[#FF6B35]">
+        <div className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-[#111827] text-[#BE185D]">
           <Sparkles className="size-5" aria-hidden="true" />
         </div>
         <div className="min-w-0 flex-1 space-y-0.5">
           <div className="flex flex-wrap items-center gap-1.5 text-[11px] font-bold tracking-wider uppercase">
-            <span className="text-[#FF6B35]">
+            <span className="text-[#BE185D]">
               FILOSOFI DREAMINEERING ATELIER
             </span>
             <span className="text-[#D1D5DB]">•</span>
@@ -523,7 +530,7 @@ export function AdminProductCreatePage({
                     setAutoSku(true);
                     setSku(generateProductSku(name, category));
                   }}
-                  className="text-[11px] font-medium text-[#FF6B35] hover:underline"
+                  className="text-[11px] font-medium text-[#BE185D] hover:underline"
                 >
                   Generate SKU
                 </button>
@@ -715,7 +722,7 @@ export function AdminProductCreatePage({
                 Unit
               </span>
             </div>
-            <p className="text-xs font-medium leading-relaxed text-[#FF6B35]">
+            <p className="text-xs font-medium leading-relaxed text-[#BE185D]">
               Sistem memicu alert Low-Stock jika stok ≤ nilai ini (default: 5).
             </p>
           </div>
@@ -888,7 +895,7 @@ export function AdminProductCreatePage({
               <button
                 type="button"
                 onClick={() => setShowUrlInput((prev) => !prev)}
-                className="text-xs font-semibold text-[#FF6B35] hover:underline"
+                className="text-xs font-semibold text-[#BE185D] hover:underline"
               >
                 {showUrlInput ? "Tutup URL" : "Input URL"}
               </button>
@@ -915,7 +922,7 @@ export function AdminProductCreatePage({
               role="button"
               tabIndex={0}
               aria-label="Unggah foto produk dari komputer"
-              className="flex cursor-pointer flex-col items-center justify-center rounded-xl border border-dashed border-[#D1D5DB] bg-[#F9FAFB] px-4 py-5 text-center transition-colors hover:border-[#FF6B35] hover:bg-[#FFF7F3]"
+              className="flex cursor-pointer flex-col items-center justify-center rounded-xl border border-dashed border-[#D1D5DB] bg-[#F9FAFB] px-4 py-5 text-center transition-colors hover:border-[#BE185D] hover:bg-[#FFF7F3]"
             >
               <div className="mb-2 flex size-9 items-center justify-center rounded-full border border-[#E5E7EB] bg-white text-[#374151] shadow-2xs">
                 <CloudUpload className="size-4" aria-hidden="true" />
@@ -971,7 +978,7 @@ export function AdminProductCreatePage({
                 <div className="absolute inset-x-3 top-3 flex items-center justify-between gap-2">
                   <span className="inline-flex items-center gap-1 rounded-md bg-black/75 px-2.5 py-1 text-[10px] font-bold tracking-wider text-white uppercase backdrop-blur-xs">
                     <Star
-                      className="size-3 fill-[#FF6B35] text-[#FF6B35]"
+                      className="size-3 fill-[#BE185D] text-[#BE185D]"
                       aria-hidden="true"
                     />
                     FOTO UTAMA / COVER

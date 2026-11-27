@@ -75,7 +75,7 @@ export function AdminOrderTable({
     <div className="min-w-0 [&_[data-slot=table-container]]:scrollbar-none">
       {totalRows === 0 ? (
         <div className="flex flex-col items-center gap-2 px-4 py-16 text-center">
-          <div className="flex size-12 items-center justify-center rounded-full bg-[#FFF3ED] text-[#C2410C]">
+          <div className="flex size-12 items-center justify-center rounded-full bg-[#FDF2F8] text-[#9D174D]">
             <PackageSearchIcon size={24} aria-hidden="true" />
           </div>
           <p className="mt-2 text-sm font-bold text-[#1A1A1A]">
@@ -130,20 +130,20 @@ export function AdminOrderTable({
                         <button
                           type="button"
                           onClick={column.getToggleSortingHandler()}
-                          className="inline-flex items-center gap-1.5 rounded-sm text-left font-bold uppercase outline-none transition-colors hover:text-[#C2410C] focus-visible:ring-2 focus-visible:ring-[#FF6B35]/40"
+                          className="inline-flex items-center gap-1.5 rounded-sm text-left font-bold uppercase outline-none transition-colors hover:text-[#9D174D] focus-visible:ring-2 focus-visible:ring-[#BE185D]/40"
                         >
                           <table.FlexRender header={header} />
                           {sorted === "asc" ? (
                             <ArrowUpIcon
                               size={12}
                               aria-hidden="true"
-                              className="text-[#C2410C]"
+                              className="text-[#9D174D]"
                             />
                           ) : sorted === "desc" ? (
                             <ArrowDownIcon
                               size={12}
                               aria-hidden="true"
-                              className="text-[#C2410C]"
+                              className="text-[#9D174D]"
                             />
                           ) : (
                             <ArrowUpDownIcon

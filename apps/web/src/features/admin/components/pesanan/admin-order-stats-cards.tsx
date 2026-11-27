@@ -45,7 +45,7 @@ export function AdminOrderStatsCards({
       icon: Flower2Icon,
       chip: {
         label: "Atelier Queue",
-        className: "bg-[#FFF3ED] text-[#C2410C]",
+        className: "bg-[#FDF2F8] text-[#9D174D]",
       },
       note: "Sedang dikerjakan meja florist",
     },
@@ -67,14 +67,14 @@ export function AdminOrderStatsCards({
           type="button"
           onClick={() => onSelect(card.id)}
           data-queue={card.id}
-          className="flex h-full flex-col gap-4 rounded-3xl bg-white p-5 text-left shadow-md ring-1 ring-foreground/5 transition-colors hover:ring-[#FF6B35]/40 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#FF6B35]/40"
+          className="flex h-full flex-col gap-4 rounded-3xl bg-white p-5 text-left shadow-md ring-1 ring-foreground/5 transition-colors hover:ring-[#BE185D]/40 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#BE185D]/40"
         >
           {/* Header: ikon + angka di kiri, badge di kanan */}
           <div className="flex items-center justify-between gap-2">
             <div className="flex items-center gap-3">
               <span
                 aria-hidden="true"
-                className="flex size-10 shrink-0 items-center justify-center rounded-2xl bg-[#FFF3ED] text-[#FF6B35]"
+                className="flex size-10 shrink-0 items-center justify-center rounded-2xl bg-[#FDF2F8] text-[#BE185D]"
               >
                 <card.icon size={18} />
               </span>

@@ -150,7 +150,10 @@ export function ShopHeader() {
               onChange={(event) => setSearchQuery(event.target.value)}
               className="h-full flex-1 rounded-none border-0 bg-transparent px-3.5 text-sm text-[#1C1917] placeholder:text-[#6B625C] focus-visible:border-0 focus-visible:ring-0"
             />
-            <span aria-hidden="true" className="h-6 w-px shrink-0 bg-[#D6CBC6]" />
+            <span
+              aria-hidden="true"
+              className="h-6 w-px shrink-0 bg-[#D6CBC6]"
+            />
             <Button
               type="submit"
               className="h-full shrink-0 rounded-none bg-[#BE185D] px-5 text-sm font-semibold text-white hover:bg-[#9D174D]"

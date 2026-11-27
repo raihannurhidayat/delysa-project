@@ -12,6 +12,7 @@ import * as React from "react";
 import type { QueryClient } from "@tanstack/react-query";
 import { DefaultCatchBoundary } from "~/components/DefaultCatchBoundary";
 import { NotFound } from "~/components/NotFound";
+import { useRealtimeSync } from "~/features/shop/hooks/use-realtime-sync";
 import appCss from "~/styles/app.css?url";
 import { seo } from "~/utils/seo";
 import { Toast, Toaster } from "~/components/ui/toast";
@@ -68,6 +69,8 @@ export const Route = createRootRouteWithContext<{
 });
 
 function RootComponent() {
+  useRealtimeSync();
+
   return (
     <RootDocument>
       <Outlet />

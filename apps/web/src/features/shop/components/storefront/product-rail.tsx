@@ -12,7 +12,10 @@ import { cn } from "~/lib/utils";
 type ProductRailLink =
   | {
       to: "/katalog";
-      search?: { category?: string; sort?: "termurah" | "termahal" | "terbaru" };
+      search?: {
+        category?: string;
+        sort?: "termurah" | "termahal" | "terbaru";
+      };
     }
   | { to: "/new-arrivals" | "/best-sellers" | "/categories" | "/promo" };
 

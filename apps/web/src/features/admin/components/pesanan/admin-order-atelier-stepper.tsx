@@ -42,7 +42,7 @@ export function AdminOrderAtelierStepper({ status }: { status: string }) {
           className={cn(
             "relative flex flex-col justify-between rounded-xl border p-3.5 transition-colors",
             step.status === "active"
-              ? "border-[#FF6B35]/40 bg-[#FFFBF8] shadow-xs"
+              ? "border-[#BE185D]/40 bg-[#FDF2F8] shadow-xs"
               : step.status === "done"
                 ? "border-emerald-200 bg-emerald-50/40"
                 : "border-[#E5E7EB] bg-[#F9FAFB]/60",
@@ -56,7 +56,7 @@ export function AdminOrderAtelierStepper({ status }: { status: string }) {
                 step.status === "done"
                   ? "bg-emerald-600 text-white ring-emerald-600"
                   : step.status === "active"
-                    ? "bg-[#FF6B35] text-white ring-[#FF6B35]"
+                    ? "bg-[#BE185D] text-white ring-[#BE185D]"
                     : "bg-white text-[#9CA3AF] ring-[#E5E7EB]",
               )}
             >
@@ -69,7 +69,7 @@ export function AdminOrderAtelierStepper({ status }: { status: string }) {
                 step.status === "done"
                   ? "text-emerald-700"
                   : step.status === "active"
-                    ? "text-[#C2410C]"
+                    ? "text-[#9D174D]"
                     : "text-[#9CA3AF]",
               )}
             >
@@ -88,7 +88,7 @@ export function AdminOrderAtelierStepper({ status }: { status: string }) {
                 step.status === "done"
                   ? "bg-emerald-100 text-emerald-700 ring-emerald-200"
                   : step.status === "active"
-                    ? "bg-[#FFF3ED] text-[#C2410C] ring-[#FF6B35]/30"
+                    ? "bg-[#FDF2F8] text-[#9D174D] ring-[#BE185D]/30"
                     : "bg-[#F3F4F6] text-[#6B7280] ring-[#E5E7EB]",
               )}
             >

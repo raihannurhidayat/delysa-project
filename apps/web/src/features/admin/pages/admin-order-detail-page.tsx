@@ -64,7 +64,7 @@ export function AdminOrderDetailPage() {
   if (!order) {
     return (
       <div className="flex min-h-[calc(100vh-8rem)] flex-col items-center justify-center rounded-2xl border border-[#E5E7EB] bg-white p-8 text-center shadow-sm">
-        <LoaderCircle className="mb-4 h-7 w-7 animate-spin text-[#FF6B35]" />
+        <LoaderCircle className="mb-4 h-7 w-7 animate-spin text-[#BE185D]" />
         <h2 className="text-lg font-bold text-[#111111]">
           Order tidak ditemukan
         </h2>
@@ -77,7 +77,7 @@ export function AdminOrderDetailPage() {
         </p>
         <Link
           to="/admin/pesanan"
-          className="mt-6 inline-flex items-center gap-1.5 rounded-xl border border-[#E5E7EB] bg-white px-4 py-2 text-xs font-semibold text-[#C2410C] shadow-xs transition-colors hover:bg-[#FFF3ED]"
+          className="mt-6 inline-flex items-center gap-1.5 rounded-xl border border-[#E5E7EB] bg-white px-4 py-2 text-xs font-semibold text-[#9D174D] shadow-xs transition-colors hover:bg-[#FDF2F8]"
         >
           <ArrowLeft size={14} aria-hidden="true" />
           Kembali ke daftar pesanan
@@ -147,7 +147,7 @@ export function AdminOrderDetailPage() {
       <div className="flex flex-wrap items-center justify-between gap-3">
         <Link
           to="/admin/pesanan"
-          className="inline-flex items-center gap-1.5 rounded-xl border border-[#E5E7EB] bg-white px-3.5 py-2 text-xs font-semibold text-[#4B5563] shadow-2xs transition-colors hover:border-[#FF6B35]/40 hover:bg-[#FFFBF8] hover:text-[#C2410C]"
+          className="inline-flex items-center gap-1.5 rounded-xl border border-[#E5E7EB] bg-white px-3.5 py-2 text-xs font-semibold text-[#4B5563] shadow-2xs transition-colors hover:border-[#BE185D]/40 hover:bg-[#FDF2F8] hover:text-[#9D174D]"
         >
           <ArrowLeft size={14} aria-hidden="true" />
           Kembali ke daftar pesanan
@@ -155,7 +155,7 @@ export function AdminOrderDetailPage() {
 
         <div className="flex flex-wrap items-center gap-1.5">
           {order.batch === "unsil" && (
-            <Badge className="rounded-full border border-[#FED7AA] bg-[#FFF3ED] px-2.5 py-0.5 text-[11px] font-semibold text-[#C2410C]">
+            <Badge className="rounded-full border border-[#FED7AA] bg-[#FDF2F8] px-2.5 py-0.5 text-[11px] font-semibold text-[#9D174D]">
               Batch Wisuda UNSIL
             </Badge>
           )}
@@ -252,7 +252,7 @@ export function AdminOrderDetailPage() {
                     className={cn(
                       "rounded-xl px-3.5 text-xs font-semibold",
                       action.variant !== "destructive" &&
-                        "bg-[#FF6B35] text-white hover:bg-[#EA580C]",
+                        "bg-[#BE185D] text-white hover:bg-[#9D174D]",
                     )}
                   >
                     {action.label}
@@ -267,11 +267,11 @@ export function AdminOrderDetailPage() {
       {/* Baris 1: Status Pemenuhan Atelier (Full Width Row) */}
       <section className="rounded-2xl border border-[#E5E7EB] bg-white p-4 shadow-xs sm:p-5">
         <div className="flex flex-wrap items-center justify-between gap-2 border-b border-[#F3F4F6] pb-3">
-          <div className="flex items-center gap-1.5 text-[11px] font-bold tracking-wider text-[#FF6B35] uppercase">
+          <div className="flex items-center gap-1.5 text-[11px] font-bold tracking-wider text-[#BE185D] uppercase">
             <PackageCheck size={13} aria-hidden="true" />
             <span>Status Pemenuhan Atelier</span>
           </div>
-          <Badge className="rounded-full border border-[#FED7AA] bg-[#FFF3ED] px-2.5 py-0.5 text-[10px] font-bold text-[#C2410C]">
+          <Badge className="rounded-full border border-[#FED7AA] bg-[#FDF2F8] px-2.5 py-0.5 text-[10px] font-bold text-[#9D174D]">
             Step {currentStep} dari 4
           </Badge>
         </div>
@@ -284,7 +284,7 @@ export function AdminOrderDetailPage() {
         <section className="flex flex-col justify-between rounded-2xl border border-[#E5E7EB] bg-white p-4 shadow-xs sm:p-5">
           <div>
             <div className="flex items-center justify-between gap-2">
-              <div className="flex items-center gap-1.5 text-[11px] font-bold tracking-wider text-[#FF6B35] uppercase">
+              <div className="flex items-center gap-1.5 text-[11px] font-bold tracking-wider text-[#BE185D] uppercase">
                 <Mail size={13} aria-hidden="true" />
                 <span>Informasi Pemesan</span>
               </div>
@@ -334,7 +334,7 @@ export function AdminOrderDetailPage() {
         <section className="flex flex-col justify-between rounded-2xl border border-[#E5E7EB] bg-white p-4 shadow-xs sm:p-5">
           <div>
             <div className="flex items-center justify-between gap-2 border-b border-[#F3F4F6] pb-3">
-              <div className="flex items-center gap-1.5 text-[11px] font-bold tracking-wider text-[#FF6B35] uppercase">
+              <div className="flex items-center gap-1.5 text-[11px] font-bold tracking-wider text-[#BE185D] uppercase">
                 <MapPin size={13} aria-hidden="true" />
                 <span>Lokasi &amp; Jadwal Antar</span>
               </div>
@@ -344,7 +344,7 @@ export function AdminOrderDetailPage() {
             <div className="mt-3.5 space-y-2.5">
               {/* Row 1: Titik Tujuan Pengantaran */}
               <div className="flex items-start gap-3 rounded-xl border border-[#F3F4F6] bg-[#F9FAFB] p-3">
-                <div className="flex size-8 shrink-0 items-center justify-center rounded-lg bg-[#FFF3ED] text-[#FF6B35]">
+                <div className="flex size-8 shrink-0 items-center justify-center rounded-lg bg-[#FDF2F8] text-[#BE185D]">
                   <MapPin size={16} aria-hidden="true" />
                 </div>
                 <div className="min-w-0 flex-1">
@@ -400,7 +400,7 @@ export function AdminOrderDetailPage() {
         <section className="flex flex-col justify-between rounded-2xl border border-[#E5E7EB] bg-white p-4 shadow-xs sm:p-5 md:col-span-2 lg:col-span-1">
           <div>
             <div className="flex items-center justify-between gap-2">
-              <div className="flex items-center gap-1.5 text-[11px] font-bold tracking-wider text-[#FF6B35] uppercase">
+              <div className="flex items-center gap-1.5 text-[11px] font-bold tracking-wider text-[#BE185D] uppercase">
                 <ClipboardCheck size={13} aria-hidden="true" />
                 <span>Instruksi Pengantaran</span>
               </div>
@@ -424,7 +424,7 @@ export function AdminOrderDetailPage() {
       <section className="rounded-2xl border border-[#E5E7EB] bg-white p-4 shadow-xs sm:p-5">
         <div className="flex flex-wrap items-center justify-between gap-2 border-b border-[#F3F4F6] pb-3">
           <div>
-            <div className="flex items-center gap-1.5 text-[11px] font-bold tracking-wider text-[#FF6B35] uppercase">
+            <div className="flex items-center gap-1.5 text-[11px] font-bold tracking-wider text-[#BE185D] uppercase">
               <Flower2 size={13} aria-hidden="true" />
               <span>Item Komposisi Floral</span>
             </div>
@@ -456,7 +456,7 @@ export function AdminOrderDetailPage() {
                 ) : (
                   <div
                     aria-hidden="true"
-                    className="flex size-16 shrink-0 items-center justify-center rounded-xl bg-[#FFF3ED] text-[#FF6B35] ring-1 ring-[#FED7AA]"
+                    className="flex size-16 shrink-0 items-center justify-center rounded-xl bg-[#FDF2F8] text-[#BE185D] ring-1 ring-[#FED7AA]"
                   >
                     <Flower2 size={22} />
                   </div>
@@ -522,7 +522,7 @@ export function AdminOrderDetailPage() {
           </div>
           <div className="border-t border-[#E5E7EB] pt-2 sm:border-t-0 sm:pt-0">
             <dt className="font-semibold text-[#1A1A1A]">Grand total</dt>
-            <dd className="mt-0.5 text-base font-extrabold text-[#FF6B35]">
+            <dd className="mt-0.5 text-base font-extrabold text-[#BE185D]">
               {formatRupiah(order.totals.grandTotal)}
             </dd>
           </div>
@@ -534,7 +534,7 @@ export function AdminOrderDetailPage() {
         {/* Inspeksi Bukti Transfer (8 kolom) */}
         <section className="rounded-2xl border border-[#E5E7EB] bg-white p-4 shadow-xs sm:p-5 lg:col-span-8">
           <div className="flex flex-wrap items-center justify-between gap-2 border-b border-[#F3F4F6] pb-3">
-            <div className="flex items-center gap-1.5 text-[11px] font-bold tracking-wider text-[#FF6B35] uppercase">
+            <div className="flex items-center gap-1.5 text-[11px] font-bold tracking-wider text-[#BE185D] uppercase">
               <ReceiptText size={13} aria-hidden="true" />
               <span>Inspeksi Bukti Transfer</span>
             </div>
@@ -545,17 +545,40 @@ export function AdminOrderDetailPage() {
 
           <div className="mt-4 grid gap-4 sm:grid-cols-12">
             {/* Preview Slip */}
-            <div className="flex flex-col items-center justify-center rounded-xl border border-dashed border-[#D1D5DB] bg-[#F9FAFB] p-4 text-center sm:col-span-5">
-              <div className="flex size-10 items-center justify-center rounded-full bg-[#FFF3ED] text-[#FF6B35]">
-                <FileCheck2 size={20} aria-hidden="true" />
-              </div>
-              <p className="mt-2 text-xs font-semibold text-[#374151]">
-                Bukti transfer ditampilkan di sini
-              </p>
-              <p className="mt-1 text-[11px] leading-relaxed text-[#6B7280]">
-                Slip mutasi {order.payment.bank?.name ?? "BCA"} terlampir untuk
-                verifikasi kasir atelier
-              </p>
+            <div className="flex flex-col items-center justify-center rounded-xl border border-dashed border-[#D6CBC6] bg-[#FAF7F5] p-4 text-center sm:col-span-5">
+              {order.paymentProofUrl ? (
+                <div className="w-full space-y-2">
+                  <img
+                    src={order.paymentProofUrl}
+                    alt={`Bukti transfer pesanan ${order.code}`}
+                    className="mx-auto max-h-56 w-full rounded-lg bg-white object-contain ring-1 ring-[#EAE2DE]"
+                  />
+                  <p className="truncate text-[11px] font-medium text-[#57534E]">
+                    {order.paymentProofName ?? "bukti-pembayaran"}
+                  </p>
+                  <a
+                    href={order.paymentProofUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center justify-center rounded-full border border-[#FBCFE8] bg-[#FDF2F8] px-3 py-1 text-[11px] font-semibold text-[#9D174D] hover:bg-[#FCE7F3]"
+                  >
+                    Buka gambar penuh
+                  </a>
+                </div>
+              ) : (
+                <>
+                  <div className="flex size-10 items-center justify-center rounded-full bg-[#FDF2F8] text-[#BE185D]">
+                    <FileCheck2 size={20} aria-hidden="true" />
+                  </div>
+                  <p className="mt-2 text-xs font-semibold text-[#1C1917]">
+                    Belum ada bukti transfer diunggah
+                  </p>
+                  <p className="mt-1 text-[11px] leading-relaxed text-[#57534E]">
+                    Slip mutasi {order.payment.bank?.name ?? "BCA"} akan tampil
+                    otomatis di sini setelah pelanggan mengunggah bukti bayar.
+                  </p>
+                </>
+              )}
             </div>
 
             {/* Detail Mutasi & Rekening */}
@@ -605,9 +628,15 @@ export function AdminOrderDetailPage() {
                 {formatRupiah(order.totals.grandTotal)}
               </div>
             </div>
-            <span className="inline-flex items-center gap-1 rounded-full bg-[#DCFCE7] px-3 py-1 text-xs font-bold text-[#166534]">
+            <span
+              className={
+                order.paymentProofUrl
+                  ? "inline-flex items-center gap-1 rounded-full bg-[#DCFCE7] px-3 py-1 text-xs font-bold text-[#166534]"
+                  : "inline-flex items-center gap-1 rounded-full bg-[#FEF3C7] px-3 py-1 text-xs font-bold text-[#92400E]"
+              }
+            >
               <CheckCircle2 size={13} aria-hidden="true" />
-              COCOK 100%
+              {order.paymentProofUrl ? "BUKTI TERLAMPIR" : "MENUNGGU BUKTI"}
             </span>
           </div>
 
@@ -616,7 +645,7 @@ export function AdminOrderDetailPage() {
               <Button
                 type="button"
                 onClick={() => handleAction("verify")}
-                className="flex-1 rounded-xl bg-[#FF6B35] px-4 py-2 text-xs font-semibold text-white hover:bg-[#EA580C]"
+                className="flex-1 rounded-xl bg-[#BE185D] px-4 py-2 text-xs font-semibold text-white hover:bg-[#9D174D]"
               >
                 Verifikasi Pembayaran
               </Button>
@@ -636,7 +665,7 @@ export function AdminOrderDetailPage() {
         <section className="flex flex-col justify-between rounded-2xl border border-[#E5E7EB] bg-white p-4 shadow-xs sm:p-5 lg:col-span-4">
           <div>
             <div className="flex items-center justify-between gap-2 border-b border-[#F3F4F6] pb-3">
-              <div className="flex items-center gap-1.5 text-[11px] font-bold tracking-wider text-[#FF6B35] uppercase">
+              <div className="flex items-center gap-1.5 text-[11px] font-bold tracking-wider text-[#BE185D] uppercase">
                 <CreditCard size={13} aria-hidden="true" />
                 <span>Total Tagihan Final</span>
               </div>
@@ -644,7 +673,7 @@ export function AdminOrderDetailPage() {
             </div>
 
             <div className="mt-4 space-y-3">
-              <div className="rounded-xl border border-[#FED7AA]/60 bg-[#FFFBF8] p-4 text-center sm:text-left">
+              <div className="rounded-xl border border-[#FED7AA]/60 bg-[#FDF2F8] p-4 text-center sm:text-left">
                 <p className="text-xs font-medium text-[#6B7280]">
                   Tagihan Keseluruhan ({itemCount} item)
                 </p>
@@ -694,7 +723,7 @@ export function AdminOrderDetailPage() {
           <section className="flex flex-col justify-between rounded-2xl border border-[#E5E7EB] bg-white p-4 shadow-xs sm:p-5">
             <div>
               <div className="flex items-center justify-between gap-2 border-b border-[#F3F4F6] pb-3">
-                <div className="flex items-center gap-1.5 text-[11px] font-bold tracking-wider text-[#FF6B35] uppercase">
+                <div className="flex items-center gap-1.5 text-[11px] font-bold tracking-wider text-[#BE185D] uppercase">
                   <MessageSquareQuote size={13} aria-hidden="true" />
                   <span>Kartu Ucapan Custom</span>
                 </div>
@@ -709,7 +738,7 @@ export function AdminOrderDetailPage() {
                   {copiedKey === "note" ? "Tersalin" : "Salin Teks"}
                 </Button>
               </div>
-              <div className="mt-4 rounded-xl border border-[#FED7AA]/60 bg-[#FFFBF8] p-4 text-sm italic leading-relaxed text-[#1A1A1A]">
+              <div className="mt-4 rounded-xl border border-[#FED7AA]/60 bg-[#FDF2F8] p-4 text-sm italic leading-relaxed text-[#1A1A1A]">
                 &ldquo;{order.customNote}&rdquo;
               </div>
             </div>
@@ -723,7 +752,7 @@ export function AdminOrderDetailPage() {
         {/* Jejak Audit & Log Transaksi */}
         <section className="rounded-2xl border border-[#E5E7EB] bg-white p-4 shadow-xs sm:p-5">
           <div className="mb-4 flex items-center justify-between gap-2 border-b border-[#F3F4F6] pb-3">
-            <div className="flex items-center gap-1.5 text-[11px] font-bold tracking-wider text-[#FF6B35] uppercase">
+            <div className="flex items-center gap-1.5 text-[11px] font-bold tracking-wider text-[#BE185D] uppercase">
               <History size={13} aria-hidden="true" />
               <span>Jejak Audit &amp; Log Transaksi</span>
             </div>

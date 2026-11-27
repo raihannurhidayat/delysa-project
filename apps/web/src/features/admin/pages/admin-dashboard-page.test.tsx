@@ -9,12 +9,22 @@ vi.mock("@tanstack/react-router", async () => {
   return {
     Link: ({
       to,
+      params,
       children,
       ...props
     }: {
       to: string;
+      params?: Record<string, string>;
       children: React.ReactNode;
-    }) => React.createElement("a", { href: to, ...props }, children),
+    }) => {
+      const href = params
+        ? Object.entries(params).reduce(
+            (acc, [key, value]) => acc.replace(`$${key}`, value),
+            to,
+          )
+        : to;
+      return React.createElement("a", { href, ...props }, children);
+    },
   };
 });
 
@@ -26,18 +36,29 @@ const ADMIN: AuthUser = {
 };
 
 describe("AdminDashboardPage", () => {
-  it("greets the admin and keeps the three honest action cards", () => {
+  it("greets the admin, links active modules, and shows live summary panels", () => {
     render(<AdminDashboardPage user={ADMIN} />);
 
     expect(
       screen.getByRole("heading", { name: "Halo, Sari" }),
     ).toBeInTheDocument();
     expect(
+      screen.getByRole("link", { name: /Tambah Produk/i }),
+    ).toHaveAttribute("href", "/admin/produk/tambah");
+    expect(
+      screen.getByRole("link", { name: /Kelola Pesanan/i }),
+    ).toHaveAttribute("href", "/admin/pesanan");
+    expect(
       screen.getByRole("link", { name: /Buka storefront/i }),
     ).toHaveAttribute("href", "/");
-    expect(screen.getByText("Pengguna")).toBeInTheDocument();
-    expect(screen.getByText("Toko")).toBeInTheDocument();
-    expect(screen.getByText("Pesanan")).toBeInTheDocument();
-    expect(screen.getAllByText("Segera")).toHaveLength(3);
+    expect(
+      screen.getByRole("heading", { name: /Antrean Pesanan Perlu Tindakan/i }),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByRole("heading", { name: /Peringatan Stok Produk/i }),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByRole("link", { name: /Laporan Penjualan/i }),
+    ).toHaveAttribute("href", "/admin/laporan");
   });
 });

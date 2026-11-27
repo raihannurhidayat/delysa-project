@@ -1,6 +1,8 @@
 import { useCallback, useMemo, useState } from "react";
 import { useTable } from "@tanstack/react-table";
 import { Skeleton } from "~/components/ui/skeleton";
+import { createAdminManualOrderApi } from "~/features/shop/api/endpoints";
+import { isMockMode } from "~/features/shop/api/http";
 import { saveOrder, updateOrderStatus } from "~/features/shop/lib/order-store";
 import { AdminOrderDetailDrawer } from "../components/pesanan/admin-order-detail-drawer";
 import { AdminOrderManualDialog } from "../components/pesanan/admin-order-manual-dialog";
@@ -98,8 +100,34 @@ export function AdminOrdersPage() {
         values,
         generateManualOrderCode(new Date()),
       );
-      saveOrder(record);
-      setManualOpen(false);
+      if (isMockMode()) {
+        saveOrder(record);
+        setManualOpen(false);
+        return;
+      }
+      void createAdminManualOrderApi({
+        recipientName: record.recipientName,
+        recipientPhone: record.recipientPhone,
+        shippingAddress: record.shippingAddress,
+        customNote: record.customNote,
+        paymentMethod:
+          record.payment.methodId === "qris" ? "qris" : "bca_transfer",
+        status: record.status,
+        items: record.items.map((item) => ({
+          slug: item.slug,
+          name: item.name,
+          price: item.price,
+          qty: item.qty,
+        })),
+      })
+        .then((serverOrder) => {
+          saveOrder(serverOrder);
+          setManualOpen(false);
+        })
+        .catch(() => {
+          saveOrder(record);
+          setManualOpen(false);
+        });
     },
     [],
   );
