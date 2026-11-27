@@ -4,6 +4,7 @@ export type AdminProduct = {
   id: number;
   name: string;
   sku: string;
+  slug?: string;
   category: string;
   price: number;
   stock: number;
@@ -13,6 +14,9 @@ export type AdminProduct = {
   rating: number;
   imageUrl?: string;
   isPublished: boolean;
+  isCustomizable?: boolean;
+  description?: string;
+  botanicalTags?: string[];
 };
 
 /** Status publik produk: "live" = dipublikasi & tampil di shop, "private" = tidak dipublikasi. */

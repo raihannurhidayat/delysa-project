@@ -30,8 +30,34 @@ import {
 } from "../lib/products/product.types";
 import { MOCK_PRODUCTS } from "../lib/products/mock-products";
 
-export function AdminProductsPage() {
-  const [products, setProducts] = useState<AdminProduct[]>(MOCK_PRODUCTS);
+export type AdminProductsPageProps = {
+  initialProducts?: AdminProduct[];
+  onAddProduct?: () => void;
+  onEditProduct?: (product: AdminProduct) => void;
+  onProductsChange?: (products: AdminProduct[]) => void;
+};
+
+export function AdminProductsPage({
+  initialProducts = MOCK_PRODUCTS,
+  onAddProduct,
+  onEditProduct,
+  onProductsChange,
+}: AdminProductsPageProps = {}) {
+  const [products, setProductsState] =
+    useState<AdminProduct[]>(initialProducts);
+
+  const setProducts = useCallback(
+    (
+      updater: AdminProduct[] | ((current: AdminProduct[]) => AdminProduct[]),
+    ) => {
+      setProductsState((current) => {
+        const next = typeof updater === "function" ? updater(current) : updater;
+        onProductsChange?.(next);
+        return next;
+      });
+    },
+    [onProductsChange],
+  );
   const [filters, setFilters] = useState<ProductFilters>(
     DEFAULT_PRODUCT_FILTERS,
   );
@@ -44,14 +70,25 @@ export function AdminProductsPage() {
   );
 
   const openCreate = useCallback(() => {
+    if (onAddProduct) {
+      onAddProduct();
+      return;
+    }
     setEditingProduct(null);
     setDialogOpen(true);
-  }, []);
+  }, [onAddProduct]);
 
-  const openEdit = useCallback((product: AdminProduct) => {
-    setEditingProduct(product);
-    setDialogOpen(true);
-  }, []);
+  const openEdit = useCallback(
+    (product: AdminProduct) => {
+      if (onEditProduct) {
+        onEditProduct(product);
+        return;
+      }
+      setEditingProduct(product);
+      setDialogOpen(true);
+    },
+    [onEditProduct],
+  );
 
   const columns = useMemo(
     () => createProductColumns({ onEdit: openEdit }),
