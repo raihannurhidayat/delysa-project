@@ -2,7 +2,7 @@ import { beforeEach, describe, expect, it, vi } from "vitest";
 import { render, screen } from "@testing-library/react";
 import { NAV_LINKS, ShopHeader } from "./shop-header";
 
-const useDemoAuth = vi.fn();
+const useSession = vi.fn();
 
 vi.mock("@tanstack/react-router", async () => {
   const React = await import("react");
@@ -34,29 +34,57 @@ vi.mock("~/features/shop/hooks/use-mini-cart", () => ({
   useMiniCart: () => ({ count: 0 }),
 }));
 
-vi.mock("~/features/shop/hooks/use-demo-auth", () => ({
-  useDemoAuth: () => useDemoAuth(),
+vi.mock("~/features/auth/hooks/use-session", () => ({
+  useSession: () => useSession(),
 }));
 
 beforeEach(() => {
   vi.clearAllMocks();
-  useDemoAuth.mockReturnValue({ isCustomer: false });
+  useSession.mockReturnValue({ user: null });
 });
 
-describe("ShopHeader order history entry", () => {
-  it("links the account icon to the history page for guests", () => {
+describe("ShopHeader account entry", () => {
+  it("links guests to sign in", () => {
     render(<ShopHeader />);
 
-    expect(
-      screen.getByRole("link", { name: "Riwayat pesanan" }),
-    ).toHaveAttribute("href", "/riwayat-pesanan");
+    expect(screen.getByRole("link", { name: "Masuk ke akun" })).toHaveAttribute(
+      "href",
+      "/sign-in",
+    );
     expect(screen.queryByText("Sari")).not.toBeInTheDocument();
   });
 
-  it("shows the demo customer name next to the account icon", () => {
-    useDemoAuth.mockReturnValue({ isCustomer: true });
+  it("shows the customer name and account link", () => {
+    useSession.mockReturnValue({
+      user: {
+        id: 1,
+        name: "Sari Amelia",
+        email: "sari@example.com",
+        role: "customer",
+      },
+    });
     render(<ShopHeader />);
     expect(screen.getByText("Sari")).toBeInTheDocument();
+    expect(screen.getByRole("link", { name: "Buka akun" })).toHaveAttribute(
+      "href",
+      "/akun",
+    );
+  });
+
+  it("sends store owners to the store dashboard", () => {
+    useSession.mockReturnValue({
+      user: {
+        id: 2,
+        name: "Budi Santoso",
+        email: "toko@example.com",
+        role: "store_owner",
+      },
+    });
+    render(<ShopHeader />);
+    expect(screen.getByRole("link", { name: "Buka akun" })).toHaveAttribute(
+      "href",
+      "/toko",
+    );
   });
 
   it("adds Pesanan Saya to the desktop navigation", () => {

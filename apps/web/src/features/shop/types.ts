@@ -177,7 +177,19 @@ export type CartSnapshot = {
   instructions: string;
 };
 
-export type OrderPaymentMethod = "manual_transfer_bca" | "qris";
+export const PAYMENT_METHOD_IDS = ["manual_transfer_bca", "qris"] as const;
+
+export type PaymentMethod = (typeof PAYMENT_METHOD_IDS)[number];
+
+/** Alias untuk snapshot pembayaran pada `OrderRecord`. */
+export type OrderPaymentMethod = PaymentMethod;
+
+export function isPaymentMethod(value: unknown): value is PaymentMethod {
+  return (
+    typeof value === "string" &&
+    (PAYMENT_METHOD_IDS as readonly string[]).includes(value)
+  );
+}
 
 export type OrderPaymentSnapshot = {
   methodId: OrderPaymentMethod | "";
@@ -224,3 +236,49 @@ export type OrderTab =
   | "shipped"
   | "delivered"
   | "closed";
+
+export const CHECKOUT_STEPS = [
+  "review",
+  "alamat",
+  "bayar",
+  "ringkasan",
+] as const;
+
+export type CheckoutStep = (typeof CHECKOUT_STEPS)[number];
+
+export const CHECKOUT_STEP_LABELS: Record<CheckoutStep, string> = {
+  review: "Review Keranjang",
+  alamat: "Alamat Pengiriman",
+  bayar: "Metode Pembayaran",
+  ringkasan: "Ringkasan & Bayar",
+};
+
+export const CHECKOUT_STEP_SHORT_LABELS: Record<CheckoutStep, string> = {
+  review: "Keranjang",
+  alamat: "Alamat",
+  bayar: "Bayar",
+  ringkasan: "Ringkasan",
+};
+
+export type CheckoutFormData = {
+  step: CheckoutStep;
+  recipientName: string;
+  recipientPhone: string;
+  shippingAddress: string;
+  customNote: string;
+  paymentMethod: PaymentMethod | "";
+  confirmed: boolean;
+};
+
+export type CheckoutDraft = CheckoutFormData & {
+  guestToken: string;
+  updatedAt: number;
+};
+
+export type CheckoutContext = {
+  cartLines: MiniCartLine[];
+  cartTotals: CartTotals;
+  isGuest: boolean;
+  guestToken: string;
+  userAddress?: { name: string; phone: string; address: string };
+};

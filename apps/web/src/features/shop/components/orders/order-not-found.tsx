@@ -1,6 +1,6 @@
 import { MessageCircle, PackageX } from "lucide-react";
 import { buttonVariants } from "~/components/ui/button";
-import { WHATSAPP_NUMBER } from "~/features/checkout/payment-methods";
+import { WHATSAPP_NUMBER } from "~/features/shop/lib/payment-methods";
 import { OrderCodeLookupForm } from "./order-code-lookup-form";
 
 export function OrderNotFound({

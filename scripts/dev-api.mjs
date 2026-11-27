@@ -7,7 +7,7 @@ import { fileURLToPath } from 'node:url';
 import path from 'node:path';
 
 const API_DIR = path.join(path.dirname(fileURLToPath(import.meta.url)), '..', 'apps', 'api');
-const DEFAULT_ARGS = ['artisan', 'serve', '--host=127.0.0.1', '--port=8000'];
+const DEFAULT_ARGS = ['artisan', 'serve', '--host=localhost', '--port=8000'];
 
 function resolvePhp() {
   if (process.env.PHP_BIN) {

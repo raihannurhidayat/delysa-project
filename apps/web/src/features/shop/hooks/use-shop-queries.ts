@@ -19,7 +19,8 @@ import type { CatalogQuery } from "~/features/shop/types";
 /**
  * Query hooks produk. Satu hook per endpoint; pemanggil memakai
  * `isPending`/`isError`/`data` seperti pola section yang sudah ada.
- * Ganti mock→BE cukup via `VITE_API_URL` tanpa menyentuh file ini.
+ * Ganti mode storefront via `VITE_MOCK_STOREFRONT`/`VITE_API_URL`
+ * tanpa menyentuh file ini.
  */
 export function useFlashSaleProducts() {
   return useQuery({

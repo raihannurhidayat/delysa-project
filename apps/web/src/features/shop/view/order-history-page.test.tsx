@@ -40,20 +40,37 @@ const SEARCH: OrderHistorySearch = {
 
 const navigate = vi.fn();
 const add = vi.fn();
-const setMode = vi.fn();
 const useOrders = vi.fn();
-const useDemoAuth = vi.fn();
+const useSession = vi.fn();
 
-vi.mock("@tanstack/react-router", () => ({
-  useNavigate: () => navigate,
-}));
+const CUSTOMER = {
+  id: 1,
+  name: "Sari Amelia",
+  email: "sari@example.com",
+  role: "customer",
+};
+
+vi.mock("@tanstack/react-router", async () => {
+  const React = await import("react");
+  return {
+    useNavigate: () => navigate,
+    Link: ({
+      to,
+      children,
+      ...props
+    }: {
+      to: string;
+      children: React.ReactNode;
+    }) => React.createElement("a", { href: to, ...props }, children),
+  };
+});
 
 vi.mock("~/features/shop/hooks/use-orders", () => ({
   useOrders: () => useOrders(),
 }));
 
-vi.mock("~/features/shop/hooks/use-demo-auth", () => ({
-  useDemoAuth: () => useDemoAuth(),
+vi.mock("~/features/auth/hooks/use-session", () => ({
+  useSession: () => useSession(),
 }));
 
 vi.mock("~/features/shop/hooks/use-mini-cart", () => ({
@@ -63,7 +80,7 @@ vi.mock("~/features/shop/hooks/use-mini-cart", () => ({
 beforeEach(() => {
   vi.clearAllMocks();
   useOrders.mockReturnValue({ orders: ORDERS });
-  useDemoAuth.mockReturnValue({ isCustomer: false, setMode });
+  useSession.mockReturnValue({ user: null });
 });
 
 describe("OrderHistoryPage", () => {
@@ -75,19 +92,33 @@ describe("OrderHistoryPage", () => {
     ).toBeInTheDocument();
     expect(screen.queryAllByRole("article")).toHaveLength(0);
 
-    fireEvent.click(
-      screen.getByRole("button", { name: "Aktifkan login demo" }),
-    );
-    expect(setMode).toHaveBeenCalledWith("customer");
+    fireEvent.click(screen.getByRole("button", { name: "Masuk ke akun" }));
+    expect(navigate).toHaveBeenCalledWith({ to: "/sign-in" });
+  });
+
+  it("shows a role notice for non-customer accounts", async () => {
+    useSession.mockReturnValue({
+      user: { ...CUSTOMER, id: 2, role: "store_owner" },
+    });
+    render(<OrderHistoryPage search={SEARCH} onSearchChange={vi.fn()} />);
+
+    expect(
+      await screen.findByText("Riwayat pelanggan tidak tersedia"),
+    ).toBeInTheDocument();
+    expect(screen.queryAllByRole("article")).toHaveLength(0);
+    expect(
+      screen.getByRole("link", { name: "Kembali ke dasbor" }),
+    ).toHaveAttribute("href", "/toko");
   });
 
   it("renders the customer history with four cards and pagination", async () => {
-    useDemoAuth.mockReturnValue({ isCustomer: true, setMode });
+    useSession.mockReturnValue({ user: CUSTOMER });
     render(<OrderHistoryPage search={SEARCH} onSearchChange={vi.fn()} />);
 
     expect(
       await screen.findByRole("heading", { name: "Pesanan Saya" }),
     ).toBeInTheDocument();
+    expect(screen.getByText("Halo, Sari")).toBeInTheDocument();
     expect(screen.getByLabelText("Cari pesanan")).toBeInTheDocument();
     expect(
       screen.getByRole("group", { name: "Filter status pesanan" }),
@@ -101,7 +132,7 @@ describe("OrderHistoryPage", () => {
 
   it("forwards search changes after the debounce", async () => {
     const onSearchChange = vi.fn();
-    useDemoAuth.mockReturnValue({ isCustomer: true, setMode });
+    useSession.mockReturnValue({ user: CUSTOMER });
     render(
       <OrderHistoryPage search={SEARCH} onSearchChange={onSearchChange} />,
     );
@@ -120,7 +151,7 @@ describe("OrderHistoryPage", () => {
 
   it("resets the page when the status tab changes", async () => {
     const onSearchChange = vi.fn();
-    useDemoAuth.mockReturnValue({ isCustomer: true, setMode });
+    useSession.mockReturnValue({ user: CUSTOMER });
     render(
       <OrderHistoryPage search={SEARCH} onSearchChange={onSearchChange} />,
     );
@@ -134,7 +165,7 @@ describe("OrderHistoryPage", () => {
 
   it("forwards pagination changes", async () => {
     const onSearchChange = vi.fn();
-    useDemoAuth.mockReturnValue({ isCustomer: true, setMode });
+    useSession.mockReturnValue({ user: CUSTOMER });
     render(
       <OrderHistoryPage search={SEARCH} onSearchChange={onSearchChange} />,
     );
@@ -146,7 +177,7 @@ describe("OrderHistoryPage", () => {
   });
 
   it("shows the empty state when filters match nothing", async () => {
-    useDemoAuth.mockReturnValue({ isCustomer: true, setMode });
+    useSession.mockReturnValue({ user: CUSTOMER });
     render(
       <OrderHistoryPage
         search={{ ...SEARCH, q: "tidak-ada" }}
@@ -159,7 +190,7 @@ describe("OrderHistoryPage", () => {
   });
 
   it("opens an order from its card action", async () => {
-    useDemoAuth.mockReturnValue({ isCustomer: true, setMode });
+    useSession.mockReturnValue({ user: CUSTOMER });
     render(<OrderHistoryPage search={SEARCH} onSearchChange={vi.fn()} />);
 
     const card = (await screen.findAllByRole("article"))[0];
@@ -173,7 +204,7 @@ describe("OrderHistoryPage", () => {
   });
 
   it("reorders every item and navigates to the cart", async () => {
-    useDemoAuth.mockReturnValue({ isCustomer: true, setMode });
+    useSession.mockReturnValue({ user: CUSTOMER });
     render(
       <OrderHistoryPage
         search={{ ...SEARCH, status: "delivered" }}

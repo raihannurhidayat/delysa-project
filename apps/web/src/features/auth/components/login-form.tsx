@@ -1,7 +1,9 @@
 import { useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { ArrowRight, Eye, EyeOff, Lock } from "lucide-react";
+import { ArrowRight, Eye, EyeOff } from "lucide-react";
+import type { AuthUser } from "@delysa/shared";
+import { Alert, AlertDescription } from "~/components/ui/alert";
 import { Button } from "~/components/ui/button";
 import {
   Field,
@@ -11,18 +13,22 @@ import {
 } from "~/components/ui/field";
 import { Input } from "~/components/ui/input";
 import {
+  authErrorMessage,
+  firstFieldErrors,
+} from "~/features/auth/lib/auth-errors";
+import {
   loginFormSchema,
   type LoginFormValues,
 } from "~/features/auth/schemas/login-form-schema";
 import { useLogin } from "~/features/auth/hooks/use-login";
 
 type LoginFormProps = {
-  onSuccess?: () => void;
+  onSuccess?: (user: AuthUser) => void;
 };
 
 export function LoginForm({ onSuccess }: LoginFormProps) {
   const [showPassword, setShowPassword] = useState(false);
-  const { loginAsync, isPending, error: mutationError } = useLogin();
+  const { loginAsync, isPending } = useLogin();
 
   const form = useForm<LoginFormValues>({
     resolver: zodResolver(loginFormSchema),
@@ -33,17 +39,22 @@ export function LoginForm({ onSuccess }: LoginFormProps) {
   });
 
   const onSubmit = async (values: LoginFormValues) => {
+    form.clearErrors("root");
     try {
-      await loginAsync(values);
-      onSuccess?.();
-    } catch {
-      form.setError("root", { message: "Email atau password salah" });
+      const user = await loginAsync(values);
+      onSuccess?.(user);
+    } catch (error) {
+      const fieldErrors = firstFieldErrors(error);
+      for (const field of ["email", "password"] as const) {
+        const message = fieldErrors?.[field];
+        if (message) form.setError(field, { message });
+      }
+      form.setError("root", { message: authErrorMessage(error, "login") });
     }
   };
 
   const isSubmitting = form.formState.isSubmitting || isPending;
-  const rootError =
-    form.formState.errors.root?.message ?? mutationError?.message;
+  const rootError = form.formState.errors.root?.message;
 
   return (
     <form
@@ -92,25 +103,15 @@ export function LoginForm({ onSuccess }: LoginFormProps) {
           control={form.control}
           render={({ field, fieldState }) => (
             <Field data-invalid={fieldState.invalid} className="gap-0.5">
-              <div className="flex items-baseline justify-between">
-                <FieldLabel
-                  htmlFor="login-password"
-                  className="text-[13px] font-medium text-[#1A1A1A]"
-                >
-                  Kata Sandi{" "}
-                  <span aria-hidden="true" className="text-[#FF6B35]">
-                    *
-                  </span>
-                </FieldLabel>
-                <a
-                  href="#"
-                  aria-label="Lupa kata sandi (segera hadir)"
-                  onClick={(e) => e.preventDefault()}
-                  className="text-xs font-medium text-[#FF6B35] hover:text-[#E55A24]"
-                >
-                  Lupa kata sandi?
-                </a>
-              </div>
+              <FieldLabel
+                htmlFor="login-password"
+                className="text-[13px] font-medium text-[#1A1A1A]"
+              >
+                Kata Sandi{" "}
+                <span aria-hidden="true" className="text-[#FF6B35]">
+                  *
+                </span>
+              </FieldLabel>
               <div className="relative">
                 <Input
                   {...field}
@@ -144,6 +145,17 @@ export function LoginForm({ onSuccess }: LoginFormProps) {
           )}
         />
       </FieldGroup>
+
+      {rootError ? (
+        <Alert
+          variant="destructive"
+          className="rounded-xl border-[#FECACA] bg-[#FEF2F2] px-3 py-2"
+        >
+          <AlertDescription className="text-[12px] leading-snug text-[#B91C1C]">
+            {rootError}
+          </AlertDescription>
+        </Alert>
+      ) : null}
 
       <Button
         type="submit"

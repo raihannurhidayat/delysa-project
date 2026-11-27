@@ -14,6 +14,7 @@ import { DefaultCatchBoundary } from "~/components/DefaultCatchBoundary";
 import { NotFound } from "~/components/NotFound";
 import appCss from "~/styles/app.css?url";
 import { seo } from "~/utils/seo";
+import { Toast, Toaster } from "~/components/ui/toast";
 
 export const Route = createRootRouteWithContext<{
   queryClient: QueryClient;

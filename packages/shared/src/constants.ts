@@ -1,5 +1,5 @@
 /** Konstanta bersama FE+BE. Satu sumber kebenaran — mirror di Laravel via enum/const. */
-export const ROLES = ["customer", "admin"] as const;
+export const ROLES = ["customer", "store_owner", "admin"] as const;
 export type Role = (typeof ROLES)[number];
 
 export const ORDER_STATUSES = [

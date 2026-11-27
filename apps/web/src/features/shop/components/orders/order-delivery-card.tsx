@@ -8,18 +8,18 @@ import type { OrderRecord } from "~/features/shop/types";
 
 export function OrderDeliveryCard({
   order,
-  isCustomer,
+  isAuthenticated,
 }: {
   order: OrderRecord;
-  isCustomer: boolean;
+  isAuthenticated: boolean;
 }) {
-  const name = isCustomer
+  const name = isAuthenticated
     ? order.recipientName
     : maskOrderName(order.recipientName);
-  const phone = isCustomer
+  const phone = isAuthenticated
     ? order.recipientPhone
     : maskOrderPhone(order.recipientPhone);
-  const address = isCustomer
+  const address = isAuthenticated
     ? order.shippingAddress
     : maskOrderAddress(order.shippingAddress);
 
@@ -100,10 +100,9 @@ export function OrderDeliveryCard({
         ) : null}
       </dl>
 
-      {!isCustomer ? (
+      {!isAuthenticated ? (
         <p className="mt-3 rounded-xl bg-[#FFF3ED] px-3 py-2 text-[11px] leading-relaxed text-[#9A3412]">
-          Aktifkan login demo di <strong>kiri bawah</strong> untuk melihat data
-          lengkap.
+          Masuk ke akun untuk melihat data penerima secara lengkap.
         </p>
       ) : null}
     </section>

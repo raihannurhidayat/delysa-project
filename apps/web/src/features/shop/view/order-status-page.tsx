@@ -12,14 +12,14 @@ import {
   BreadcrumbSeparator,
 } from "~/components/ui/breadcrumb";
 import { Button, buttonVariants } from "~/components/ui/button";
-import { WHATSAPP_NUMBER } from "~/features/checkout/payment-methods";
+import { WHATSAPP_NUMBER } from "~/features/shop/lib/payment-methods";
 import { OrderCodeLookupForm } from "~/features/shop/components/orders/order-code-lookup-form";
 import { OrderDeliveryCard } from "~/features/shop/components/orders/order-delivery-card";
 import { OrderItemsCard } from "~/features/shop/components/orders/order-items-card";
 import { OrderNotFound } from "~/features/shop/components/orders/order-not-found";
 import { OrderPaymentCard } from "~/features/shop/components/orders/order-payment-card";
 import { OrderStatusSummary } from "~/features/shop/components/orders/order-status-summary";
-import { useDemoAuth } from "~/features/shop/hooks/use-demo-auth";
+import { useSession } from "~/features/auth/hooks/use-session";
 import { useMiniCart } from "~/features/shop/hooks/use-mini-cart";
 import { useOrder } from "~/features/shop/hooks/use-orders";
 import { updateOrderStatus } from "~/features/shop/lib/order-store";
@@ -34,7 +34,8 @@ export function OrderStatusPage({
 }) {
   const [mounted, setMounted] = useState(false);
   const order = useOrder(code);
-  const { isCustomer } = useDemoAuth();
+  const { user } = useSession();
+  const isAuthenticated = Boolean(user);
   const { add } = useMiniCart();
   const navigate = useNavigate();
 
@@ -75,9 +76,9 @@ export function OrderStatusPage({
 
   if (!mounted) {
     return (
-      <div className="mx-auto w-full max-w-5xl space-y-4">
+      <div className="mx-auto w-full max-w-5xl space-y-4 px-4 py-6 sm:px-6">
         {breadcrumb}
-        <div className="grid gap-4 lg:grid-cols-[minmax(0,1fr)_360px]">
+        <div className="grid grid-cols-1 gap-4 lg:grid-cols-[minmax(0,1fr)_360px]">
           <div className="space-y-4">
             {[0, 1, 2].map((item) => (
               <div
@@ -94,7 +95,7 @@ export function OrderStatusPage({
 
   if (!order) {
     return (
-      <div className="mx-auto w-full max-w-5xl space-y-4">
+      <div className="mx-auto w-full max-w-5xl space-y-4 px-4 py-6 sm:px-6">
         {breadcrumb}
         <OrderNotFound code={code} onLookup={onLookup} />
       </div>
@@ -118,14 +119,14 @@ export function OrderStatusPage({
   const whatsappMessage = `Halo Delysa Florist, saya ingin bertanya tentang pesanan ${order.code}.`;
 
   return (
-    <div className="mx-auto w-full max-w-5xl space-y-4">
-      <div className="mt-4">{breadcrumb}</div>
+    <div className="mx-auto w-full max-w-5xl space-y-4 px-4 py-6 sm:px-6">
+      {breadcrumb}
 
-      <div className="grid gap-4 lg:grid-cols-[minmax(0,1fr)_360px]">
+      <div className="grid grid-cols-1 gap-4 lg:grid-cols-[minmax(0,1fr)_360px]">
         <div className="space-y-4">
           <OrderStatusSummary order={order} />
           <OrderItemsCard order={order} />
-          <OrderDeliveryCard order={order} isCustomer={isCustomer} />
+          <OrderDeliveryCard order={order} isAuthenticated={isAuthenticated} />
         </div>
 
         <div className="space-y-4">

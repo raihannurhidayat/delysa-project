@@ -11,7 +11,7 @@ const navigate = vi.fn();
 const add = vi.fn();
 const updateOrderStatus = vi.fn();
 const useOrder = vi.fn();
-const useDemoAuth = vi.fn();
+const useSession = vi.fn();
 
 vi.mock("@tanstack/react-router", () => ({
   useNavigate: () => navigate,
@@ -21,8 +21,8 @@ vi.mock("~/features/shop/hooks/use-orders", () => ({
   useOrder: (code: string) => useOrder(code),
 }));
 
-vi.mock("~/features/shop/hooks/use-demo-auth", () => ({
-  useDemoAuth: () => useDemoAuth(),
+vi.mock("~/features/auth/hooks/use-session", () => ({
+  useSession: () => useSession(),
 }));
 
 vi.mock("~/features/shop/hooks/use-mini-cart", () => ({
@@ -53,7 +53,7 @@ const pendingOrder = ORDERS.find((item) => item.status === "pending_payment");
 beforeEach(() => {
   vi.clearAllMocks();
   useOrder.mockReturnValue(pendingOrder);
-  useDemoAuth.mockReturnValue({ isCustomer: false });
+  useSession.mockReturnValue({ user: null });
 });
 
 describe("OrderStatusPage", () => {
@@ -68,9 +68,16 @@ describe("OrderStatusPage", () => {
     ).toBeInTheDocument();
   });
 
-  it("shows full personal data for customers", async () => {
+  it("shows full personal data for signed-in users", async () => {
     if (!pendingOrder) throw new Error("pending order missing");
-    useDemoAuth.mockReturnValue({ isCustomer: true });
+    useSession.mockReturnValue({
+      user: {
+        id: 1,
+        name: "Sari Amelia",
+        email: "sari@example.com",
+        role: "customer",
+      },
+    });
     render(<OrderStatusPage code={pendingOrder.code} onLookup={vi.fn()} />);
 
     expect(

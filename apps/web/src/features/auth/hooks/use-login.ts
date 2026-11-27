@@ -1,20 +1,35 @@
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { login } from "~/features/auth/api/auth";
+import { sessionQueryKey } from "~/features/auth/api/session";
+import { toast } from "~/components/ui/toast";
 import type { LoginFormValues } from "~/features/auth/schemas/login-form-schema";
-
-type MockLoginResult = { ok: true };
-
-async function mockLogin(values: LoginFormValues): Promise<MockLoginResult> {
-  await new Promise((resolve) => setTimeout(resolve, 800));
-  if (values.email === "gagal@delysa.id") {
-    throw new Error("Email atau password salah");
-  }
-  return { ok: true };
-}
+import type { AuthUser } from "@delysa/shared";
 
 export function useLogin() {
+  const queryClient = useQueryClient();
   const mutation = useMutation({
     mutationKey: ["auth", "login"],
-    mutationFn: mockLogin,
+    mutationFn: (values: LoginFormValues): Promise<AuthUser> => login(values),
+    onMutate: async (newValues) => {
+      // Show loading state during mutation
+      await toast.add({
+        title: "Sedang memproses login",
+        type: "loading",
+        id: "login-toast",
+      });
+      return { email: newValues?.email };
+    },
+    onSuccess: (user) => {
+      queryClient.setQueryData(sessionQueryKey, user);
+      toast.add({
+        title: "Login berhasil",
+        type: "success",
+        id: "login-toast",
+      });
+    },
+    onError: (error) => {
+      toast.add({ title: "Login gagal", type: "error", id: "login-toast" });
+    },
   });
 
   return {
@@ -22,7 +37,7 @@ export function useLogin() {
     loginAsync: mutation.mutateAsync,
     isPending: mutation.isPending,
     isSuccess: mutation.isSuccess,
-    error: mutation.error as Error | null,
+    error: mutation.error,
     reset: mutation.reset,
   };
 }

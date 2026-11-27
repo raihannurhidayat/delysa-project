@@ -1,7 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { checkoutSearchSchema } from "~/features/checkout/schemas";
-import { CheckoutPage } from "~/features/checkout/view/checkout-page";
-import type { CheckoutStep } from "~/features/checkout/types";
+import { checkoutSearchSchema } from "~/features/shop/schemas/checkout-schema";
+import { CheckoutPage } from "~/features/shop/view/checkout-page";
+import type { CheckoutStep } from "~/features/shop/types";
 
 export const Route = createFileRoute("/_shop/checkout")({
   validateSearch: checkoutSearchSchema,
