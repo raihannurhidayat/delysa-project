@@ -86,6 +86,7 @@ jobs:
         with: { php-version: '8.3' }
       - run: composer validate
       - run: composer install --no-interaction --prefer-dist
+      - run: php artisan storage:link
       - run: php artisan test --compact
 
   quality-gate:

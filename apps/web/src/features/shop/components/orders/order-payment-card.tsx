@@ -128,6 +128,7 @@ export function OrderPaymentCard({
 
       <div className="mt-3">
         <PaymentProofUploader
+          orderCode={order.code}
           orderId={order.id}
           status={order.status}
           proofUrl={order.paymentProofUrl}

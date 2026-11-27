@@ -21,7 +21,7 @@ export const checkoutSearchSchema = z.object({
 
 export type CheckoutSearch = z.infer<typeof checkoutSearchSchema>;
 
-export const alamatStepSchema = z.object({
+export const alamatStepFields = z.object({
   recipientName: z
     .string()
     .trim()
@@ -35,6 +35,8 @@ export const alamatStepSchema = z.object({
     .regex(/^[0-9+\-\s]+$/, {
       message: "Nomor HP hanya boleh berisi angka",
     }),
+  buyerPhoneSameAsRecipient: z.boolean().default(true),
+  buyerPhone: z.string().trim().max(20).optional(),
   shippingAddress: z
     .string()
     .trim()
@@ -42,6 +44,30 @@ export const alamatStepSchema = z.object({
     .max(500, { message: "Alamat maksimal 500 karakter" }),
   customNote: z.string().max(500, { message: "Catatan maksimal 500 karakter" }),
 });
+
+function refineBuyerPhone(
+  data: { buyerPhoneSameAsRecipient?: boolean; buyerPhone?: string },
+  ctx: z.RefinementCtx,
+): void {
+  if (data.buyerPhoneSameAsRecipient === false) {
+    const phone = (data.buyerPhone ?? "").trim();
+    if (phone.length < 9) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        path: ["buyerPhone"],
+        message: "Nomor HP pemesan minimal 9 digit",
+      });
+    } else if (!/^[0-9+\-\s]+$/.test(phone)) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        path: ["buyerPhone"],
+        message: "Nomor HP pemesan hanya boleh berisi angka",
+      });
+    }
+  }
+}
+
+export const alamatStepSchema = alamatStepFields.superRefine(refineBuyerPhone);
 
 export const bayarStepSchema = z.object({
   paymentMethod: z.enum(PAYMENT_METHOD_IDS, {
@@ -55,17 +81,25 @@ export const ringkasanStepSchema = z.object({
   }),
 });
 
-export const checkoutFormSchema = z.discriminatedUnion("step", [
-  z.object({ step: z.literal("review") }),
-  z.object({ step: z.literal("alamat") }).merge(alamatStepSchema),
-  z.object({ step: z.literal("bayar") }).merge(bayarStepSchema),
-  z.object({ step: z.literal("ringkasan") }).merge(ringkasanStepSchema),
-]);
+export const checkoutFormSchema = z
+  .discriminatedUnion("step", [
+    z.object({ step: z.literal("review") }),
+    z.object({ step: z.literal("alamat") }).merge(alamatStepFields),
+    z.object({ step: z.literal("bayar") }).merge(bayarStepSchema),
+    z.object({ step: z.literal("ringkasan") }).merge(ringkasanStepSchema),
+  ])
+  .superRefine((data, ctx) => {
+    if (data.step === "alamat") {
+      refineBuyerPhone(data, ctx);
+    }
+  });
 
 export const DEFAULT_CHECKOUT_FORM: CheckoutFormData = {
   step: "review",
   recipientName: "",
   recipientPhone: "",
+  buyerPhoneSameAsRecipient: true,
+  buyerPhone: "",
   shippingAddress: "",
   customNote: "",
   paymentMethod: "",

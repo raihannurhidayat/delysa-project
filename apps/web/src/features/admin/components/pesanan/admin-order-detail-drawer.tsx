@@ -127,13 +127,19 @@ export function AdminOrderDetailDrawer({
                     <p className="text-sm font-bold text-[#1A1A1A]">
                       {order.recipientName}
                     </p>
-                    <p className="mt-0.5 flex items-center gap-1.5 font-mono text-xs text-[#6B7280]">
+                    <p className="mt-0.5 flex flex-wrap items-center gap-1.5 font-mono text-xs text-[#6B7280]">
                       <PhoneIcon
                         size={12}
                         className="text-[#9CA3AF]"
                         aria-hidden="true"
                       />
-                      <span>{order.recipientPhone}</span>
+                      <span>Penerima: {order.recipientPhone}</span>
+                      {order.buyerPhone &&
+                      order.buyerPhone !== order.recipientPhone ? (
+                        <span className="text-[#BE185D]">
+                          &bull; Pemesan (WA): {order.buyerPhone}
+                        </span>
+                      ) : null}
                     </p>
                   </div>
                   <div className="rounded-xl border border-[#F3F4F6] bg-[#F9FAFB] p-3 text-xs leading-relaxed text-[#4B5563]">

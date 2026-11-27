@@ -29,6 +29,7 @@ export function buildOrderRecord({
     paymentDeadline: new Date(now.getTime() + 86_400_000).toISOString(),
     recipientName: form.recipientName,
     recipientPhone: form.recipientPhone,
+    buyerPhone: form.buyerPhone || form.recipientPhone,
     shippingAddress: form.shippingAddress,
     customNote: form.customNote || undefined,
     items: lines.map((line) => ({ ...line })),

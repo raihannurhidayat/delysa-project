@@ -51,10 +51,29 @@ export function OrderDeliveryCard({
             className="mt-0.5 shrink-0 text-[#9CA3AF]"
           />
           <div>
-            <dt className="text-[10px] text-[#6B7280]">Telepon</dt>
+            <dt className="text-[10px] text-[#6B7280]">Telepon penerima</dt>
             <dd className="font-semibold text-[#1A1A1A]">{phone}</dd>
           </div>
         </div>
+        {order.buyerPhone && order.buyerPhone !== order.recipientPhone ? (
+          <div className="flex gap-2.5">
+            <Phone
+              size={15}
+              aria-hidden="true"
+              className="mt-0.5 shrink-0 text-[#9CA3AF]"
+            />
+            <div>
+              <dt className="text-[10px] text-[#6B7280]">
+                Telepon pemesan (WA)
+              </dt>
+              <dd className="font-semibold text-[#1A1A1A]">
+                {isAuthenticated
+                  ? order.buyerPhone
+                  : maskOrderPhone(order.buyerPhone)}
+              </dd>
+            </div>
+          </div>
+        ) : null}
         <div className="flex gap-2.5">
           <MapPin
             size={15}

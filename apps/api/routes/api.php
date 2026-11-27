@@ -27,9 +27,16 @@ Route::prefix('v1')->group(function () {
 
     // Pesanan publik & pelanggan (checkout, tracking, upload bukti bayar)
     Route::get('/orders', [OrderController::class, 'index']);
-    Route::post('/orders', [OrderController::class, 'store']);
+    Route::post('/orders', [OrderController::class, 'store'])
+        ->middleware('throttle:checkout');
     Route::get('/orders/{codeOrId}', [OrderController::class, 'show']);
-    Route::post('/orders/{codeOrId}/payment-proof', [OrderController::class, 'uploadPaymentProof']);
+    Route::post('/orders/{codeOrId}/payment-proof', [OrderController::class, 'uploadPaymentProof'])
+        ->middleware('throttle:payment-proof');
+
+    // Rute yang membutuhkan autentikasi pelanggan
+    Route::middleware(['auth:sanctum', 'session.lifetime'])->group(function () {
+        Route::post('/orders/{code}/cancel', [OrderController::class, 'cancel']);
+    });
 
     // Sinkronisasi real-time (SSE & incremental events cursor)
     Route::get('/realtime/stream', [RealtimeController::class, 'stream']);

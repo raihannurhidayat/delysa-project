@@ -36,8 +36,10 @@ final class OrderPresenter
             'paymentDeadline' => ($order->payment_deadline ?? now()->addDay())->toISOString(),
             'recipientName' => $order->recipient_name,
             'recipientPhone' => $order->recipient_phone,
+            'buyerPhone' => $order->buyer_phone ?? $order->recipient_phone,
             'shippingAddress' => $order->shipping_address,
             'customNote' => $order->custom_note,
+            'couponCode' => $order->coupon_code,
             'paymentProofUrl' => $proofUrl,
             'paymentProofName' => $order->payment_proof_name,
             'courier' => $order->courier,
@@ -49,7 +51,7 @@ final class OrderPresenter
                 'price' => $item->price,
                 'originalPrice' => $item->original_price,
                 'image' => $item->image_url ?? 'https://images.unsplash.com/photo-1518895949257-7621c3c786d7?w=800&q=80&auto=format&fit=crop',
-                'sizeId' => 'standard',
+                'sizeId' => self::detectSizeId($item->variant_label),
                 'sizeLabel' => $item->variant_label ?? 'Standard',
                 'wrapId' => 'standard',
                 'qty' => $item->qty,
@@ -62,6 +64,7 @@ final class OrderPresenter
                 'shipping' => $order->shipping_cost,
                 'packaging' => 0,
                 'couponDiscount' => $order->discount,
+                'couponCode' => $order->coupon_code,
                 'grandTotal' => $order->total,
                 'freeShipping' => $order->shipping_cost === 0,
                 'remainingForFree' => max(0, 200000 - $order->subtotal),
@@ -108,5 +111,22 @@ final class OrderPresenter
                 'Unggah bukti transfer di halaman pesanan agar segera diverifikasi admin.',
             ],
         ];
+    }
+
+    private static function detectSizeId(?string $variantLabel): string
+    {
+        if ($variantLabel === null) {
+            return 'standard';
+        }
+
+        $lower = strtolower($variantLabel);
+        if (str_contains($lower, 'deluxe')) {
+            return 'deluxe';
+        }
+        if (str_contains($lower, 'medium')) {
+            return 'medium';
+        }
+
+        return 'standard';
     }
 }

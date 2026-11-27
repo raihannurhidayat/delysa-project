@@ -43,6 +43,8 @@ export function RingkasanStep({
   const confirmed = watch("confirmed");
   const recipientName = watch("recipientName");
   const recipientPhone = watch("recipientPhone");
+  const buyerPhone = watch("buyerPhone");
+  const buyerPhoneSameAsRecipient = watch("buyerPhoneSameAsRecipient");
   const shippingAddress = watch("shippingAddress");
   const customNote = watch("customNote");
   const paymentMethod = watch("paymentMethod");
@@ -70,7 +72,16 @@ export function RingkasanStep({
           <p className="mt-1 text-sm font-bold text-[#1A1A1A]">
             {recipientName || "-"}
           </p>
-          <p className="text-xs text-[#6B7280]">{recipientPhone || "-"}</p>
+          <p className="text-xs text-[#6B7280]">
+            <span className="font-medium text-[#1A1A1A]">Penerima:</span>{" "}
+            {recipientPhone || "-"}
+          </p>
+          {!buyerPhoneSameAsRecipient && buyerPhone ? (
+            <p className="text-xs text-[#6B7280]">
+              <span className="font-medium text-[#1A1A1A]">Pemesan:</span>{" "}
+              {buyerPhone}
+            </p>
+          ) : null}
           <p className="mt-1 text-xs leading-relaxed text-[#6B7280]">
             {shippingAddress || "-"}
           </p>

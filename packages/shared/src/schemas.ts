@@ -21,6 +21,7 @@ export const productQuerySchema = z.object({
 export const checkoutSchema = z.object({
   recipientName: z.string().min(2).max(100),
   recipientPhone: z.string().min(9).max(20),
+  buyerPhone: z.string().min(9).max(20).optional(),
   shippingAddress: z.string().min(10).max(500),
   customNote: z.string().max(500).optional(),
 });
@@ -42,12 +43,15 @@ export const orderCreateItemSchema = z.object({
   name: z.string().max(180).optional(),
   price: z.number().int().min(0).optional(),
   qty: z.number().int().min(1).max(99),
+  sizeId: z.string().max(64).optional(),
+  variantPriceDelta: z.number().int().min(0).optional(),
   variantLabel: z.string().max(120).optional(),
 });
 
 export const orderCreateSchema = z.object({
   recipientName: z.string().min(2).max(100),
   recipientPhone: z.string().min(9).max(20),
+  buyerPhone: z.string().min(9).max(20).optional(),
   shippingAddress: z.string().min(10).max(500),
   customNote: z.string().max(500).optional(),
   paymentMethod: z.enum(["bca_transfer", "qris"]).optional(),
@@ -57,7 +61,7 @@ export const orderCreateSchema = z.object({
 });
 
 export const paymentProofSchema = z.object({
-  orderId: z.number().int().positive(),
+  orderId: z.union([z.number().int().positive(), z.string().min(1)]),
   fileName: z.string().min(1).max(255),
   fileSize: z
     .number()

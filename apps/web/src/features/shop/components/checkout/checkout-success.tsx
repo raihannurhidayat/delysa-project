@@ -244,6 +244,7 @@ export function CheckoutSuccess({
             </div>
 
             <PaymentProofUploader
+              orderCode={order.code}
               orderId={order.id}
               status={status}
               onStatusChange={setStatus}

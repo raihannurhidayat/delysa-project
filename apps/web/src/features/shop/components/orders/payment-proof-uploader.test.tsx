@@ -109,4 +109,44 @@ describe("PaymentProofUploader", () => {
       screen.getByRole("button", { name: "Kirim bukti pembayaran" }),
     ).toBeEnabled();
   });
+
+  it("supports re-uploading for pending_verification when clicking Unggah ulang bukti", async () => {
+    mockUpload.mockResolvedValue({
+      id: 42,
+      code: "DLF-20261024-ABCD",
+      status: "pending_verification",
+      total: 175000,
+    });
+    render(<PaymentProofUploader orderId={42} status="pending_verification" />);
+
+    expect(screen.getByText("Bukti pembayaran diterima")).toBeInTheDocument();
+    expect(screen.queryByTestId("payment-proof-input")).not.toBeInTheDocument();
+
+    // Klik tombol Unggah ulang bukti
+    fireEvent.click(screen.getByRole("button", { name: "Unggah ulang bukti" }));
+
+    // Input file sekarang muncul
+    expect(screen.getByTestId("payment-proof-input")).toBeInTheDocument();
+    expect(
+      screen.getByRole("button", { name: "Batal unggah ulang" }),
+    ).toBeInTheDocument();
+
+    // Batal unggah ulang
+    fireEvent.click(screen.getByRole("button", { name: "Batal unggah ulang" }));
+    expect(screen.getByText("Bukti pembayaran diterima")).toBeInTheDocument();
+    expect(screen.queryByTestId("payment-proof-input")).not.toBeInTheDocument();
+
+    // Masuk kembali dan lakukan unggah ulang
+    fireEvent.click(screen.getByRole("button", { name: "Unggah ulang bukti" }));
+    fireEvent.change(screen.getByTestId("payment-proof-input"), {
+      target: { files: [imageFile("bukti_baru.png")] },
+    });
+    fireEvent.click(
+      screen.getByRole("button", { name: "Kirim bukti pembayaran" }),
+    );
+
+    await waitFor(() => {
+      expect(mockUpload).toHaveBeenCalledWith(42, expect.any(File));
+    });
+  });
 });

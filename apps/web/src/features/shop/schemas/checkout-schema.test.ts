@@ -22,6 +22,49 @@ describe("checkoutFormSchema", () => {
     expect(result.success).toBe(true);
   });
 
+  it("validates when buyerPhoneSameAsRecipient is false and buyerPhone is valid", () => {
+    const result = checkoutFormSchema.safeParse({
+      step: "alamat",
+      recipientName: "Budi Santoso",
+      recipientPhone: "08123456789",
+      buyerPhoneSameAsRecipient: false,
+      buyerPhone: "081298765432",
+      shippingAddress: "Jl. Pancasila 123",
+      customNote: "",
+      paymentMethod: "",
+      confirmed: false,
+    });
+    expect(result.success).toBe(true);
+  });
+
+  it("rejects when buyerPhoneSameAsRecipient is false but buyerPhone is missing or invalid", () => {
+    const resultMissing = checkoutFormSchema.safeParse({
+      step: "alamat",
+      recipientName: "Budi Santoso",
+      recipientPhone: "08123456789",
+      buyerPhoneSameAsRecipient: false,
+      buyerPhone: "",
+      shippingAddress: "Jl. Pancasila 123",
+      customNote: "",
+      paymentMethod: "",
+      confirmed: false,
+    });
+    expect(resultMissing.success).toBe(false);
+
+    const resultTooShort = checkoutFormSchema.safeParse({
+      step: "alamat",
+      recipientName: "Budi Santoso",
+      recipientPhone: "08123456789",
+      buyerPhoneSameAsRecipient: false,
+      buyerPhone: "12345",
+      shippingAddress: "Jl. Pancasila 123",
+      customNote: "",
+      paymentMethod: "",
+      confirmed: false,
+    });
+    expect(resultTooShort.success).toBe(false);
+  });
+
   it("rejects invalid phone", () => {
     const result = checkoutFormSchema.safeParse({
       step: "alamat",

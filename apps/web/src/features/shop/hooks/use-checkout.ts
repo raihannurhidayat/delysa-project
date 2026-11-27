@@ -56,6 +56,8 @@ function loadDraft(guestToken: string): CheckoutDraft | null {
       step: parsed.step ?? "review",
       recipientName: parsed.recipientName ?? "",
       recipientPhone: parsed.recipientPhone ?? "",
+      buyerPhoneSameAsRecipient: parsed.buyerPhoneSameAsRecipient ?? true,
+      buyerPhone: parsed.buyerPhone ?? "",
       shippingAddress: parsed.shippingAddress ?? "",
       customNote: parsed.customNote ?? "",
       paymentMethod: isPaymentMethod(parsed.paymentMethod)
@@ -97,6 +99,20 @@ function toFriendlyError(err: unknown): Error {
     return new ApiError(
       409,
       "Stok tidak mencukupi, silakan perbarui keranjang",
+    );
+  }
+  if (raw.includes("PRODUCT_NOT_FOUND")) {
+    return new ApiError(
+      422,
+      raw.replace("PRODUCT_NOT_FOUND:", "").trim() ||
+        "Salah satu produk di keranjang sudah tidak aktif atau tidak tersedia.",
+    );
+  }
+  if (raw.includes("COUPON_ALREADY_USED")) {
+    return new ApiError(
+      422,
+      raw.replace("COUPON_ALREADY_USED:", "").trim() ||
+        "Kupon ini sudah pernah Anda gunakan sebelumnya.",
     );
   }
   return err instanceof Error ? err : new Error(raw);
@@ -155,6 +171,8 @@ export function useCheckout({ step }: { step: CheckoutStep }) {
       step,
       recipientName: restored.recipientName,
       recipientPhone: restored.recipientPhone,
+      buyerPhoneSameAsRecipient: restored.buyerPhoneSameAsRecipient ?? true,
+      buyerPhone: restored.buyerPhone ?? "",
       shippingAddress: restored.shippingAddress,
       customNote: restored.customNote,
       paymentMethod: restored.paymentMethod,
@@ -250,6 +268,10 @@ export function useCheckout({ step }: { step: CheckoutStep }) {
       order = await createOrderMutation.mutateAsync({
         recipientName: formData.recipientName,
         recipientPhone: formData.recipientPhone,
+        buyerPhone:
+          formData.buyerPhoneSameAsRecipient === false && formData.buyerPhone
+            ? formData.buyerPhone
+            : formData.recipientPhone,
         shippingAddress: formData.shippingAddress,
         customNote: formData.customNote || undefined,
         paymentMethod:
@@ -260,6 +282,13 @@ export function useCheckout({ step }: { step: CheckoutStep }) {
           name: line.name,
           price: line.price,
           qty: line.qty,
+          sizeId: line.sizeId,
+          variantPriceDelta:
+            line.sizeId === "deluxe"
+              ? 95000
+              : line.sizeId === "medium"
+                ? 45000
+                : 0,
           variantLabel:
             [line.sizeLabel, line.wrapLabel].filter(Boolean).join(" / ") ||
             undefined,

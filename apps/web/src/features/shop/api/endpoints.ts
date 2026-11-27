@@ -203,15 +203,15 @@ export async function createOrder(
 }
 
 export async function uploadPaymentProof(
-  orderId: number,
+  codeOrId: string | number,
   file: File,
   signal?: AbortSignal,
 ): Promise<OrderResponse> {
   if (isMockMode()) {
     await new Promise((r) => setTimeout(r, 500));
     return {
-      id: orderId,
-      code: `DLF-${orderId}`,
+      id: typeof codeOrId === "number" ? codeOrId : 1,
+      code: typeof codeOrId === "string" ? codeOrId : `DLF-${codeOrId}`,
       status: "pending_verification",
       total: 250000,
     };
@@ -219,7 +219,7 @@ export async function uploadPaymentProof(
   const formData = new FormData();
   formData.append("proof", file);
   return apiUpload<OrderResponse>(
-    `/orders/${orderId}/payment-proof`,
+    `/orders/${encodeURIComponent(String(codeOrId).trim())}/payment-proof`,
     formData,
     signal,
   );

@@ -14,6 +14,7 @@ import {
 } from "~/features/shop/lib/payment-proof";
 
 export function PaymentProofUploader({
+  orderCode,
   orderId,
   status,
   proofUrl,
@@ -22,7 +23,8 @@ export function PaymentProofUploader({
   description = "Unggah bukti pembayaran agar pesanan segera diverifikasi.",
   className,
 }: {
-  orderId: number;
+  orderCode?: string;
+  orderId?: number;
   status: OrderStatus;
   proofUrl?: string | null;
   proofName?: string | null;
@@ -30,6 +32,7 @@ export function PaymentProofUploader({
   description?: string;
   className?: string;
 }) {
+  const identifier = orderCode ?? orderId ?? "";
   const inputRef = useRef<HTMLInputElement>(null);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [uploadedFile, setUploadedFile] = useState<File | null>(null);
@@ -37,6 +40,7 @@ export function PaymentProofUploader({
   const [isDragging, setIsDragging] = useState(false);
   const [isUploading, setIsUploading] = useState(false);
   const [uploadError, setUploadError] = useState<string | null>(null);
+  const [isReuploading, setIsReuploading] = useState(false);
 
   useEffect(() => {
     if (!selectedFile) {
@@ -54,11 +58,12 @@ export function PaymentProofUploader({
   }
 
   const showProofSummary =
-    Boolean(uploadedFile) || status === "pending_verification";
-  const canUpload = status === "pending_payment";
+    (Boolean(uploadedFile) || status === "pending_verification") &&
+    !isReuploading;
+  const canUpload = status === "pending_payment" || isReuploading;
 
   const selectFile = (file: File) => {
-    const error = getPaymentProofError(orderId, file);
+    const error = getPaymentProofError(identifier, file);
     if (error) {
       setUploadError(error);
       return;
@@ -77,7 +82,7 @@ export function PaymentProofUploader({
   const handleUpload = async () => {
     if (!selectedFile || isUploading) return;
 
-    const error = getPaymentProofError(orderId, selectedFile);
+    const error = getPaymentProofError(identifier, selectedFile);
     if (error) {
       setUploadError(error);
       return;
@@ -86,10 +91,11 @@ export function PaymentProofUploader({
     setIsUploading(true);
     setUploadError(null);
     try {
-      const updatedOrder = await uploadPaymentProof(orderId, selectedFile);
+      const updatedOrder = await uploadPaymentProof(identifier, selectedFile);
       onStatusChange?.(updatedOrder.status);
       setUploadedFile(selectedFile);
       setSelectedFile(null);
+      setIsReuploading(false);
       toast.add({
         title: "Bukti pembayaran terkirim",
         description: "Admin akan memverifikasi pembayaranmu.",
@@ -165,6 +171,15 @@ export function PaymentProofUploader({
               <p className="mt-1 text-[10px] leading-relaxed text-emerald-700 sm:text-[11px]">
                 Menunggu verifikasi admin.
               </p>
+              <Button
+                type="button"
+                variant="outline"
+                size="sm"
+                onClick={() => setIsReuploading(true)}
+                className="mt-2.5 h-7 rounded-lg border-emerald-300 bg-white px-2.5 text-[11px] font-semibold text-emerald-800 hover:bg-emerald-100 hover:text-emerald-900"
+              >
+                Unggah ulang bukti
+              </Button>
             </div>
           </div>
         </div>
@@ -273,6 +288,22 @@ export function PaymentProofUploader({
             )}
             {isUploading ? "Mengunggah..." : "Kirim bukti pembayaran"}
           </Button>
+
+          {isReuploading ? (
+            <Button
+              type="button"
+              variant="ghost"
+              size="sm"
+              onClick={() => {
+                setIsReuploading(false);
+                setSelectedFile(null);
+                setUploadError(null);
+              }}
+              className="mt-2 w-full text-xs text-[#6B7280] hover:text-[#1A1A1A]"
+            >
+              Batal unggah ulang
+            </Button>
+          ) : null}
         </>
       )}
 

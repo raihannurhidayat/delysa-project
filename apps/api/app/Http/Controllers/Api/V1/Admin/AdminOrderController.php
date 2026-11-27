@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api\V1\Admin;
 
 use App\Enums\OrderStatus;
 use App\Http\Controllers\Controller;
+use App\Models\Coupon;
 use App\Models\Order;
 use App\Models\OrderItem;
 use App\Models\Product;
@@ -38,6 +39,7 @@ class AdminOrderController extends Controller
         $validated = $request->validate([
             'recipientName' => ['required', 'string', 'min:2', 'max:120'],
             'recipientPhone' => ['required', 'string', 'min:9', 'max:32'],
+            'buyerPhone' => ['nullable', 'string', 'min:9', 'max:32'],
             'shippingAddress' => ['required', 'string', 'min:5', 'max:500'],
             'customNote' => ['nullable', 'string', 'max:500'],
             'paymentMethod' => ['nullable', 'string', Rule::in(['bca_transfer', 'qris'])],
@@ -102,6 +104,7 @@ class AdminOrderController extends Controller
                 'status' => $status,
                 'recipient_name' => (string) $validated['recipientName'],
                 'recipient_phone' => (string) $validated['recipientPhone'],
+                'buyer_phone' => (string) ($validated['buyerPhone'] ?? $validated['recipientPhone']),
                 'shipping_address' => (string) $validated['shippingAddress'],
                 'custom_note' => is_string($validated['customNote'] ?? null) ? $validated['customNote'] : null,
                 'payment_method' => is_string($validated['paymentMethod'] ?? null) ? $validated['paymentMethod'] : 'bca_transfer',
@@ -167,14 +170,29 @@ class AdminOrderController extends Controller
         DB::transaction(function () use ($order, $previousStatus, $nextStatus, $validated, &$restoredStock): void {
             if (! $previousStatus->restoresStock() && $nextStatus->restoresStock()) {
                 foreach ($order->items as $item) {
+                    $product = null;
                     if ($item->product_id !== null) {
                         $product = Product::query()->lockForUpdate()->find($item->product_id);
-                        if ($product !== null) {
-                            $product->increment('stock', $item->qty);
-                            $product->update(['sold' => max(0, $product->sold - $item->qty)]);
-                            $restoredStock = true;
-                        }
+                    } elseif ($item->product_slug !== '') {
+                        $product = Product::query()
+                            ->whereRaw('LOWER(slug) = ?', [strtolower($item->product_slug)])
+                            ->lockForUpdate()
+                            ->first();
                     }
+
+                    if ($product !== null) {
+                        $product->increment('stock', $item->qty);
+                        $product->update(['sold' => max(0, $product->sold - $item->qty)]);
+                        $restoredStock = true;
+                    }
+                }
+
+                if ($order->coupon_code !== null) {
+                    Coupon::query()
+                        ->whereRaw('UPPER(code) = ?', [strtoupper($order->coupon_code)])
+                        ->lockForUpdate()
+                        ->first()
+                        ?->decrementUsage();
                 }
             }
 

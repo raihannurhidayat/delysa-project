@@ -15,6 +15,11 @@ class EnsureSessionIsNotExpired
             return $next($request);
         }
 
+        // For token-based API requests (Sanctum token, no session), skip session check
+        if (! $request->hasSession()) {
+            return $next($request);
+        }
+
         $startedAt = $request->session()->get('auth_started_at');
 
         if (! is_int($startedAt)) {

@@ -18,9 +18,11 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  * @property OrderStatus $status
  * @property string $recipient_name
  * @property string $recipient_phone
+ * @property string|null $buyer_phone
  * @property string $shipping_address
  * @property string|null $custom_note
  * @property string $payment_method
+ * @property string|null $coupon_code
  * @property string|null $payment_proof_path
  * @property string|null $payment_proof_name
  * @property CarbonInterface|null $payment_deadline
@@ -44,9 +46,11 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
     'status',
     'recipient_name',
     'recipient_phone',
+    'buyer_phone',
     'shipping_address',
     'custom_note',
     'payment_method',
+    'coupon_code',
     'payment_proof_path',
     'payment_proof_name',
     'payment_deadline',
@@ -74,6 +78,14 @@ class Order extends Model
             'discount' => 'integer',
             'total' => 'integer',
         ];
+    }
+
+    /**
+     * @return BelongsTo<Coupon, $this>
+     */
+    public function coupon(): BelongsTo
+    {
+        return $this->belongsTo(Coupon::class, 'coupon_code', 'code');
     }
 
     /**

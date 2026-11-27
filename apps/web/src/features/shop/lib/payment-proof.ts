@@ -4,7 +4,7 @@ export const PAYMENT_PROOF_ACCEPT = "image/jpeg,image/png,image/webp";
 export const PAYMENT_PROOF_MAX_SIZE = 5 * 1024 * 1024;
 
 export function getPaymentProofError(
-  orderId: number,
+  orderId: number | string,
   file: File,
 ): string | null {
   if (file.size === 0) {

@@ -106,8 +106,21 @@ php artisan test
 
 ## Catatan Deployment
 
-- **Frontend (`apps/web`)**: deploy langsung ke **Vercel** dengan `VITE_API_URL` mengarah ke URL API produksi.
-- **Backend (`apps/api`)**: deploy ke host PHP 8.3+ (**Railway / Render / Fly.io / VPS**) dengan PostgreSQL/MySQL, storage persisten (S3/R2), serta konfigurasi `CORS_ALLOWED_ORIGINS`, `SANCTUM_STATEFUL_DOMAINS`, `SESSION_SAME_SITE=none`, dan `SESSION_SECURE_COOKIE=true`.
+- **Frontend (`apps/web`)**: deploy langsung ke **Vercel** dengan `VITE_API_URL` mengarah ke URL API produksi (panduan lengkap: [`docs/deployment/vercel-frontend-only.md`](file:///f:/delysa-project/docs/deployment/vercel-frontend-only.md)).
+- **Backend (`apps/api`)**: deploy ke host PHP 8.3+ (**VPS Ubuntu / Railway / Render / Fly.io / Docker**) dengan panduan lengkap di [`docs/deployment/backend-laravel-deployment.md`](file:///f:/delysa-project/docs/deployment/backend-laravel-deployment.md).
+
+### Tahapan Wajib Deployment Backend:
+```bash
+cd apps/api
+composer install --no-dev --optimize-autoloader
+php artisan key:generate --force   # jika belum ada APP_KEY
+php artisan storage:link --force   # WAJIB: menghubungkan public/storage ke storage/app/public untuk foto produk & bukti bayar
+php artisan migrate --force
+php artisan config:cache
+php artisan route:cache
+php artisan view:cache
+```
+> **PENTING**: Perintah `php artisan storage:link` wajib dijalankan saat deployment awal maupun update. Tanpa symlink ini, seluruh bukti transfer pembayaran dan foto produk yang diunggah ke storage lokal akan menghasilkan error **404 Not Found** saat diakses browser.
 
 Jangan pernah commit file `.env` atau database lokal.
 

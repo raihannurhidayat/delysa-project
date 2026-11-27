@@ -214,6 +214,7 @@ export type OrderRecord = {
   paymentDeadline: string;
   recipientName: string;
   recipientPhone: string;
+  buyerPhone?: string;
   shippingAddress: string;
   customNote?: string;
   items: MiniCartLine[];
@@ -266,6 +267,8 @@ export type CheckoutFormData = {
   step: CheckoutStep;
   recipientName: string;
   recipientPhone: string;
+  buyerPhoneSameAsRecipient?: boolean;
+  buyerPhone?: string;
   shippingAddress: string;
   customNote: string;
   paymentMethod: PaymentMethod | "";

@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useFormContext } from "react-hook-form";
 import { ArrowLeft, ArrowRight, Calendar, Clock } from "lucide-react";
 import { Button } from "~/components/ui/button";
+import { Checkbox } from "~/components/ui/checkbox";
 import { Input } from "~/components/ui/input";
 import { Textarea } from "~/components/ui/textarea";
 import {
@@ -39,8 +40,10 @@ export function AlamatStep({ onBack, onNext }: AlamatStepProps) {
     register,
     getValues,
     setValue,
+    watch,
     formState: { errors },
   } = useFormContext<CheckoutFormData>();
+  const buyerPhoneSameAsRecipient = watch("buyerPhoneSameAsRecipient") ?? true;
   const [deliveryDate, setDeliveryDate] = useState(todayISO);
   const [deliverySlot, setDeliverySlot] = useState<string>(
     DELIVERY_SLOTS[0].range,
@@ -113,6 +116,62 @@ export function AlamatStep({ onBack, onNext }: AlamatStepProps) {
             errors={[errors.recipientPhone]}
           />
         </Field>
+
+        <div className="rounded-lg border border-[#EAE2DE] bg-[#FAFAF9] p-3">
+          <label className="flex items-center gap-2.5 cursor-pointer select-none">
+            <Checkbox
+              id="buyerPhoneSameAsRecipient"
+              checked={buyerPhoneSameAsRecipient}
+              onCheckedChange={(checked) => {
+                const isSame = checked === true;
+                setValue("buyerPhoneSameAsRecipient", isSame, {
+                  shouldValidate: true,
+                  shouldDirty: true,
+                });
+                if (isSame) {
+                  setValue("buyerPhone", getValues("recipientPhone"), {
+                    shouldDirty: true,
+                  });
+                }
+              }}
+            />
+            <span className="text-xs font-semibold text-[#1C1917]">
+              Nomor WhatsApp pemesan sama dengan nomor penerima
+            </span>
+          </label>
+
+          {!buyerPhoneSameAsRecipient && (
+            <div className="mt-3 pt-3 border-t border-[#EAE2DE]">
+              <Field data-invalid={!!errors.buyerPhone}>
+                <FieldLabel htmlFor="buyerPhone">
+                  Nomor HP/WhatsApp Pemesan (Pembeli){" "}
+                  <span className="text-[#BE185D]">*</span>
+                </FieldLabel>
+                <Input
+                  id="buyerPhone"
+                  type="tel"
+                  inputMode="tel"
+                  autoComplete="tel"
+                  placeholder="Contoh: 081298765432"
+                  aria-invalid={!!errors.buyerPhone}
+                  aria-describedby={
+                    errors.buyerPhone ? "buyerPhone-error" : undefined
+                  }
+                  className="rounded-lg border border-[#D6CBC6] bg-white focus-visible:border-[#BE185D] focus-visible:ring-[#BE185D]/20"
+                  {...register("buyerPhone")}
+                />
+                <FieldDescription className="text-[11px] text-[#78716C]">
+                  Nomor Anda untuk menerima konfirmasi pesanan dan update
+                  pengiriman via WhatsApp.
+                </FieldDescription>
+                <FieldError
+                  id="buyerPhone-error"
+                  errors={[errors.buyerPhone]}
+                />
+              </Field>
+            </div>
+          )}
+        </div>
 
         <Field data-invalid={!!errors.shippingAddress}>
           <FieldLabel htmlFor="shippingAddress">

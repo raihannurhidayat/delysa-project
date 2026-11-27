@@ -1,13 +1,14 @@
 openapi: 3.1.0
 info:
   title: Delysa Florist API
-  version: 0.1.0
-  description: Kontrak tunggal FE↔BE (Fase 0). Sumber kebenaran — jangan edit types.gen.ts manual.
+  version: 0.2.0
+  description: Kontrak tunggal FE↔BE Delysa Florist. Sumber kebenaran tipe TypeScript dan validasi API.
 servers:
   - url: http://localhost:8000/api/v1
-    description: Laravel lokal (VPS/dev BE)
+    description: Laravel lokal (dev BE)
   - url: https://api.delysaflorist.example/api/v1
-    description: Produksi (placeholder)
+    description: Produksi (VPS)
+
 paths:
   /health:
     get:
@@ -25,10 +26,11 @@ paths:
                   status:
                     type: string
                     example: ok
+
   /auth/register:
     post:
       operationId: register
-      summary: Register a customer account and start a session
+      summary: Mendaftar akun pembeli baru
       requestBody:
         required: true
         content:
@@ -37,27 +39,28 @@ paths:
               $ref: "#/components/schemas/RegisterRequest"
       responses:
         "201":
-          description: Registered and authenticated
+          description: Berhasil terdaftar dan login
           content:
             application/json:
               schema:
                 $ref: "#/components/schemas/AuthResponse"
         "409":
-          description: Email already registered
+          description: Email sudah terdaftar
           content:
             application/json:
               schema:
                 $ref: "#/components/schemas/Error"
         "422":
-          description: Validation failed
+          description: Validasi gagal
           content:
             application/json:
               schema:
                 $ref: "#/components/schemas/ValidationError"
+
   /auth/login:
     post:
       operationId: login
-      summary: Authenticate with email and password
+      summary: Masuk menggunakan email dan password
       requestBody:
         required: true
         content:
@@ -66,61 +69,64 @@ paths:
               $ref: "#/components/schemas/LoginRequest"
       responses:
         "200":
-          description: Authenticated
+          description: Berhasil masuk
           content:
             application/json:
               schema:
                 $ref: "#/components/schemas/AuthResponse"
         "401":
-          description: Invalid credentials
+          description: Kredensial tidak valid
           content:
             application/json:
               schema:
                 $ref: "#/components/schemas/Error"
         "429":
-          description: Too many login attempts
+          description: Terlalu banyak percobaan login
           content:
             application/json:
               schema:
                 $ref: "#/components/schemas/Error"
+
   /auth/logout:
     post:
       operationId: logout
-      summary: End the current session
+      summary: Mengakhiri sesi pengguna
       security:
         - sanctumCookie: []
       responses:
         "204":
-          description: Logged out
+          description: Berhasil keluar
         "401":
-          description: Unauthenticated
+          description: Belum terautentikasi
           content:
             application/json:
               schema:
                 $ref: "#/components/schemas/Error"
+
   /auth/me:
     get:
       operationId: me
-      summary: Get the current authenticated user
+      summary: Ambil profil pengguna yang sedang login
       security:
         - sanctumCookie: []
       responses:
         "200":
-          description: Current user
+          description: Profil pengguna saat ini
           content:
             application/json:
               schema:
                 $ref: "#/components/schemas/AuthResponse"
         "401":
-          description: Unauthenticated or session expired
+          description: Sesi tidak valid atau kedaluwarsa
           content:
             application/json:
               schema:
                 $ref: "#/components/schemas/Error"
+
   /products:
     get:
       operationId: listProducts
-      summary: List katalog produk publik dengan filter & pagination
+      summary: List katalog produk publik dengan filter, sortir, & pagination
       parameters:
         - { name: search, in: query, schema: { type: string } }
         - { name: category, in: query, schema: { type: string } }
@@ -132,30 +138,77 @@ paths:
             schema: { type: string, enum: [termurah, termahal, terbaru] },
           }
         - { name: page, in: query, schema: { type: integer, default: 1 } }
+        - { name: perPage, in: query, schema: { type: integer, default: 12 } }
       responses:
         "200":
           description: OK
           content:
             application/json:
               schema:
-                type: object
-                required: [data]
-                properties:
-                  data:
-                    type: array
-                    items: { $ref: "#/components/schemas/Product" }
-                  items:
-                    type: array
-                    items: { $ref: "#/components/schemas/Product" }
-                  total: { type: integer }
-                  page: { type: integer }
-                  counts:
-                    type: object
-                    additionalProperties: { type: integer }
+                $ref: "#/components/schemas/ProductListResponse"
+
+  /products/flash-sale:
+    get:
+      operationId: getFlashSaleProducts
+      summary: Produk flash sale terpopuler
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Product"
+
+  /products/best-sellers:
+    get:
+      operationId: getBestSellers
+      summary: Produk terlaris (best sellers)
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Product"
+
+  /products/new-arrivals:
+    get:
+      operationId: getNewArrivals
+      summary: Produk terbaru (new arrivals)
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Product"
+
+  /products/by-category:
+    get:
+      operationId: getProductsByCategory
+      summary: Produk berdasarkan filter kategori tertentu
+      parameters:
+        - { name: category, in: query, required: true, schema: { type: string } }
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Product"
+
   /products/{slug}:
     get:
       operationId: getProductBySlug
-      summary: Detail produk publik berdasarkan slug
+      summary: Detail lengkap produk storefront berdasarkan slug (PDP)
       parameters:
         - name: slug
           in: path
@@ -167,41 +220,18 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Product"
+                $ref: "#/components/schemas/ProductDetail"
         "404":
-          description: Not found
+          description: Produk tidak ditemukan
           content:
             application/json:
               schema:
                 $ref: "#/components/schemas/Error"
-  /realtime/events:
-    get:
-      operationId: listRealtimeEvents
-      summary: Ambil cursor event real-time produk & pesanan sejak ID terakhir
-      parameters:
-        - { name: since, in: query, schema: { type: integer, default: 0 } }
-      responses:
-        "200":
-          description: OK
-          content:
-            application/json:
-              schema:
-                type: object
-                required: [latestId, events]
-                properties:
-                  latestId: { type: integer }
-                  events:
-                    type: array
-                    items:
-                      type: object
-                      properties:
-                        id: { type: integer }
-                        topic: { type: string }
-                        at: { type: string }
+
   /orders:
     get:
       operationId: listOrders
-      summary: Daftar pesanan pelanggan atau admin
+      summary: Daftar pesanan pelanggan atau pelacakan beberapa kode order
       parameters:
         - { name: codes, in: query, schema: { type: string } }
       responses:
@@ -215,10 +245,10 @@ paths:
                 properties:
                   data:
                     type: array
-                    items: { $ref: "#/components/schemas/OrderResponse" }
+                    items: { $ref: "#/components/schemas/OrderRecord" }
     post:
       operationId: createOrder
-      summary: Create new order (checkout submit)
+      summary: Buat pesanan baru (checkout submit)
       requestBody:
         required: true
         content:
@@ -227,21 +257,238 @@ paths:
               $ref: "#/components/schemas/OrderCreateRequest"
       responses:
         "201":
-          description: Order created
+          description: Pesanan berhasil dibuat
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/OrderResponse"
+                $ref: "#/components/schemas/OrderRecord"
         "409":
-          description: Stock insufficient
+          description: Stok produk tidak mencukupi
           content:
             application/json:
               schema:
                 $ref: "#/components/schemas/Error"
-  /orders/{id}/payment-proof:
+        "422":
+          description: Validasi input atau varian harga tidak valid
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+  /orders/{codeOrId}:
+    get:
+      operationId: getOrderByCodeOrId
+      summary: Detail pesanan berdasarkan kode atau ID
+      parameters:
+        - name: codeOrId
+          in: path
+          required: true
+          schema: { type: string }
+      responses:
+        "200":
+          description: Detail pesanan ditemukan
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/OrderRecord"
+        "404":
+          description: Pesanan tidak ditemukan
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+  /orders/{codeOrId}/payment-proof:
     post:
       operationId: uploadPaymentProof
-      summary: Upload payment proof for order
+      summary: Unggah foto bukti transfer pembayaran
+      parameters:
+        - name: codeOrId
+          in: path
+          required: true
+          schema: { type: string }
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              $ref: "#/components/schemas/PaymentProofUpload"
+      responses:
+        "200":
+          description: Bukti pembayaran berhasil diunggah
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/OrderRecord"
+        "404":
+          description: Pesanan tidak ditemukan
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "422":
+          description: Status pesanan tidak valid atau berkas tidak sesuai
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+  /orders/{code}/cancel:
+    post:
+      operationId: cancelOrder
+      summary: Batalkan pesanan belum dibayar oleh pelanggan (wajib login)
+      security:
+        - sanctum: []
+      parameters:
+        - name: code
+          in: path
+          required: true
+          schema: { type: string }
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                reason:
+                  type: string
+                  maxLength: 255
+      responses:
+        "200":
+          description: Pesanan berhasil dibatalkan dan stok produk dikembalikan
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/OrderRecord"
+        "403":
+          description: Akses ditolak (bukan pemilik pesanan)
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "404":
+          description: Pesanan tidak ditemukan
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "422":
+          description: Pesanan tidak dapat dibatalkan (sudah bukan pending_payment)
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+  /realtime/events:
+    get:
+      operationId: listRealtimeEvents
+      summary: Ambil daftar event perubahan data sejak cursor ID terakhir
+      parameters:
+        - { name: since, in: query, schema: { type: integer, default: 0 } }
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/RealtimeEventsResponse"
+
+  /realtime/stream:
+    get:
+      operationId: realtimeStream
+      summary: Server-Sent Events (SSE) stream untuk update real-time
+      parameters:
+        - { name: since, in: query, schema: { type: integer, default: 0 } }
+      responses:
+        "200":
+          description: Event stream terhubung
+          content:
+            text/event-stream:
+              schema:
+                type: string
+
+  /admin/products:
+    get:
+      operationId: listAdminProducts
+      summary: Daftar seluruh produk katalog untuk panel admin
+      security:
+        - sanctumCookie: []
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [data]
+                properties:
+                  data:
+                    type: array
+                    items: { $ref: "#/components/schemas/AdminProduct" }
+    post:
+      operationId: createAdminProduct
+      summary: Tambah produk baru dari panel admin
+      security:
+        - sanctumCookie: []
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              $ref: "#/components/schemas/AdminProductInput"
+          application/json:
+            schema:
+              $ref: "#/components/schemas/AdminProductInput"
+      responses:
+        "201":
+          description: Produk berhasil dibuat
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [data]
+                properties:
+                  data: { $ref: "#/components/schemas/AdminProduct" }
+        "422":
+          description: Validasi gagal
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ValidationError"
+
+  /admin/products/{id}:
+    get:
+      operationId: getAdminProduct
+      summary: Ambil detail produk admin
+      security:
+        - sanctumCookie: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema: { type: integer }
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [data]
+                properties:
+                  data: { $ref: "#/components/schemas/AdminProduct" }
+        "404":
+          description: Produk tidak ditemukan
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+    patch:
+      operationId: updateAdminProduct
+      summary: Perbarui data produk admin
+      security:
+        - sanctumCookie: []
       parameters:
         - name: id
           in: path
@@ -252,20 +499,141 @@ paths:
         content:
           multipart/form-data:
             schema:
-              $ref: "#/components/schemas/PaymentProofUpload"
+              $ref: "#/components/schemas/AdminProductUpdateInput"
+          application/json:
+            schema:
+              $ref: "#/components/schemas/AdminProductUpdateInput"
       responses:
         "200":
-          description: Proof uploaded
+          description: Produk berhasil diperbarui
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/OrderResponse"
+                type: object
+                required: [data]
+                properties:
+                  data: { $ref: "#/components/schemas/AdminProduct" }
+        "422":
+          description: Validasi gagal
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ValidationError"
+    delete:
+      operationId: deleteAdminProduct
+      summary: Hapus produk dari panel admin
+      security:
+        - sanctumCookie: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema: { type: integer }
+      responses:
+        "204":
+          description: Produk berhasil dihapus
+
+  /admin/orders:
+    get:
+      operationId: listAdminOrders
+      summary: Daftar seluruh pesanan masuk untuk panel admin
+      security:
+        - sanctumCookie: []
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [data]
+                properties:
+                  data:
+                    type: array
+                    items: { $ref: "#/components/schemas/OrderRecord" }
+    post:
+      operationId: createAdminManualOrder
+      summary: Buat pesanan manual oleh admin
+      security:
+        - sanctumCookie: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/AdminManualOrderInput"
+      responses:
+        "201":
+          description: Pesanan manual berhasil dibuat
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [data]
+                properties:
+                  data: { $ref: "#/components/schemas/OrderRecord" }
+
+  /admin/orders/{codeOrId}/status:
+    patch:
+      operationId: updateAdminOrderStatus
+      summary: Ubah status pesanan, nomor resi, atau verifikasi bukti bayar
+      security:
+        - sanctumCookie: []
+      parameters:
+        - name: codeOrId
+          in: path
+          required: true
+          schema: { type: string }
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/AdminOrderStatusUpdate"
+      responses:
+        "200":
+          description: Status pesanan berhasil diperbarui
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [data]
+                properties:
+                  data: { $ref: "#/components/schemas/OrderRecord" }
+        "422":
+          description: Transisi status tidak diizinkan
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+  /admin/reports:
+    get:
+      operationId: getAdminSalesReport
+      summary: Laporan analitik penjualan toko untuk periode tertentu
+      security:
+        - sanctumCookie: []
+      parameters:
+        - {
+            name: period,
+            in: query,
+            schema: { type: string, enum: [7d, 30d, all], default: 30d },
+          }
+      responses:
+        "200":
+          description: Ringkasan laporan penjualan
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AdminSalesReport"
+
 components:
   securitySchemes:
     sanctumCookie:
       type: apiKey
       in: cookie
       name: delysa_session
+
   schemas:
     AuthUser:
       type: object
@@ -275,12 +643,14 @@ components:
         name: { type: string }
         email: { type: string, format: email }
         role: { type: string, enum: [customer, store_owner, admin] }
+
     AuthResponse:
       type: object
       required: [user]
       properties:
         user:
           $ref: "#/components/schemas/AuthUser"
+
     RegisterRequest:
       type: object
       required: [name, email, password]
@@ -288,12 +658,14 @@ components:
         name: { type: string, minLength: 2, maxLength: 100 }
         email: { type: string, format: email, maxLength: 255 }
         password: { type: string, minLength: 8, maxLength: 128 }
+
     LoginRequest:
       type: object
       required: [email, password]
       properties:
         email: { type: string, format: email }
         password: { type: string, minLength: 1 }
+
     ValidationError:
       type: object
       required: [message, errors]
@@ -304,32 +676,136 @@ components:
           additionalProperties:
             type: array
             items: { type: string }
-    Product:
-      type: object
-      required: [id, name, slug, price, stock]
-      properties:
-        id: { type: integer }
-        name: { type: string }
-        slug: { type: string }
-        price: { type: integer, minimum: 0 }
-        stock: { type: integer, minimum: 0 }
-        imageUrl: { type: string }
-        isActive: { type: boolean }
+
     Error:
       type: object
       required: [message]
       properties:
         message: { type: string }
         code: { type: string, example: STOCK_INSUFFICIENT }
+
+    Product:
+      type: object
+      required: [id, name, slug, price, stock]
+      properties:
+        id: { type: string }
+        numericId: { type: integer }
+        sku: { type: string }
+        slug: { type: string }
+        name: { type: string }
+        price: { type: integer, minimum: 0 }
+        originalPrice: { type: integer, nullable: true }
+        discountPercent: { type: integer, nullable: true }
+        image: { type: string }
+        imageUrl: { type: string }
+        rating: { type: number }
+        sold: { type: integer }
+        reviewCount: { type: integer }
+        category: { type: string }
+        stock: { type: integer, minimum: 0 }
+        stockTotal: { type: integer }
+        stockLeft: { type: integer }
+        badge: { type: string, nullable: true }
+        isFlashSale: { type: boolean }
+        isNew: { type: boolean }
+        isActive: { type: boolean }
+
+    ProductDetail:
+      allOf:
+        - $ref: "#/components/schemas/Product"
+        - type: object
+          properties:
+            gallery:
+              type: array
+              items: { type: string }
+            description: { type: string }
+            care:
+              type: array
+              items: { type: string }
+            specs:
+              type: array
+              items:
+                type: object
+                properties:
+                  label: { type: string }
+                  value: { type: string }
+            shipping:
+              type: array
+              items: { type: string }
+            sizes:
+              type: array
+              items:
+                type: object
+                properties:
+                  id: { type: string }
+                  label: { type: string }
+                  priceDelta: { type: integer }
+                  stems: { type: string }
+            wraps:
+              type: array
+              items:
+                type: object
+                properties:
+                  id: { type: string }
+                  label: { type: string }
+                  sub: { type: string }
+            ratingBreakdown:
+              type: array
+              items:
+                type: object
+                properties:
+                  stars: { type: integer }
+                  pct: { type: integer }
+            reviews:
+              type: array
+              items:
+                type: object
+
+    ProductListResponse:
+      type: object
+      required: [data, items, total, page]
+      properties:
+        data:
+          type: array
+          items: { $ref: "#/components/schemas/Product" }
+        items:
+          type: array
+          items: { $ref: "#/components/schemas/Product" }
+        total: { type: integer }
+        page: { type: integer }
+        counts:
+          type: object
+          additionalProperties: { type: integer }
+
+    OrderCreateItem:
+      type: object
+      required: [qty]
+      properties:
+        productId: { type: integer }
+        slug: { type: string }
+        name: { type: string }
+        price: { type: integer }
+        qty: { type: integer, minimum: 1, maximum: 99 }
+        sizeId: { type: string }
+        variantPriceDelta: { type: integer, minimum: 0 }
+        variantLabel: { type: string }
+
     OrderCreateRequest:
       type: object
       required: [recipientName, recipientPhone, shippingAddress, idempotencyKey]
       properties:
-        recipientName: { type: string, minLength: 2, maxLength: 100 }
-        recipientPhone: { type: string, minLength: 9, maxLength: 20 }
+        recipientName: { type: string, minLength: 2, maxLength: 120 }
+        recipientPhone: { type: string, minLength: 9, maxLength: 32 }
+        buyerPhone: { type: string, minLength: 9, maxLength: 32 }
         shippingAddress: { type: string, minLength: 10, maxLength: 500 }
         customNote: { type: string, maxLength: 500 }
-        idempotencyKey: { type: string, format: uuid }
+        paymentMethod: { type: string, enum: [bca_transfer, qris] }
+        couponCode: { type: string, maxLength: 40 }
+        idempotencyKey: { type: string }
+        items:
+          type: array
+          items: { $ref: "#/components/schemas/OrderCreateItem" }
+
     PaymentProofUpload:
       type: object
       required: [proof]
@@ -337,25 +813,289 @@ components:
         proof:
           type: string
           format: binary
-    OrderResponse:
+
+    OrderItemRecord:
       type: object
-      required: [id, code, status, total]
+      required: [name, price, qty]
+      properties:
+        slug: { type: string }
+        name: { type: string }
+        price: { type: integer }
+        originalPrice: { type: integer, nullable: true }
+        image: { type: string }
+        sizeId: { type: string }
+        sizeLabel: { type: string }
+        wrapId: { type: string }
+        qty: { type: integer }
+
+    OrderTotalsRecord:
+      type: object
+      required: [itemCount, subtotal, shipping, grandTotal]
+      properties:
+        itemCount: { type: integer }
+        subtotalNormal: { type: integer }
+        productDiscount: { type: integer }
+        subtotal: { type: integer }
+        shipping: { type: integer }
+        packaging: { type: integer }
+        couponDiscount: { type: integer }
+        grandTotal: { type: integer }
+        freeShipping: { type: boolean }
+        remainingForFree: { type: integer }
+
+    OrderTimelineRecord:
+      type: object
+      required: [status, at]
+      properties:
+        status: { type: string }
+        at: { type: string }
+        note: { type: string }
+
+    OrderRecord:
+      type: object
+      required: [id, code, status, total, createdAt]
       properties:
         id: { type: integer }
-        code: { type: string, example: "DLF-20261019-ABCD" }
+        code: { type: string }
         status:
-          {
-            type: string,
-            enum:
-              [
-                pending_payment,
-                pending_verification,
-                paid,
-                processing,
-                shipped,
-                delivered,
-                cancelled,
-                rejected,
-              ],
-          }
+          type: string
+          enum:
+            [
+              pending_payment,
+              pending_verification,
+              paid,
+              processing,
+              shipped,
+              delivered,
+              cancelled,
+              rejected,
+            ]
         total: { type: integer }
+        createdAt: { type: string }
+        updatedAt: { type: string }
+        paymentDeadline: { type: string }
+        recipientName: { type: string }
+        recipientPhone: { type: string }
+        buyerPhone: { type: string, nullable: true }
+        shippingAddress: { type: string }
+        customNote: { type: string, nullable: true }
+        paymentProofUrl: { type: string, nullable: true }
+        paymentProofName: { type: string, nullable: true }
+        courier: { type: string, nullable: true }
+        trackingNumber: { type: string, nullable: true }
+        deliveredAt: { type: string, nullable: true }
+        items:
+          type: array
+          items: { $ref: "#/components/schemas/OrderItemRecord" }
+        totals: { $ref: "#/components/schemas/OrderTotalsRecord" }
+        payment:
+          type: object
+          properties:
+            methodId: { type: string }
+            label: { type: string }
+            description: { type: string }
+            bank:
+              type: object
+              properties:
+                name: { type: string }
+                accountNumber: { type: string }
+                accountName: { type: string }
+            steps:
+              type: array
+              items: { type: string }
+        timeline:
+          type: array
+          items: { $ref: "#/components/schemas/OrderTimelineRecord" }
+
+    RealtimeEventItem:
+      type: object
+      required: [id, topic, at]
+      properties:
+        id: { type: integer }
+        topic: { type: string }
+        payload: { type: object }
+        at: { type: string }
+
+    RealtimeEventsResponse:
+      type: object
+      required: [latestId, events]
+      properties:
+        latestId: { type: integer }
+        events:
+          type: array
+          items: { $ref: "#/components/schemas/RealtimeEventItem" }
+
+    AdminProduct:
+      type: object
+      required: [id, name, sku, slug, category, price, stock]
+      properties:
+        id: { type: integer }
+        name: { type: string }
+        sku: { type: string }
+        slug: { type: string }
+        category: { type: string }
+        price: { type: integer }
+        originalPrice: { type: integer, nullable: true }
+        stock: { type: integer }
+        stockUnit: { type: string }
+        minThreshold: { type: integer }
+        sales: { type: integer }
+        rating: { type: number }
+        imageUrl: { type: string, nullable: true }
+        isPublished: { type: boolean }
+        isCustomizable: { type: boolean }
+        isFlashSale: { type: boolean }
+        isNew: { type: boolean }
+        description: { type: string, nullable: true }
+        botanicalTags:
+          type: array
+          items: { type: string }
+
+    AdminProductInput:
+      type: object
+      required: [name, sku, category, price, stock]
+      properties:
+        name: { type: string }
+        sku: { type: string }
+        slug: { type: string }
+        category: { type: string }
+        price: { type: integer }
+        originalPrice: { type: integer }
+        stock: { type: integer }
+        stockUnit: { type: string }
+        minThreshold: { type: integer }
+        imageUrl: { type: string }
+        image:
+          type: string
+          format: binary
+        isPublished: { type: boolean }
+        isCustomizable: { type: boolean }
+        isFlashSale: { type: boolean }
+        isNew: { type: boolean }
+        description: { type: string }
+        botanicalTags:
+          type: array
+          items: { type: string }
+
+    AdminProductUpdateInput:
+      type: object
+      properties:
+        name: { type: string }
+        sku: { type: string }
+        slug: { type: string }
+        category: { type: string }
+        price: { type: integer }
+        originalPrice: { type: integer }
+        stock: { type: integer }
+        stockUnit: { type: string }
+        minThreshold: { type: integer }
+        imageUrl: { type: string }
+        image:
+          type: string
+          format: binary
+        isPublished: { type: boolean }
+        isCustomizable: { type: boolean }
+        isFlashSale: { type: boolean }
+        isNew: { type: boolean }
+        description: { type: string }
+        botanicalTags:
+          type: array
+          items: { type: string }
+
+    AdminManualOrderInput:
+      type: object
+      required: [recipientName, recipientPhone, shippingAddress, items]
+      properties:
+        recipientName: { type: string }
+        recipientPhone: { type: string }
+        buyerPhone: { type: string, nullable: true }
+        shippingAddress: { type: string }
+        customNote: { type: string }
+        paymentMethod: { type: string }
+        status: { type: string }
+        items:
+          type: array
+          items:
+            type: object
+            required: [name, price, qty]
+            properties:
+              productId: { type: integer }
+              slug: { type: string }
+              name: { type: string }
+              price: { type: integer }
+              qty: { type: integer }
+
+    AdminOrderStatusUpdate:
+      type: object
+      required: [status]
+      properties:
+        status:
+          type: string
+          enum:
+            [
+              pending_payment,
+              pending_verification,
+              paid,
+              processing,
+              shipped,
+              delivered,
+              cancelled,
+              rejected,
+            ]
+        note: { type: string }
+        courier: { type: string }
+        trackingNumber: { type: string }
+
+    AdminSalesReport:
+      type: object
+      required: [period, summary, byCategory, topProducts, recentOrders]
+      properties:
+        period: { type: string, enum: [7d, 30d, all] }
+        summary:
+          type: object
+          required:
+            [
+              totalRevenue,
+              totalOrders,
+              completedOrders,
+              pendingOrders,
+              cancelledOrders,
+              averageOrderValue,
+              totalItemsSold,
+            ]
+          properties:
+            totalRevenue: { type: integer }
+            totalOrders: { type: integer }
+            completedOrders: { type: integer }
+            pendingOrders: { type: integer }
+            cancelledOrders: { type: integer }
+            averageOrderValue: { type: integer }
+            totalItemsSold: { type: integer }
+        byCategory:
+          type: array
+          items:
+            type: object
+            properties:
+              category: { type: string }
+              qty: { type: integer }
+              revenue: { type: integer }
+        topProducts:
+          type: array
+          items:
+            type: object
+            properties:
+              name: { type: string }
+              slug: { type: string }
+              category: { type: string }
+              qty: { type: integer }
+              revenue: { type: integer }
+        recentOrders:
+          type: array
+          items:
+            type: object
+            properties:
+              code: { type: string }
+              recipientName: { type: string }
+              status: { type: string }
+              total: { type: integer }
+              createdAt: { type: string }

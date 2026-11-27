@@ -30,7 +30,7 @@ export interface paths {
         };
         get?: never;
         put?: never;
-        /** Register a customer account and start a session */
+        /** Mendaftar akun pembeli baru */
         post: operations["register"];
         delete?: never;
         options?: never;
@@ -47,7 +47,7 @@ export interface paths {
         };
         get?: never;
         put?: never;
-        /** Authenticate with email and password */
+        /** Masuk menggunakan email dan password */
         post: operations["login"];
         delete?: never;
         options?: never;
@@ -64,7 +64,7 @@ export interface paths {
         };
         get?: never;
         put?: never;
-        /** End the current session */
+        /** Mengakhiri sesi pengguna */
         post: operations["logout"];
         delete?: never;
         options?: never;
@@ -79,7 +79,7 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        /** Get the current authenticated user */
+        /** Ambil profil pengguna yang sedang login */
         get: operations["me"];
         put?: never;
         post?: never;
@@ -96,8 +96,76 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        /** List katalog produk publik dengan filter & pagination */
+        /** List katalog produk publik dengan filter, sortir, & pagination */
         get: operations["listProducts"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/products/flash-sale": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Produk flash sale terpopuler */
+        get: operations["getFlashSaleProducts"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/products/best-sellers": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Produk terlaris (best sellers) */
+        get: operations["getBestSellers"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/products/new-arrivals": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Produk terbaru (new arrivals) */
+        get: operations["getNewArrivals"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/products/by-category": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Produk berdasarkan filter kategori tertentu */
+        get: operations["getProductsByCategory"];
         put?: never;
         post?: never;
         delete?: never;
@@ -113,25 +181,8 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        /** Detail produk publik berdasarkan slug */
+        /** Detail lengkap produk storefront berdasarkan slug (PDP) */
         get: operations["getProductBySlug"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/realtime/events": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /** Ambil cursor event real-time produk & pesanan sejak ID terakhir */
-        get: operations["listRealtimeEvents"];
         put?: never;
         post?: never;
         delete?: never;
@@ -147,10 +198,10 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        /** Daftar pesanan pelanggan atau admin */
+        /** Daftar pesanan pelanggan atau pelacakan beberapa kode order */
         get: operations["listOrders"];
         put?: never;
-        /** Create new order (checkout submit) */
+        /** Buat pesanan baru (checkout submit) */
         post: operations["createOrder"];
         delete?: never;
         options?: never;
@@ -158,7 +209,24 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/orders/{id}/payment-proof": {
+    "/orders/{codeOrId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Detail pesanan berdasarkan kode atau ID */
+        get: operations["getOrderByCodeOrId"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/orders/{codeOrId}/payment-proof": {
         parameters: {
             query?: never;
             header?: never;
@@ -167,8 +235,148 @@ export interface paths {
         };
         get?: never;
         put?: never;
-        /** Upload payment proof for order */
+        /** Unggah foto bukti transfer pembayaran */
         post: operations["uploadPaymentProof"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/orders/{code}/cancel": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Batalkan pesanan belum dibayar oleh pelanggan (wajib login) */
+        post: operations["cancelOrder"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/realtime/events": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Ambil daftar event perubahan data sejak cursor ID terakhir */
+        get: operations["listRealtimeEvents"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/realtime/stream": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Server-Sent Events (SSE) stream untuk update real-time */
+        get: operations["realtimeStream"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/admin/products": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Daftar seluruh produk katalog untuk panel admin */
+        get: operations["listAdminProducts"];
+        put?: never;
+        /** Tambah produk baru dari panel admin */
+        post: operations["createAdminProduct"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/admin/products/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Ambil detail produk admin */
+        get: operations["getAdminProduct"];
+        put?: never;
+        post?: never;
+        /** Hapus produk dari panel admin */
+        delete: operations["deleteAdminProduct"];
+        options?: never;
+        head?: never;
+        /** Perbarui data produk admin */
+        patch: operations["updateAdminProduct"];
+        trace?: never;
+    };
+    "/admin/orders": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Daftar seluruh pesanan masuk untuk panel admin */
+        get: operations["listAdminOrders"];
+        put?: never;
+        /** Buat pesanan manual oleh admin */
+        post: operations["createAdminManualOrder"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/admin/orders/{codeOrId}/status": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        /** Ubah status pesanan, nomor resi, atau verifikasi bukti bayar */
+        patch: operations["updateAdminOrderStatus"];
+        trace?: never;
+    };
+    "/admin/reports": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Laporan analitik penjualan toko untuk periode tertentu */
+        get: operations["getAdminSalesReport"];
+        put?: never;
+        post?: never;
         delete?: never;
         options?: never;
         head?: never;
@@ -207,39 +415,282 @@ export interface components {
                 [key: string]: string[];
             };
         };
-        Product: {
-            id: number;
-            name: string;
-            slug: string;
-            price: number;
-            stock: number;
-            imageUrl?: string;
-            isActive?: boolean;
-        };
         Error: {
             message: string;
             /** @example STOCK_INSUFFICIENT */
             code?: string;
         };
+        Product: {
+            id: string;
+            numericId?: number;
+            sku?: string;
+            slug: string;
+            name: string;
+            price: number;
+            originalPrice?: number | null;
+            discountPercent?: number | null;
+            image?: string;
+            imageUrl?: string;
+            rating?: number;
+            sold?: number;
+            reviewCount?: number;
+            category?: string;
+            stock: number;
+            stockTotal?: number;
+            stockLeft?: number;
+            badge?: string | null;
+            isFlashSale?: boolean;
+            isNew?: boolean;
+            isActive?: boolean;
+        };
+        ProductDetail: components["schemas"]["Product"] & {
+            gallery?: string[];
+            description?: string;
+            care?: string[];
+            specs?: {
+                label?: string;
+                value?: string;
+            }[];
+            shipping?: string[];
+            sizes?: {
+                id?: string;
+                label?: string;
+                priceDelta?: number;
+                stems?: string;
+            }[];
+            wraps?: {
+                id?: string;
+                label?: string;
+                sub?: string;
+            }[];
+            ratingBreakdown?: {
+                stars?: number;
+                pct?: number;
+            }[];
+            reviews?: Record<string, never>[];
+        };
+        ProductListResponse: {
+            data: components["schemas"]["Product"][];
+            items: components["schemas"]["Product"][];
+            total: number;
+            page: number;
+            counts?: {
+                [key: string]: number;
+            };
+        };
+        OrderCreateItem: {
+            productId?: number;
+            slug?: string;
+            name?: string;
+            price?: number;
+            qty: number;
+            sizeId?: string;
+            variantPriceDelta?: number;
+            variantLabel?: string;
+        };
         OrderCreateRequest: {
             recipientName: string;
             recipientPhone: string;
+            buyerPhone?: string;
             shippingAddress: string;
             customNote?: string;
-            /** Format: uuid */
+            /** @enum {string} */
+            paymentMethod?: "bca_transfer" | "qris";
+            couponCode?: string;
             idempotencyKey: string;
+            items?: components["schemas"]["OrderCreateItem"][];
         };
         PaymentProofUpload: {
             /** Format: binary */
             proof: string;
         };
-        OrderResponse: {
+        OrderItemRecord: {
+            slug?: string;
+            name: string;
+            price: number;
+            originalPrice?: number | null;
+            image?: string;
+            sizeId?: string;
+            sizeLabel?: string;
+            wrapId?: string;
+            qty: number;
+        };
+        OrderTotalsRecord: {
+            itemCount: number;
+            subtotalNormal?: number;
+            productDiscount?: number;
+            subtotal: number;
+            shipping: number;
+            packaging?: number;
+            couponDiscount?: number;
+            grandTotal: number;
+            freeShipping?: boolean;
+            remainingForFree?: number;
+        };
+        OrderTimelineRecord: {
+            status: string;
+            at: string;
+            note?: string;
+        };
+        OrderRecord: {
             id: number;
-            /** @example DLF-20261019-ABCD */
             code: string;
             /** @enum {string} */
             status: "pending_payment" | "pending_verification" | "paid" | "processing" | "shipped" | "delivered" | "cancelled" | "rejected";
             total: number;
+            createdAt: string;
+            updatedAt?: string;
+            paymentDeadline?: string;
+            recipientName?: string;
+            recipientPhone?: string;
+            buyerPhone?: string | null;
+            shippingAddress?: string;
+            customNote?: string | null;
+            paymentProofUrl?: string | null;
+            paymentProofName?: string | null;
+            courier?: string | null;
+            trackingNumber?: string | null;
+            deliveredAt?: string | null;
+            items?: components["schemas"]["OrderItemRecord"][];
+            totals?: components["schemas"]["OrderTotalsRecord"];
+            payment?: {
+                methodId?: string;
+                label?: string;
+                description?: string;
+                bank?: {
+                    name?: string;
+                    accountNumber?: string;
+                    accountName?: string;
+                };
+                steps?: string[];
+            };
+            timeline?: components["schemas"]["OrderTimelineRecord"][];
+        };
+        RealtimeEventItem: {
+            id: number;
+            topic: string;
+            payload?: Record<string, never>;
+            at: string;
+        };
+        RealtimeEventsResponse: {
+            latestId: number;
+            events: components["schemas"]["RealtimeEventItem"][];
+        };
+        AdminProduct: {
+            id: number;
+            name: string;
+            sku: string;
+            slug: string;
+            category: string;
+            price: number;
+            originalPrice?: number | null;
+            stock: number;
+            stockUnit?: string;
+            minThreshold?: number;
+            sales?: number;
+            rating?: number;
+            imageUrl?: string | null;
+            isPublished?: boolean;
+            isCustomizable?: boolean;
+            isFlashSale?: boolean;
+            isNew?: boolean;
+            description?: string | null;
+            botanicalTags?: string[];
+        };
+        AdminProductInput: {
+            name: string;
+            sku: string;
+            slug?: string;
+            category: string;
+            price: number;
+            originalPrice?: number;
+            stock: number;
+            stockUnit?: string;
+            minThreshold?: number;
+            imageUrl?: string;
+            /** Format: binary */
+            image?: string;
+            isPublished?: boolean;
+            isCustomizable?: boolean;
+            isFlashSale?: boolean;
+            isNew?: boolean;
+            description?: string;
+            botanicalTags?: string[];
+        };
+        AdminProductUpdateInput: {
+            name?: string;
+            sku?: string;
+            slug?: string;
+            category?: string;
+            price?: number;
+            originalPrice?: number;
+            stock?: number;
+            stockUnit?: string;
+            minThreshold?: number;
+            imageUrl?: string;
+            /** Format: binary */
+            image?: string;
+            isPublished?: boolean;
+            isCustomizable?: boolean;
+            isFlashSale?: boolean;
+            isNew?: boolean;
+            description?: string;
+            botanicalTags?: string[];
+        };
+        AdminManualOrderInput: {
+            recipientName: string;
+            recipientPhone: string;
+            buyerPhone?: string | null;
+            shippingAddress: string;
+            customNote?: string;
+            paymentMethod?: string;
+            status?: string;
+            items: {
+                productId?: number;
+                slug?: string;
+                name: string;
+                price: number;
+                qty: number;
+            }[];
+        };
+        AdminOrderStatusUpdate: {
+            /** @enum {string} */
+            status: "pending_payment" | "pending_verification" | "paid" | "processing" | "shipped" | "delivered" | "cancelled" | "rejected";
+            note?: string;
+            courier?: string;
+            trackingNumber?: string;
+        };
+        AdminSalesReport: {
+            /** @enum {string} */
+            period: "7d" | "30d" | "all";
+            summary: {
+                totalRevenue: number;
+                totalOrders: number;
+                completedOrders: number;
+                pendingOrders: number;
+                cancelledOrders: number;
+                averageOrderValue: number;
+                totalItemsSold: number;
+            };
+            byCategory: {
+                category?: string;
+                qty?: number;
+                revenue?: number;
+            }[];
+            topProducts: {
+                name?: string;
+                slug?: string;
+                category?: string;
+                qty?: number;
+                revenue?: number;
+            }[];
+            recentOrders: {
+                code?: string;
+                recipientName?: string;
+                status?: string;
+                total?: number;
+                createdAt?: string;
+            }[];
         };
     };
     responses: never;
@@ -286,7 +737,7 @@ export interface operations {
             };
         };
         responses: {
-            /** @description Registered and authenticated */
+            /** @description Berhasil terdaftar dan login */
             201: {
                 headers: {
                     [name: string]: unknown;
@@ -295,7 +746,7 @@ export interface operations {
                     "application/json": components["schemas"]["AuthResponse"];
                 };
             };
-            /** @description Email already registered */
+            /** @description Email sudah terdaftar */
             409: {
                 headers: {
                     [name: string]: unknown;
@@ -304,7 +755,7 @@ export interface operations {
                     "application/json": components["schemas"]["Error"];
                 };
             };
-            /** @description Validation failed */
+            /** @description Validasi gagal */
             422: {
                 headers: {
                     [name: string]: unknown;
@@ -328,7 +779,7 @@ export interface operations {
             };
         };
         responses: {
-            /** @description Authenticated */
+            /** @description Berhasil masuk */
             200: {
                 headers: {
                     [name: string]: unknown;
@@ -337,7 +788,7 @@ export interface operations {
                     "application/json": components["schemas"]["AuthResponse"];
                 };
             };
-            /** @description Invalid credentials */
+            /** @description Kredensial tidak valid */
             401: {
                 headers: {
                     [name: string]: unknown;
@@ -346,7 +797,7 @@ export interface operations {
                     "application/json": components["schemas"]["Error"];
                 };
             };
-            /** @description Too many login attempts */
+            /** @description Terlalu banyak percobaan login */
             429: {
                 headers: {
                     [name: string]: unknown;
@@ -366,14 +817,14 @@ export interface operations {
         };
         requestBody?: never;
         responses: {
-            /** @description Logged out */
+            /** @description Berhasil keluar */
             204: {
                 headers: {
                     [name: string]: unknown;
                 };
                 content?: never;
             };
-            /** @description Unauthenticated */
+            /** @description Belum terautentikasi */
             401: {
                 headers: {
                     [name: string]: unknown;
@@ -393,7 +844,7 @@ export interface operations {
         };
         requestBody?: never;
         responses: {
-            /** @description Current user */
+            /** @description Profil pengguna saat ini */
             200: {
                 headers: {
                     [name: string]: unknown;
@@ -402,7 +853,7 @@ export interface operations {
                     "application/json": components["schemas"]["AuthResponse"];
                 };
             };
-            /** @description Unauthenticated or session expired */
+            /** @description Sesi tidak valid atau kedaluwarsa */
             401: {
                 headers: {
                     [name: string]: unknown;
@@ -422,6 +873,7 @@ export interface operations {
                 maxPrice?: number;
                 sort?: "termurah" | "termahal" | "terbaru";
                 page?: number;
+                perPage?: number;
             };
             header?: never;
             path?: never;
@@ -435,15 +887,89 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": {
-                        data: components["schemas"]["Product"][];
-                        items?: components["schemas"]["Product"][];
-                        total?: number;
-                        page?: number;
-                        counts?: {
-                            [key: string]: number;
-                        };
-                    };
+                    "application/json": components["schemas"]["ProductListResponse"];
+                };
+            };
+        };
+    };
+    getFlashSaleProducts: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Product"][];
+                };
+            };
+        };
+    };
+    getBestSellers: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Product"][];
+                };
+            };
+        };
+    };
+    getNewArrivals: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Product"][];
+                };
+            };
+        };
+    };
+    getProductsByCategory: {
+        parameters: {
+            query: {
+                category: string;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Product"][];
                 };
             };
         };
@@ -465,11 +991,207 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["Product"];
+                    "application/json": components["schemas"]["ProductDetail"];
                 };
             };
-            /** @description Not found */
+            /** @description Produk tidak ditemukan */
             404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+        };
+    };
+    listOrders: {
+        parameters: {
+            query?: {
+                codes?: string;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: components["schemas"]["OrderRecord"][];
+                    };
+                };
+            };
+        };
+    };
+    createOrder: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["OrderCreateRequest"];
+            };
+        };
+        responses: {
+            /** @description Pesanan berhasil dibuat */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["OrderRecord"];
+                };
+            };
+            /** @description Stok produk tidak mencukupi */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Validasi input atau varian harga tidak valid */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+        };
+    };
+    getOrderByCodeOrId: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                codeOrId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Detail pesanan ditemukan */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["OrderRecord"];
+                };
+            };
+            /** @description Pesanan tidak ditemukan */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+        };
+    };
+    uploadPaymentProof: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                codeOrId: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "multipart/form-data": components["schemas"]["PaymentProofUpload"];
+            };
+        };
+        responses: {
+            /** @description Bukti pembayaran berhasil diunggah */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["OrderRecord"];
+                };
+            };
+            /** @description Pesanan tidak ditemukan */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Status pesanan tidak valid atau berkas tidak sesuai */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+        };
+    };
+    cancelOrder: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                code: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: {
+            content: {
+                "application/json": {
+                    reason?: string;
+                };
+            };
+        };
+        responses: {
+            /** @description Pesanan berhasil dibatalkan dan stok produk dikembalikan */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["OrderRecord"];
+                };
+            };
+            /** @description Akses ditolak (bukan pemilik pesanan) */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Pesanan tidak ditemukan */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+            /** @description Pesanan tidak dapat dibatalkan (sudah bukan pending_payment) */
+            422: {
                 headers: {
                     [name: string]: unknown;
                 };
@@ -496,23 +1218,36 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": {
-                        latestId: number;
-                        events: {
-                            id?: number;
-                            topic?: string;
-                            at?: string;
-                        }[];
-                    };
+                    "application/json": components["schemas"]["RealtimeEventsResponse"];
                 };
             };
         };
     };
-    listOrders: {
+    realtimeStream: {
         parameters: {
             query?: {
-                codes?: string;
+                since?: number;
             };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Event stream terhubung */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "text/event-stream": string;
+                };
+            };
+        };
+    };
+    listAdminProducts: {
+        parameters: {
+            query?: never;
             header?: never;
             path?: never;
             cookie?: never;
@@ -526,13 +1261,13 @@ export interface operations {
                 };
                 content: {
                     "application/json": {
-                        data: components["schemas"]["OrderResponse"][];
+                        data: components["schemas"]["AdminProduct"][];
                     };
                 };
             };
         };
     };
-    createOrder: {
+    createAdminProduct: {
         parameters: {
             query?: never;
             header?: never;
@@ -541,21 +1276,57 @@ export interface operations {
         };
         requestBody: {
             content: {
-                "application/json": components["schemas"]["OrderCreateRequest"];
+                "multipart/form-data": components["schemas"]["AdminProductInput"];
+                "application/json": components["schemas"]["AdminProductInput"];
             };
         };
         responses: {
-            /** @description Order created */
+            /** @description Produk berhasil dibuat */
             201: {
                 headers: {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["OrderResponse"];
+                    "application/json": {
+                        data: components["schemas"]["AdminProduct"];
+                    };
                 };
             };
-            /** @description Stock insufficient */
-            409: {
+            /** @description Validasi gagal */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ValidationError"];
+                };
+            };
+        };
+    };
+    getAdminProduct: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: components["schemas"]["AdminProduct"];
+                    };
+                };
+            };
+            /** @description Produk tidak ditemukan */
+            404: {
                 headers: {
                     [name: string]: unknown;
                 };
@@ -565,7 +1336,27 @@ export interface operations {
             };
         };
     };
-    uploadPaymentProof: {
+    deleteAdminProduct: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Produk berhasil dihapus */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    updateAdminProduct: {
         parameters: {
             query?: never;
             header?: never;
@@ -576,17 +1367,136 @@ export interface operations {
         };
         requestBody: {
             content: {
-                "multipart/form-data": components["schemas"]["PaymentProofUpload"];
+                "multipart/form-data": components["schemas"]["AdminProductUpdateInput"];
+                "application/json": components["schemas"]["AdminProductUpdateInput"];
             };
         };
         responses: {
-            /** @description Proof uploaded */
+            /** @description Produk berhasil diperbarui */
             200: {
                 headers: {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["OrderResponse"];
+                    "application/json": {
+                        data: components["schemas"]["AdminProduct"];
+                    };
+                };
+            };
+            /** @description Validasi gagal */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ValidationError"];
+                };
+            };
+        };
+    };
+    listAdminOrders: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: components["schemas"]["OrderRecord"][];
+                    };
+                };
+            };
+        };
+    };
+    createAdminManualOrder: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["AdminManualOrderInput"];
+            };
+        };
+        responses: {
+            /** @description Pesanan manual berhasil dibuat */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: components["schemas"]["OrderRecord"];
+                    };
+                };
+            };
+        };
+    };
+    updateAdminOrderStatus: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                codeOrId: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["AdminOrderStatusUpdate"];
+            };
+        };
+        responses: {
+            /** @description Status pesanan berhasil diperbarui */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: components["schemas"]["OrderRecord"];
+                    };
+                };
+            };
+            /** @description Transisi status tidak diizinkan */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
+        };
+    };
+    getAdminSalesReport: {
+        parameters: {
+            query?: {
+                period?: "7d" | "30d" | "all";
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Ringkasan laporan penjualan */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AdminSalesReport"];
                 };
             };
         };

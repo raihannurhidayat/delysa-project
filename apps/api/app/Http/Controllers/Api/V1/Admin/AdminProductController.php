@@ -162,6 +162,7 @@ class AdminProductController extends Controller
         if ($request->hasFile('image')) {
             $path = $request->file('image')?->store('products', 'public');
             if (is_string($path)) {
+                $this->deleteStoredImage($product->image_url);
                 $updates['image_url'] = Storage::disk('public')->url($path);
             }
         }
@@ -194,11 +195,28 @@ class AdminProductController extends Controller
     public function destroy(Product $product): JsonResponse
     {
         $id = $product->id;
+        $this->deleteStoredImage($product->image_url);
         $product->delete();
 
         RealtimeEvent::publish('products', ['action' => 'deleted', 'id' => $id]);
 
         return response()->json(null, 204);
+    }
+
+    private function deleteStoredImage(?string $url): void
+    {
+        if ($url === null || $url === '') {
+            return;
+        }
+
+        $storagePrefix = '/storage/';
+        $pos = strpos($url, $storagePrefix);
+        if ($pos !== false) {
+            $relativePath = substr($url, $pos + strlen($storagePrefix));
+            if (Storage::disk('public')->exists($relativePath)) {
+                Storage::disk('public')->delete($relativePath);
+            }
+        }
     }
 
     private function uniqueSlug(string $name): string
